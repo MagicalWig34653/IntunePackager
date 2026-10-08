@@ -2,7 +2,7 @@
 
 Windows desktop tool (C# / WPF, .NET Framework 4.8) that turns an MSI, EXE or vendor folder into a Microsoft Intune Win32 package (`.intunewin`, standalone detection script, Intune guide). The product specification is `docs/SPEC.md` (German, normative). Architecture, milestones and test strategy are in `docs/PLANUNG.md`; acceptance checks A01-A18 are tracked in `docs/ABNAHME-MATRIX.md`.
 
-**Status:** planning and scaffold (milestone M0). Nothing beyond the scaffold is implemented. Never describe planned behavior as existing.
+**Status:** scaffold complete (M0 done: solution, Windows CI, logging foundation, Pester scaffold, format check). Features start with M1; nothing beyond the scaffold is implemented. Never describe planned behavior as existing.
 
 ## Language rules
 

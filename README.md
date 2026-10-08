@@ -11,12 +11,12 @@
 
 <p align="center">
   <a href="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml"><img src="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/Status-Planung%20%2F%20Ger%C3%BCst-orange" alt="Status: Planung / Gerüst">
+  <img src="https://img.shields.io/badge/Status-Ger%C3%BCst%20fertig%2C%20Funktionen%20folgen-orange" alt="Status: Gerüst fertig, Funktionen folgen">
   <img src="https://img.shields.io/badge/Plattform-Windows%2011%20%7C%20Server%202022-blue" alt="Plattform">
   <a href="LICENSE"><img src="https://img.shields.io/badge/Lizenz-AGPL--3.0-green" alt="Lizenz AGPL-3.0"></a>
 </p>
 
-> **Projektstand:** Planung und Grundgerüst (M0). Es gibt noch kein Release. Die Bilder unten sind **Design-Mockups**, keine Screenshots eines lauffähigen Programms.
+> **Projektstand:** Projektgerüst mit CI steht (M0 fertig), Funktionen folgen ab M1. Es gibt noch kein Release. Die Bilder unten sind **Design-Mockups**, keine Screenshots eines lauffähigen Programms.
 
 Der Intune Package Builder ist eine Windows-Desktopanwendung, die aus einer MSI, einer EXE oder einem Herstellerordner ein vollständiges Microsoft-Intune-Win32-Paket erstellt:
 
@@ -49,8 +49,8 @@ Nicht Teil von Version 1: direkter Upload nach Intune, Graph-Anmeldung, Gruppenz
 
 | M | Inhalt | Stand |
 |---|---|---|
-| M0 | Solution-Gerüst, Windows-CI, Abhängigkeitsmanifest | in Arbeit |
-| M1 | Core: Projektmodell, atomares Speichern, Migration, Sperren | geplant |
+| M0 | Solution-Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung | fertig |
+| M1 | Core: Projektmodell, atomares Speichern, Migration, Sperren | als Nächstes |
 | M2 | Quellenanalyse: MSI-Reader, EXE-Metadaten, Manifeste, sicherer Import | geplant |
 | M3 | Generatoren: Erkennungsskript, Intune-Anleitung, JSON/CSV | geplant |
 | M4 | Build-Pipeline mit dem Content Prep Tool | geplant |
