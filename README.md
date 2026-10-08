@@ -65,9 +65,9 @@ Die zugehörigen Abnahmeprüfungen A01–A18 stehen in der [Abnahme-Matrix](docs
 
 ```text
 src/      Autorentool (C# / WPF, .NET Framework 4.8) in getrennten Modulen
-deploy/   Client-Laufzeit: Wrapper-Vorlagen und gepinnte Drittanbieter-Bibliothek
-tools/    Win32 Content Prep Tool samt Herkunfts- und Prüfsummenmanifest
-tests/    xUnit, Pester, UI-Tests
+deploy/   Client-Laufzeit: Wrapper-Vorlagen und gepinnte Drittanbieter-Bibliothek (geplant, M5)
+tools/    Win32 Content Prep Tool samt Herkunfts- und Prüfsummenmanifest (geplant, M4)
+tests/    xUnit vorhanden; Pester und UI-Tests geplant
 docs/     Spezifikation, Planung, Abnahme-Matrix
 assets/   App-Icon (SVG, PNG, ICO)
 design/   Quellen der Design-Mockups
@@ -80,7 +80,7 @@ Benutzerprojekte und Herstellerinstaller gehören nicht in dieses Repository (si
 
 - **Quellcode ist durchgehend Englisch:** Bezeichner, Kommentare, Logmeldungen, Konfiguration und Workflows. Sichtbare Texte kommen ausschließlich aus Ressourcendateien (Deutsch und Englisch). Die Dokumentation unter `docs/` ist deutsch.
 - Gebaut und getestet wird auf Windows (`dotnet build IntunePackageBuilder.sln`, `dotnet test IntunePackageBuilder.sln`). Die CI läuft auf `windows-latest` und `windows-2022`.
-- Die Webseite liegt in `site/` und wird bei Änderungen auf `main` per GitHub Actions veröffentlicht.
+- Die Webseite liegt in `site/` und wird bei Änderungen an `site/` auf `main` per GitHub Actions veröffentlicht.
 
 ## Lizenz
 

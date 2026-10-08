@@ -65,9 +65,9 @@ The matching acceptance checks A01–A18 are listed in the [acceptance matrix](d
 
 ```text
 src/      Authoring tool (C# / WPF, .NET Framework 4.8) in separate modules
-deploy/   Client runtime: wrapper templates and pinned third-party library
-tools/    Win32 Content Prep Tool with provenance and checksum manifest
-tests/    xUnit, Pester, UI tests
+deploy/   Client runtime: wrapper templates and pinned third-party library (planned, M5)
+tools/    Win32 Content Prep Tool with provenance and checksum manifest (planned, M4)
+tests/    xUnit exists; Pester and UI tests planned
 docs/     Specification, planning, acceptance matrix (German)
 assets/   App icon (SVG, PNG, ICO)
 design/   Sources of the design mockups
@@ -80,7 +80,7 @@ User projects and vendor installers do not belong in this repository (see `.giti
 
 - **Source code is English throughout:** identifiers, comments, log messages, configuration and workflows. User-visible text comes only from resource files (German and English). The documentation under `docs/` is in German.
 - Build and test on Windows (`dotnet build IntunePackageBuilder.sln`, `dotnet test IntunePackageBuilder.sln`). CI runs on `windows-latest` and `windows-2022`.
-- The website lives in `site/` and is published by GitHub Actions on every change to `main`.
+- The website lives in `site/` and is published by GitHub Actions when `site/` changes on `main`.
 
 ## License
 
