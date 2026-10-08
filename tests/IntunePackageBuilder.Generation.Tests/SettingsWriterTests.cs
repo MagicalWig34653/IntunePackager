@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using IntunePackageBuilder.Core.Storage;
 using IntunePackageBuilder.Generation.Intune;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -36,7 +37,7 @@ namespace IntunePackageBuilder.Generation.Tests
         [Fact]
         public void Json_UsesCamelCaseNamesAndTextEnums()
         {
-            var json = JObject.Parse(SettingsWriter.ToJson(SettingsFor("Contoso Reader")));
+            var json = JsonFormat.ParseObject(SettingsWriter.ToJson(SettingsFor("Contoso Reader")));
 
             Assert.Equal(1, json.Value<int>("schemaVersion"));
             Assert.Equal("Win32", json["app"].Value<string>("type"));
@@ -51,7 +52,7 @@ namespace IntunePackageBuilder.Generation.Tests
         {
             var text = SettingsWriter.ToJson(SettingsFor(Nasty, "Pub \"lisher\" \\ <b>"));
 
-            var parsed = JObject.Parse(text);
+            var parsed = JsonFormat.ParseObject(text);
 
             Assert.Equal(Nasty.Trim(), parsed["app"].Value<string>("name"));
             Assert.Equal("Pub \"lisher\" \\ <b>", parsed["app"].Value<string>("publisher"));
@@ -60,7 +61,7 @@ namespace IntunePackageBuilder.Generation.Tests
         [Fact]
         public void Json_LeavesDateLikeTextUnchanged()
         {
-            var parsed = JObject.Parse(SettingsWriter.ToJson(SettingsFor("2026-10-08T10:00:00Z")));
+            var parsed = JsonFormat.ParseObject(SettingsWriter.ToJson(SettingsFor("2026-10-08T10:00:00Z")));
 
             Assert.Equal("2026-10-08T10:00:00Z", parsed["app"].Value<string>("name"));
         }
@@ -154,7 +155,7 @@ namespace IntunePackageBuilder.Generation.Tests
                 Assert.Equal(flat[i].Value, rows[i][1]);
             }
 
-            var json = JObject.Parse(SettingsWriter.ToJson(settings));
+            var json = JsonFormat.ParseObject(SettingsWriter.ToJson(settings));
             Assert.Equal(json["app"].Value<string>("name"), Value(rows, "app.name"));
             Assert.Equal(json["program"].Value<string>("installCommand"), Value(rows, "program.installCommand"));
             Assert.Equal(json["detection"]["rule"].Value<string>("productCode"), Value(rows, "detection.rule.productCode"));
@@ -165,7 +166,7 @@ namespace IntunePackageBuilder.Generation.Tests
         public void Flatten_ContainsEveryLeafOfTheJsonDocument()
         {
             var settings = IntuneSettingsBuilder.From(Samples.Snapshot(Samples.Msi()));
-            var leaves = JObject.Parse(SettingsWriter.ToJson(settings)).DescendantsAndSelf().Count(t => t is JValue && t.Type != JTokenType.Null);
+            var leaves = JsonFormat.ParseObject(SettingsWriter.ToJson(settings)).DescendantsAndSelf().Count(t => t is JValue && t.Type != JTokenType.Null);
 
             Assert.Equal(leaves, SettingsWriter.Flatten(settings).Count);
         }

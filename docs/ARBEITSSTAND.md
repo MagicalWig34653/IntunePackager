@@ -47,6 +47,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
   - Neues Testprojekt `tests/IntunePackageBuilder.Generation.Tests` (in der Solution): `IntuneSettingsTests`, `SettingsWriterTests`; Ergänzungen in `Core.Tests` (`BuildSnapshotTests`, `RestartCodeAndEncodingTests`).
   - Doku: neue Datei `docs/GENERATOREN.md`, `docs/DATENFORMAT.md` (`configuration.snapshot.json`), Annahmen in `docs/PLANUNG.md` §8.
   - CI-Lauf 1 von PR 11: Build-Fehler im Testprojekt (`CsvCell` ist `internal`, `InternalsVisibleTo` fehlte im Generation-Projekt). Behoben; alle anderen Projekte haben gebaut.
+  - CI-Lauf 2 von PR 11: Build grün, 32 von 33 Generation-Tests. Der Fehlschlag war ein Testfehler: Der Test las das JSON mit dem Standard-`JObject.Parse`, der datumsähnlichen Text in ein Datum verwandelt. Tests benutzen jetzt `JsonFormat.ParseObject`. Lehre: in Tests, die JSON-Texte prüfen, nie `JObject.Parse` verwenden.
 
 ## Lehren (für künftige Sessions)
 
