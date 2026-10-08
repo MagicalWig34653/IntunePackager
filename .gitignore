@@ -1,0 +1,21 @@
+# Build-Ausgaben
+bin/
+obj/
+dist/
+artifacts/
+*.user
+*.suo
+.vs/
+TestResults/
+packages/
+
+# Benutzerdaten und Herstellerdateien dürfen nie ins Repository (SPEC §10)
+Intune-Paketprojekte/
+*.intunewin
+*.msi
+*.exe
+!tools/**/*.exe
+
+# Temporär
+*.log
+*.tmp
