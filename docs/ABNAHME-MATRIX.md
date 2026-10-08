@@ -6,10 +6,10 @@ Zuordnung der verbindlichen automatisierten Prüfungen aus [SPEC.md](SPEC.md) §
 |---|---|---|---|---|
 | A01 | Erststart ohne Einstellungen und Projekte | M6 | UI | offen |
 | A02 | MSI-Metadaten lesen, ohne Ausführung | M2 | xUnit | offen |
-| A03 | EXE ohne Silent-/Erkennungsangaben sperrt Build | M1 (Modell), M6 (UI) | xUnit, UI | offen |
+| A03 | EXE ohne Silent-/Erkennungsangaben sperrt Build | M1 (Modell), M6 (UI) | xUnit, UI | Modell bestanden (CI 37825409326), UI offen |
 | A04 | Auswahl und Drag-and-drop gleichwertig; Fehltypen/Mehrfach abgelehnt | M2 (Logik), M6 (UI) | xUnit, UI | offen |
-| A05 | Projekt mehrfach öffnen/wechseln ohne Kollision | M1, M7 | xUnit, UI | offen |
-| A06 | Notizen bleiben erhalten | M1, M7 | xUnit, UI | offen |
+| A05 | Projekt mehrfach öffnen/wechseln ohne Kollision | M1, M7 | xUnit, UI | Speicherschicht bestanden (CI 37825409326), UI offen |
+| A06 | Notizen bleiben erhalten | M1, M7 | xUnit, UI | Speicherschicht bestanden (CI 37825409326), UI offen |
 | A07 | Update aus Version | M7 | xUnit, UI | offen |
 | A08 | Moduswechsel verliert keine Werte | M6, M7 | UI | offen |
 | A09 | Build blockiert UI nicht, Eingaben gesperrt | M4, M6 | xUnit, UI | offen |

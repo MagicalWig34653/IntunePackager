@@ -12,17 +12,19 @@ Aufteilung in einzeln mergbare Scheiben:
 
 | Scheibe | Inhalt | Stand |
 |---|---|---|
-| M1a | Projekt-ID, Versionsnummer, atomares Schreiben, Projekt- und Versionsmodell, Validierung, Schema-Migration, Projektspeicher (Anlegen, Laden, Notizen, Liste) | Code und Tests geschrieben, PR offen, CI-Nachweis steht aus |
+| M1a | Projekt-ID, Versionsnummer, atomares Schreiben, Projekt- und Versionsmodell, Validierung, Schema-Migration, Projektspeicher (Anlegen, Laden, Notizen, Liste) | fertig, CI grün (Lauf 37825409326, 135 xUnit-Tests bestanden), PR 6 zum Merge bereit |
 | M1b | Sperre je Projektversion, Versionsspeicher (Ablage, Liste nach numerischer Version), Einstellungen und Grundordner (nicht unbemerkt ersetzen), zuletzt geöffnet | offen |
 
 ## Erledigt und verifiziert (CI-Nachweis)
+
+- M1a: Projekt-ID, Versionsnummer, atomares Schreiben, Schema-Migration, Projektspeicher, Versionsmodell mit Validierung. CI-Lauf 37825409326 (windows-latest, windows-2022, Pester): 135 xUnit-Tests und 10 Pester-Tests bestanden. Ein Fehler wurde im ersten Lauf gefunden und behoben (Listen wurden beim Laden verdoppelt).
 
 - M0 komplett: Solution, Windows-CI (windows-latest und windows-2022), `FileLogger` mit Tests (.NET 8/8), Pester-Gerüst (10/10), Format-Prüfung. Nachweis: CI-Lauf 37810006107.
 - Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups, Pages-Webseite, Claude-Code-Umgebung (`CLAUDE.md`, Agents, Skills, Hook).
 
 ## In Arbeit
 
-- M1a (Branch `claude/great-feynman-hi1xfp`). Code ist bis zum ersten CI-Lauf unverifiziert, weil die Cloud-Sitzung kein .NET-SDK hat.
+- M1a ist durch CI verifiziert (Branch `claude/great-feynman-hi1xfp`, PR 6). Danach beginnt M1b.
   - Neu in `src/IntunePackageBuilder.Core`: `Projects/` (ProjectId, Project, ProjectStore, Ausnahmen), `Storage/` (AtomicFile, JsonFormat, SchemaMigrator, Ausnahmen), `Versions/` (VersionNumber, PackageVersionConfig, ConfigurationValidator).
   - Tests in `tests/IntunePackageBuilder.Core.Tests` (ProjectId, VersionNumber, AtomicFile, SchemaMigrator, ProjectStore, ConfigurationValidator, JSON-Roundtrip).
   - Doku dazu: `docs/DATENFORMAT.md`, `THIRD-PARTY.md` (Newtonsoft.Json), Entscheidungen in `docs/PLANUNG.md` §8.
