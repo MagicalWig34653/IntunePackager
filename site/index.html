@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intune Package Builder</title>
+<meta name="description" content="Planned Windows desktop tool that will turn an MSI, EXE or vendor folder into a complete Microsoft Intune Win32 package.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f8fc; --surface: #ffffff; --line: #dde3ec; --text: #14202f; --muted: #556278;
+    --accent: #1f6fd6; --on-accent: #ffffff; --accent-dark: #0b3a8f; --soft: #e8f0fc; --warn: #fff4dc; --warn-line: #f0d69a;
+    --shadow: 0 10px 30px rgba(15, 40, 90, .12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1522; --surface: #151f30; --line: #25324a; --text: #e6edf8; --muted: #9aa9c2;
+      --accent: #5aa0ff; --on-accent: #0e1522; --accent-dark: #9cc5ff; --soft: #17274a; --warn: #3a2f12; --warn-line: #6b5522;
+      --shadow: 0 10px 30px rgba(0, 0, 0, .45);
+    }
+  }
+  * { box-sizing: border-box; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  a { color: var(--accent); }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 20px; }
+  header.top { position: sticky; top: 0; z-index: 5; background: var(--bg); background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  header.top .wrap { display: flex; align-items: center; gap: 14px; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text); text-decoration: none; }
+  .brand img { width: 30px; height: 30px; }
+  nav.links { margin-left: auto; display: flex; gap: 18px; align-items: center; }
+  nav.links a { color: var(--muted); text-decoration: none; font-size: 14px; }
+  nav.links a:hover { color: var(--text); }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .seg button { background: transparent; border: 0; padding: 5px 11px; color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+  .seg button:focus-visible, .btn:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .hero { padding: 72px 0 40px; display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; }
+  .hero h1 { font-size: clamp(2rem, 4.5vw, 3.1rem); line-height: 1.12; margin: 0 0 16px; letter-spacing: -.02em; }
+  .hero p.lead { font-size: 1.15rem; color: var(--muted); margin: 0 0 24px; }
+  .hero .icon { justify-self: center; width: min(240px, 60%); filter: drop-shadow(0 18px 28px rgba(11, 58, 143, .35)); }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn { display: inline-block; padding: 11px 20px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--text); text-decoration: none; font-weight: 600; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .status { display: flex; gap: 12px; align-items: flex-start; background: var(--warn); border: 1px solid var(--warn-line); border-radius: 10px; padding: 12px 16px; margin: 8px 0 0; font-size: .95rem; }
+  section { padding: 56px 0 8px; scroll-margin-top: 80px; }
+  section h2 { font-size: 1.75rem; margin: 0 0 8px; letter-spacing: -.01em; }
+  section .intro { color: var(--muted); margin: 0 0 28px; max-width: 70ch; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+  .card p { margin: 0; color: var(--muted); font-size: .95rem; }
+  .steps { counter-reset: s; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; padding: 0; list-style: none; }
+  .steps li { counter-increment: s; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; position: relative; }
+  .steps li::before { content: counter(s); display: inline-flex; width: 28px; height: 28px; border-radius: 50%; background: var(--soft); color: var(--accent-dark); font-weight: 700; align-items: center; justify-content: center; margin-bottom: 8px; }
+  .steps li h3 { margin: 0 0 6px; font-size: 1.05rem; }
+  .steps li p { margin: 0; color: var(--muted); font-size: .95rem; }
+  .shots { display: grid; gap: 22px; }
+  figure { margin: 0; }
+  figure img { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); box-shadow: var(--shadow); display: block; }
+  figcaption { color: var(--muted); font-size: .9rem; margin-top: 8px; }
+  .shots.two { grid-template-columns: 1fr 1fr; }
+  table.road { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  table.road th, table.road td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: .95rem; }
+  table.road th { color: var(--muted); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+  table.road tr:last-child td { border-bottom: 0; }
+  .tag { display: inline-block; font-size: .75rem; font-weight: 700; padding: 2px 9px; border-radius: 10px; background: var(--soft); color: var(--accent-dark); white-space: nowrap; }
+  .tag.now { background: #d9f2e3; color: #14663c; }
+  @media (prefers-color-scheme: dark) { .tag.now { background: #123626; color: #7fe0ab; } }
+  @media (max-width: 480px) { table.road th, table.road td { padding: 10px 8px; } }
+  ul.plain { padding-left: 1.2em; color: var(--muted); }
+  ul.plain li { margin: 4px 0; }
+  footer { margin-top: 64px; border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: .9rem; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; }
+  @media (max-width: 800px) {
+    .hero { grid-template-columns: 1fr; padding-top: 40px; }
+    .hero .icon { order: -1; width: 120px; justify-self: start; }
+    .shots.two { grid-template-columns: 1fr; }
+    nav.links a.hide-sm { display: none; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/icon-256.png" alt="">Intune Package Builder</a>
+    <nav class="links" data-aria-i18n="navLabel">
+      <a class="hide-sm" href="#features" data-i18n="navFeatures"></a>
+      <a class="hide-sm" href="#screens" data-i18n="navScreens"></a>
+      <a class="hide-sm" href="#roadmap" data-i18n="navRoadmap"></a>
+      <a href="https://github.com/MagicalWig34653/IntunePackager">GitHub</a>
+      <span class="seg" role="group" data-aria-i18n="langLabel">
+        <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-set-lang="de" aria-pressed="false">DE</button>
+      </span>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <h1 data-i18n="heroTitle"></h1>
+        <p class="lead" data-i18n="heroLead"></p>
+        <div class="cta">
+          <a class="btn primary" href="https://github.com/MagicalWig34653/IntunePackager" data-i18n="ctaRepo"></a>
+          <a class="btn" href="https://github.com/MagicalWig34653/IntunePackager/blob/main/docs/SPEC.md" data-i18n="ctaSpec"></a>
+        </div>
+        <div class="status" role="note"><span aria-hidden="true">&#9888;</span><span data-i18n="status"></span></div>
+      </div>
+      <img class="icon" src="img/icon-256.png" alt="Intune Package Builder app icon">
+    </div>
+
+    <section id="how">
+      <h2 data-i18n="howTitle"></h2>
+      <p class="intro" data-i18n="howIntro"></p>
+      <ol class="steps">
+        <li><h3 data-i18n="s1t"></h3><p data-i18n="s1d"></p></li>
+        <li><h3 data-i18n="s2t"></h3><p data-i18n="s2d"></p></li>
+        <li><h3 data-i18n="s3t"></h3><p data-i18n="s3d"></p></li>
+        <li><h3 data-i18n="s4t"></h3><p data-i18n="s4d"></p></li>
+      </ol>
+    </section>
+
+    <section id="features">
+      <h2 data-i18n="featTitle"></h2>
+      <p class="intro" data-i18n="featIntro"></p>
+      <div class="grid">
+        <div class="card"><h3 data-i18n="f1t"></h3><p data-i18n="f1d"></p></div>
+        <div class="card"><h3 data-i18n="f2t"></h3><p data-i18n="f2d"></p></div>
+        <div class="card"><h3 data-i18n="f3t"></h3><p data-i18n="f3d"></p></div>
+        <div class="card"><h3 data-i18n="f4t"></h3><p data-i18n="f4d"></p></div>
+        <div class="card"><h3 data-i18n="f5t"></h3><p data-i18n="f5d"></p></div>
+        <div class="card"><h3 data-i18n="f6t"></h3><p data-i18n="f6d"></p></div>
+      </div>
+    </section>
+
+    <section id="screens">
+      <h2 data-i18n="shotTitle"></h2>
+      <p class="intro" data-i18n="shotIntro"></p>
+      <div class="shots">
+        <figure><img data-shot="start" alt="" width="1280" height="800" loading="lazy"><figcaption data-i18n="cap1"></figcaption></figure>
+        <div class="shots two">
+          <figure><img data-shot="form" alt="" width="1280" height="800" loading="lazy"><figcaption data-i18n="cap2"></figcaption></figure>
+          <figure><img data-shot="result" alt="" width="1280" height="800" loading="lazy"><figcaption data-i18n="cap3"></figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="principles">
+      <h2 data-i18n="prTitle"></h2>
+      <div class="grid">
+        <div class="card"><h3 data-i18n="p1t"></h3><p data-i18n="p1d"></p></div>
+        <div class="card"><h3 data-i18n="p2t"></h3><p data-i18n="p2d"></p></div>
+        <div class="card"><h3 data-i18n="p3t"></h3><p data-i18n="p3d"></p></div>
+      </div>
+      <h3 style="margin-top:28px" data-i18n="outTitle"></h3>
+      <ul class="plain" data-i18n-html="outList"></ul>
+    </section>
+
+    <section id="roadmap">
+      <h2 data-i18n="roadTitle"></h2>
+      <p class="intro" data-i18n="roadIntro"></p>
+      <div style="overflow-x:auto"><table class="road">
+        <thead><tr><th data-i18n="thMilestone"></th><th data-i18n="thContent"></th><th data-i18n="thState"></th></tr></thead>
+        <tbody>
+          <tr><td>M0</td><td data-i18n="m0"></td><td><span class="tag now" data-i18n="stateProgress"></span></td></tr>
+          <tr><td>M1</td><td data-i18n="m1"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
+          <tr><td>M2</td><td data-i18n="m2"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
+          <tr><td>M3</td><td data-i18n="m3"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
+          <tr><td>M4</td><td data-i18n="m4"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
+          <tr><td>M5</td><td data-i18n="m5"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
+          <tr><td>M6</td><td data-i18n="m6"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
+          <tr><td>M7</td><td data-i18n="m7"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
+          <tr><td>M8</td><td data-i18n="m8"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span data-i18n="footLicense"></span>
+    <span><a href="https://github.com/MagicalWig34653/IntunePackager" data-i18n="footRepo"></a> &middot; <a href="https://github.com/MagicalWig34653/IntunePackager/blob/main/docs/PLANUNG.md" data-i18n="footPlan"></a></span>
+  </div>
+</footer>
+
+<script>
+  // All visible text lives in this dictionary; keys are referenced from the markup.
+  var I18N = {
+    en: {
+      navLabel: "Main", langLabel: "Language", thMilestone: "Milestone", navFeatures: "Features", navScreens: "Screens", navRoadmap: "Roadmap",
+      heroTitle: "From installer to Intune package",
+      heroLead: "Planned workflow: drop an MSI or EXE, check the details, build. The output will be a .intunewin file, a standalone detection script and a step-by-step Intune guide that matches that exact build.",
+      ctaRepo: "View on GitHub", ctaSpec: "Read the specification",
+      status: "Project status: planning and scaffolding. There is no release yet, and the screens below are design mockups, not screenshots of a working program.",
+      howTitle: "How it is planned to work", howIntro: "The planned common path has four steps. An MSI should need no technical input at all.",
+      s1t: "Drop the installer", s1d: "MSI or EXE, or a whole vendor folder in advanced mode. Metadata is read without running anything.",
+      s2t: "Check the details", s2d: "Only the fields your setup needs will be shown. Missing vendor parameters are asked for, never guessed.",
+      s3t: "Build", s3d: "The package will be built in the background with Microsoft's Win32 Content Prep Tool, and every build will keep its own snapshot.",
+      s4t: "Copy into Intune", s4d: "The generated guide and settings file will help you create the Win32 app. Nothing is uploaded for you.",
+      featTitle: "What version 1 will do", featIntro: "Built for IT administrators who know Intune but do not want to write deployment scripts.",
+      f1t: "Standard and advanced mode", f1d: "A compact standard view for everyday MSI and EXE packages, plus advanced options for vendor folders, closing apps and return codes.",
+      f2t: "Projects and versions", f2d: "One base folder holds every project, version, source, note and result. Updates start from the settings of an earlier version.",
+      f3t: "Real detection", f3d: "Detection checks the actual installed state (product code or file version), works without the Intune cache and never relies on a marker file.",
+      f4t: "Safe on the target device", f4d: "Installs run as LocalSystem in native 64-bit PowerShell, show progress to the user, never force-close apps and never force a restart.",
+      f5t: "Traceable builds", f5d: "Every build records its configuration, source checksums and tool versions, so earlier results stay explainable.",
+      f6t: "German and English", f6d: "The interface, the generated Intune guide and the user notices follow the program language.",
+      shotTitle: "Design preview", shotIntro: "Early mockups of the planned standard mode. They show the intended layout and flow, not an implemented program.",
+      cap1: "Start page: drop zone, recent projects, base folder", cap2: "Standard mode for an MSI: values are read and checked", cap3: "Result: commands, detection and shortcuts to the guide",
+      shotAlt1: "Design mockup of the start page", shotAlt2: "Design mockup of the standard mode form for an MSI", shotAlt3: "Design mockup of the build result page",
+      prTitle: "Principles",
+      p1t: "No invented parameters", p1d: "Silent switches for an EXE come from the vendor. The tool asks, and does not substitute a supposedly universal switch.",
+      p2t: "Your work is preserved", p2d: "Projects, notes and versions survive program updates. Stored sources are never overwritten silently.",
+      p3t: "No hidden side effects", p3d: "The tool will not collect telemetry, access your tenant or write externally. It never runs the imported software on the packaging PC.",
+      outTitle: "Out of scope for version 1",
+      outList: "<li>Direct upload to Intune, Microsoft Graph sign-in and group assignments</li><li>Store/MSIX packaging, driver packages, per-user installs, license activation</li><li>Arbitrary multi-step install scripts</li>",
+      roadTitle: "Roadmap", roadIntro: "Each milestone is finished only when its automated checks pass. Details and acceptance checks are in the planning documents.",
+      thContent: "Content", thState: "State", stateProgress: "In progress", statePlanned: "Planned",
+      m0: "Solution scaffold, Windows CI, dependency manifest",
+      m1: "Core: project model, atomic saving, migration, locks",
+      m2: "Source analysis: MSI reader, EXE metadata, manifests, safe import",
+      m3: "Generators: detection script, Intune guide, JSON and CSV",
+      m4: "Build pipeline with the Content Prep Tool",
+      m5: "Client runtime: wrapper, return codes, user interaction",
+      m6: "Application UI: standard mode, drag and drop, results",
+      m7: "Advanced mode, project view, update flow",
+      m8: "Distribution, documentation and device test protocol",
+      footLicense: "Licensed under the GNU AGPL v3. Not affiliated with Microsoft.", footRepo: "Source on GitHub", footPlan: "Planning (German)"
+    },
+    de: {
+      navLabel: "Hauptnavigation", langLabel: "Sprache", thMilestone: "Meilenstein", navFeatures: "Funktionen", navScreens: "Ansichten", navRoadmap: "Fahrplan",
+      heroTitle: "Vom Installer zum Intune-Paket",
+      heroLead: "Geplanter Ablauf: MSI oder EXE ablegen, Angaben prüfen, bauen. Das Ergebnis soll eine .intunewin-Datei, ein eigenständiges Erkennungsskript und eine Intune-Anleitung sein, die genau zu diesem Build passt.",
+      ctaRepo: "Auf GitHub ansehen", ctaSpec: "Spezifikation lesen",
+      status: "Projektstand: Planung und Grundgerüst. Es gibt noch kein Release, und die Ansichten unten sind Design-Mockups, keine Screenshots eines lauffähigen Programms.",
+      howTitle: "So soll es funktionieren", howIntro: "Der geplante Ablauf hat vier Schritte. Eine MSI soll ohne technische Eingaben auskommen.",
+      s1t: "Installer ablegen", s1d: "MSI oder EXE, im erweiterten Modus auch ein ganzer Herstellerordner. Metadaten werden gelesen, ohne etwas auszuführen.",
+      s2t: "Angaben prüfen", s2d: "Es sollen nur die Felder erscheinen, die Ihr Setup braucht. Fehlende Herstellerparameter werden abgefragt, nie geraten.",
+      s3t: "Bauen", s3d: "Das Paket soll im Hintergrund mit Microsofts Win32 Content Prep Tool entstehen. Jeder Build soll seinen eigenen Snapshot behalten.",
+      s4t: "In Intune übernehmen", s4d: "Mit Anleitung und Einstellungsdatei sollen Sie die Win32-App anlegen. Es wird nichts automatisch hochgeladen.",
+      featTitle: "Was Version 1 leisten soll", featIntro: "Gemacht für IT-Administratoren, die Intune kennen, aber keine Deployment-Skripte schreiben möchten.",
+      f1t: "Standard- und erweiterter Modus", f1d: "Eine kompakte Standardansicht für alltägliche MSI- und EXE-Pakete, dazu erweiterte Optionen für Herstellerordner, zu schließende Programme und Rückgabecodes.",
+      f2t: "Projekte und Versionen", f2d: "Ein Grundordner enthält alle Projekte, Versionen, Quellen, Notizen und Ergebnisse. Updates starten mit den Einstellungen einer früheren Version.",
+      f3t: "Echte Erkennung", f3d: "Die Erkennung prüft den tatsächlich installierten Zustand (ProductCode oder Dateiversion), funktioniert ohne Intune-Cache und nutzt keine Markerdatei.",
+      f4t: "Sicher auf dem Zielgerät", f4d: "Installationen laufen als LocalSystem in nativer 64-Bit-PowerShell, zeigen Benutzern den Fortschritt, beenden keine Programme zwangsweise und erzwingen keinen Neustart.",
+      f5t: "Nachvollziehbare Builds", f5d: "Jeder Build hält Konfiguration, Quellprüfsummen und Werkzeugversionen fest, damit frühere Ergebnisse erklärbar bleiben.",
+      f6t: "Deutsch und Englisch", f6d: "Oberfläche, erzeugte Intune-Anleitung und Benutzerhinweise folgen der Programmsprache.",
+      shotTitle: "Design-Vorschau", shotIntro: "Frühe Mockups des geplanten Standardmodus. Sie zeigen Aufbau und Ablauf, nicht ein umgesetztes Programm.",
+      cap1: "Startseite: Ablagefläche, zuletzt geöffnete Projekte, Grundordner", cap2: "Standardmodus für eine MSI: Werte werden gelesen und geprüft", cap3: "Ergebnis: Befehle, Erkennung und Verknüpfungen zur Anleitung",
+      shotAlt1: "Design-Mockup der Startseite", shotAlt2: "Design-Mockup des Standardmodus-Formulars für eine MSI", shotAlt3: "Design-Mockup der Build-Ergebnisseite",
+      prTitle: "Grundsätze",
+      p1t: "Keine erfundenen Parameter", p1d: "Stille Schalter für eine EXE kommen vom Hersteller. Das Tool fragt nach und setzt keinen angeblich universellen Schalter ein.",
+      p2t: "Ihre Arbeit bleibt erhalten", p2d: "Projekte, Notizen und Versionen überstehen Programmupdates. Gespeicherte Quellen werden nie stillschweigend überschrieben.",
+      p3t: "Keine versteckten Nebenwirkungen", p3d: "Das Tool soll keine Telemetrie senden, nicht auf Ihren Tenant zugreifen und nichts extern schreiben. Die importierte Software läuft nie auf dem Paketier-PC.",
+      outTitle: "Nicht Teil von Version 1",
+      outList: "<li>Direkter Upload nach Intune, Microsoft-Graph-Anmeldung und Gruppenzuweisungen</li><li>Store/MSIX-Paketierung, Treiberpakete, benutzerspezifische Installationen, Lizenzaktivierung</li><li>Beliebige mehrstufige Installationsskripte</li>",
+      roadTitle: "Fahrplan", roadIntro: "Ein Meilenstein gilt erst als fertig, wenn seine automatisierten Prüfungen bestehen. Details und Abnahmeprüfungen stehen in den Planungsdokumenten.",
+      thContent: "Inhalt", thState: "Stand", stateProgress: "In Arbeit", statePlanned: "Geplant",
+      m0: "Solution-Gerüst, Windows-CI, Abhängigkeitsmanifest",
+      m1: "Core: Projektmodell, atomares Speichern, Migration, Sperren",
+      m2: "Quellenanalyse: MSI-Reader, EXE-Metadaten, Manifeste, sicherer Import",
+      m3: "Generatoren: Erkennungsskript, Intune-Anleitung, JSON und CSV",
+      m4: "Build-Pipeline mit dem Content Prep Tool",
+      m5: "Client-Laufzeit: Wrapper, Rückgabecodes, Benutzerinteraktion",
+      m6: "Anwendungsoberfläche: Standardmodus, Drag-and-drop, Ergebnisse",
+      m7: "Erweiterter Modus, Projektansicht, Update-Ablauf",
+      m8: "Distribution, Dokumentation und Geräte-Prüfprotokoll",
+      footLicense: "Lizenz: GNU AGPL v3. Nicht mit Microsoft verbunden.", footRepo: "Quellcode auf GitHub", footPlan: "Planung"
+    }
+  };
+
+  var root = document.documentElement;
+
+  function applyLang(lang) {
+    var t = I18N[lang] || I18N.en;
+    root.lang = lang;
+    root.setAttribute("data-lang", lang);
+    document.querySelectorAll("[data-i18n]").forEach(function (el) { el.textContent = t[el.getAttribute("data-i18n")]; });
+    document.querySelectorAll("[data-aria-i18n]").forEach(function (el) { el.setAttribute("aria-label", t[el.getAttribute("data-aria-i18n")]); });
+    document.querySelectorAll("[data-i18n-html]").forEach(function (el) { el.innerHTML = t[el.getAttribute("data-i18n-html")]; });
+    document.querySelectorAll("img[data-shot]").forEach(function (img) {
+      var name = img.getAttribute("data-shot");
+      img.src = "img/mockup-" + name + "-" + lang + ".png";
+      img.alt = t["shotAlt" + ({ start: 1, form: 2, result: 3 })[name]];
+    });
+    document.querySelectorAll("[data-set-lang]").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-set-lang") === lang));
+    });
+    document.title = "Intune Package Builder";
+  }
+
+  function initialLang() {
+    try { var saved = localStorage.getItem("lang"); if (saved === "de" || saved === "en") return saved; } catch (e) { /* storage unavailable */ }
+    return (navigator.language || "en").toLowerCase().indexOf("de") === 0 ? "de" : "en";
+  }
+
+  document.querySelectorAll("[data-set-lang]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var lang = b.getAttribute("data-set-lang");
+      try { localStorage.setItem("lang", lang); } catch (e) { /* storage unavailable */ }
+      applyLang(lang);
+    });
+  });
+
+  applyLang(initialLang());
+</script>
+</body>
+</html>
