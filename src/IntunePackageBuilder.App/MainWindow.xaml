@@ -1,0 +1,8 @@
+<Window x:Class="IntunePackageBuilder.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Intune Package Builder" Height="600" Width="900" MinHeight="480" MinWidth="720">
+    <Grid>
+        <TextBlock x:Name="VersionText" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" />
+    </Grid>
+</Window>

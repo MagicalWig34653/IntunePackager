@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>IntunePackageBuilder.App</RootNamespace>
+    <AssemblyName>IntunePackageBuilder</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IntunePackageBuilder.Core\IntunePackageBuilder.Core.csproj" />
+    <ProjectReference Include="..\IntunePackageBuilder.Build\IntunePackageBuilder.Build.csproj" />
+    <ProjectReference Include="..\IntunePackageBuilder.Generation\IntunePackageBuilder.Generation.csproj" />
+  </ItemGroup>
+</Project>
