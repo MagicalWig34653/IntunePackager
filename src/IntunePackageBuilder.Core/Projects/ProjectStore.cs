@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using IntunePackageBuilder.Core.Storage;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace IntunePackageBuilder.Core.Projects
 {
@@ -81,7 +79,7 @@ namespace IntunePackageBuilder.Core.Projects
                 Notes = string.Empty
             };
 
-            Write(file, project);
+            VersionedJsonFile.Write(file, project);
             return project;
         }
 
@@ -113,11 +111,11 @@ namespace IntunePackageBuilder.Core.Projects
             var file = ProjectFile(project.ProjectId);
             if (File.Exists(file))
             {
-                GuardAgainstNewerSchema(file);
+                VersionedJsonFile.GuardAgainstNewerSchema(file, _currentSchemaVersion);
             }
 
             project.SchemaVersion = _currentSchemaVersion;
-            Write(file, project);
+            VersionedJsonFile.Write(file, project);
         }
 
         public void SaveNotes(string projectId, string notes)
@@ -164,74 +162,13 @@ namespace IntunePackageBuilder.Core.Projects
 
         private Project Read(string file)
         {
-            JObject document;
-            try
+            return VersionedJsonFile.Read<Project>(file, _currentSchemaVersion, _steps, project =>
             {
-                document = JsonFormat.ParseObject(File.ReadAllText(file));
-            }
-            catch (JsonReaderException ex)
-            {
-                throw new StorageFormatException(file, "invalid JSON", ex);
-            }
-
-            var result = SchemaMigrator.Migrate(file, document, _currentSchemaVersion, _steps);
-
-            Project project;
-            try
-            {
-                project = document.ToObject<Project>(JsonFormat.CreateSerializer());
-            }
-            catch (JsonException ex)
-            {
-                throw new StorageFormatException(file, "unexpected structure", ex);
-            }
-
-            if (project == null || string.IsNullOrEmpty(project.ProjectId))
-            {
-                throw new StorageFormatException(file, "missing project ID");
-            }
-
-            if (result.Migrated)
-            {
-                BackUp(file, result.FromVersion);
-                Write(file, project);
-            }
-
-            return project;
-        }
-
-        private void GuardAgainstNewerSchema(string file)
-        {
-            JObject document;
-            try
-            {
-                document = JsonFormat.ParseObject(File.ReadAllText(file));
-            }
-            catch (JsonReaderException ex)
-            {
-                throw new StorageFormatException(file, "invalid JSON", ex);
-            }
-
-            int found;
-            if (SchemaMigrator.TryReadVersion(document, out found) && found > _currentSchemaVersion)
-            {
-                throw new UnsupportedSchemaException(file, found, _currentSchemaVersion);
-            }
-        }
-
-        private static void BackUp(string file, int fromVersion)
-        {
-            var backup = file + ".v" + fromVersion + ".bak";
-            if (!File.Exists(backup))
-            {
-                File.Copy(file, backup);
-            }
-        }
-
-        private static void Write(string file, Project project)
-        {
-            var json = JsonConvert.SerializeObject(project, JsonFormat.CreateSettings());
-            AtomicFile.WriteAllText(file, json + Environment.NewLine);
+                if (string.IsNullOrEmpty(project.ProjectId))
+                {
+                    throw new StorageFormatException(file, "missing project ID");
+                }
+            });
         }
 
         private static void RequireValidId(string projectId)

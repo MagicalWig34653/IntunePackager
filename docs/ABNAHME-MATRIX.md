@@ -17,7 +17,7 @@ Zuordnung der verbindlichen automatisierten Prüfungen aus [SPEC.md](SPEC.md) §
 | A11 | Veränderte Quelle wird erkannt | M2, M4 | xUnit | offen |
 | A12 | Rekursiver Ordner / Junction abgelehnt | M2 | xUnit | offen |
 | A13 | Rechte-/Platz-/Packwerkzeugfehler | M4 | xUnit | offen |
-| A14 | Zweiter Prozess, gleiche Version | M1 | xUnit (Mehrprozess) | offen |
+| A14 | Zweiter Prozess, gleiche Version | M1 | xUnit (Mehrprozess) | Sperre auf Speicherebene bestanden mit echtem Zweitprozess (CI 37827032442); Verhalten in der UI offen |
 | A15 | Erkennung älter / passend / neuer / fremd | M3, M5 | Pester | offen |
 | A16 | Erkennung ohne Paketcache | M3, M5 | Pester | offen |
 | A17 | Sonderzeichen in HTML/JSON/CSV/PowerShell | M3 | xUnit, Pester | offen |
