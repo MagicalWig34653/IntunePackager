@@ -25,6 +25,13 @@ namespace IntunePackageBuilder.Analysis.Msi
                 throw new MsiReadException(fullPath, MsiReadProblem.FileNotFound, 0);
             }
 
+            // An MSI is an OLE compound file. Checking the signature first recognizes foreign files
+            // reliably instead of depending on which error code the installer API returns for them.
+            if (!HasCompoundFileSignature(fullPath))
+            {
+                throw new MsiReadException(fullPath, MsiReadProblem.NotAnInstallerDatabase, 0);
+            }
+
             IntPtr database;
             var result = NativeMsi.MsiOpenDatabase(fullPath, NativeMsi.OpenReadOnly, out database);
             if (result != NativeMsi.ErrorSuccess)
@@ -46,6 +53,37 @@ namespace IntunePackageBuilder.Analysis.Msi
                 var requiresSource = cabinets.Count > 0 || (hasFiles && !anyCabinet);
 
                 return new MsiMetadata(properties, cabinets, requiresSource);
+            }
+        }
+
+        private static readonly byte[] CompoundFileSignature = { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 };
+
+        private static bool HasCompoundFileSignature(string path)
+        {
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
+            {
+                var header = new byte[CompoundFileSignature.Length];
+                var read = 0;
+                while (read < header.Length)
+                {
+                    var count = stream.Read(header, read, header.Length - read);
+                    if (count == 0)
+                    {
+                        return false;
+                    }
+
+                    read += count;
+                }
+
+                for (var i = 0; i < header.Length; i++)
+                {
+                    if (header[i] != CompoundFileSignature[i])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
 

@@ -153,7 +153,6 @@ namespace IntunePackageBuilder.Analysis.Tests
             var ex = Assert.Throws<MsiReadException>(() => MsiReader.Read(path));
 
             Assert.Equal(MsiReadProblem.NotAnInstallerDatabase, ex.Problem);
-            Assert.NotEqual(0u, ex.NativeError);
         }
 
         [Fact]
@@ -164,7 +163,7 @@ namespace IntunePackageBuilder.Analysis.Tests
 
             var ex = Assert.Throws<MsiReadException>(() => MsiReader.Read(path));
 
-            Assert.True(ex.Problem == MsiReadProblem.NotAnInstallerDatabase || ex.Problem == MsiReadProblem.ReadFailed);
+            Assert.Equal(MsiReadProblem.NotAnInstallerDatabase, ex.Problem);
         }
 
         [Fact]

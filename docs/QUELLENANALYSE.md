@@ -10,6 +10,7 @@ Umsetzung: `IntunePackageBuilder.Analysis` (`Msi/MsiReader`, `Msi/MsiMetadata`, 
 
 ### Vorgehen
 
+- Vorab wird die Dateikennung geprüft: Eine MSI ist eine OLE-Verbunddatei und beginnt mit den Bytes `D0 CF 11 E0 A1 B1 1A E1`. Andere Dateien (auch leere oder umbenannte Textdateien) werden sofort als `NotAnInstallerDatabase` abgelehnt, ohne vom Fehlercode der Installer-API abzuhängen (die CI hat gezeigt, dass dieser für fremde Dateien nicht `1619` oder `1620` ist).
 - Die MSI wird über `MsiOpenDatabase` mit `MSIDBOPEN_READONLY` geöffnet. Das ist reiner Datenbankzugriff: Der Windows Installer wertet dabei keine Sequenzen aus und startet keine Custom Actions. Die Datei wird nicht verändert (Test: Prüfsumme und Änderungszeit bleiben gleich).
 - Abgefragt werden die Tabellen `Property`, `Media` und `File`. Eine Tabelle, die nicht existiert, zählt als leer.
 - Alle Handles (Datenbank, Sicht, Datensatz) werden in jedem Fall geschlossen.
