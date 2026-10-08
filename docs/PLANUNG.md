@@ -135,7 +135,8 @@ Offen (vor M5 bzw. M8 zu klären):
 2. **Zielgeräte-Betriebssystem in der Intune-Anforderung:** Mindest-Windows-Build – die Spec verlangt „für das konkrete Paket festgelegte OS-Anforderungen“.
 3. **Signierung:** Gibt es ein Code-Signing-Zertifikat für Autorentool und/oder Skripte? Sonst bleibt der Status „nicht signiert“.
 4. **Zielarchitektur:** Nur x64-Zielgeräte, oder auch x86-Intune-Geräte?
-5. **Test-Infrastruktur:** Stehen Windows-11- und Server-2022-VMs sowie ein Intune-Pilot-Tenant für M8 zur Verfügung?
+5. **MSI-Standardparameter und `ALLUSERS` (vor M5):** Unter LocalSystem installiert eine MSI ohne `ALLUSERS` pro Benutzer des SYSTEM-Kontos. Entscheiden, ob der Wrapper `ALLUSERS=1` mitgibt oder die Oberfläche warnt (siehe `docs/QUELLENANALYSE.md`).
+6. **Test-Infrastruktur:** Stehen Windows-11- und Server-2022-VMs sowie ein Intune-Pilot-Tenant für M8 zur Verfügung?
 
 ## 9. Vorgemerkt: optionales Intune-Upload-Modul (M9)
 

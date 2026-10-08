@@ -12,7 +12,7 @@ Aufteilung in einzeln mergbare Scheiben:
 
 | Scheibe | Inhalt | Stand |
 |---|---|---|
-| M2a | MSI-Reader: ProductName, ProductVersion, ProductCode, Manufacturer lesend über `msi.dll` (nur Datenbank öffnen, nie installieren oder Custom Actions ausführen); Test-Helfer, der kontrollierte MSI-Datenbanken erzeugt | offen |
+| M2a | MSI-Reader: ProductName, ProductVersion, ProductCode, Manufacturer lesend über `msi.dll` (nur Datenbank öffnen, nie installieren oder Custom Actions ausführen); Test-Helfer, der kontrollierte MSI-Datenbanken erzeugt | Code und Tests geschrieben, PR offen, CI-Nachweis steht aus |
 | M2b | EXE-Metadaten über `FileVersionInfo` (nur Dateiinformation); Quellenmanifest `source-manifest.json` (relative Pfade, Größen, SHA-256 aller Dateien) und Erkennung nachträglich veränderter Quellen (A11) | offen |
 | M2c | Sicherer Import (Einzeldatei und Ordner): Pfade bleiben im Quellordner, Junctions und Symlinks abgelehnt, kein rekursives Kopieren (Quelle enthält Projekt, Ziel oder Arbeitsordner), Pfadlängen vorab geprüft, mehrere oder falsche Dateitypen abgelehnt (A04 Logik, A12) | offen |
 
@@ -35,7 +35,9 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## In Arbeit
 
-- PR 8 (Branch `claude/great-feynman-hi1xfp`) enthält M1c samt Abschluss von M1 (Roadmaps, Statusangaben). Nach dem Merge ist nichts mehr offen; M2a beginnt auf einem frischen Branch von `main`.
+- M2a (Branch `claude/great-feynman-hi1xfp`): Code unverifiziert bis zum CI-Lauf (kein .NET-SDK und keine Windows-Installer-API in der Cloud-Sitzung).
+  - Neu: `Analysis/Msi/{NativeMsi,MsiMetadata,MsiReader}.cs`, neues Testprojekt `tests/IntunePackageBuilder.Analysis.Tests` (in der Solution) mit `TestMsi` und `MsiReaderTests`.
+  - Doku: neue Datei `docs/QUELLENANALYSE.md` (wächst mit M2b und M2c).
 
 ## Lehren (für künftige Sessions)
 
@@ -50,7 +52,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 ## Nächste Schritte (in Reihenfolge)
 
 1. PR 8 mergen (CI ist grün).
-2. M2a: MSI-Reader in `IntunePackageBuilder.Analysis` mit Test-Helfer für kontrollierte MSI-Datenbanken (Details oben), danach M2b und M2c.
+2. M2a mergen (CI grün), danach M2b und M2c.
 3. Nach jeder Scheibe: Doku im selben PR (`docs/DATENFORMAT.md` für `source-manifest.json`, Matrix A02, A04, A11, A12 erst mit CI-Nachweis), `docs/ARBEITSSTAND.md` aktualisieren.
 4. Nach M2: M3 (Generatoren: Erkennungsskript, `IntuneSettings`, HTML/JSON/CSV); M4 und M5 können danach parallel laufen (siehe `docs/PLANUNG.md` §4).
 
