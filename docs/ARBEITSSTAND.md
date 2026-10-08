@@ -46,6 +46,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
   - Neu in `Generation`: `Intune/{DeploymentInterface,IntuneSettings,IntuneSettingsBuilder,SettingsWriter}.cs`.
   - Neues Testprojekt `tests/IntunePackageBuilder.Generation.Tests` (in der Solution): `IntuneSettingsTests`, `SettingsWriterTests`; Ergänzungen in `Core.Tests` (`BuildSnapshotTests`, `RestartCodeAndEncodingTests`).
   - Doku: neue Datei `docs/GENERATOREN.md`, `docs/DATENFORMAT.md` (`configuration.snapshot.json`), Annahmen in `docs/PLANUNG.md` §8.
+  - CI-Lauf 1 von PR 11: Build-Fehler im Testprojekt (`CsvCell` ist `internal`, `InternalsVisibleTo` fehlte im Generation-Projekt). Behoben; alle anderen Projekte haben gebaut.
 
 ## Lehren (für künftige Sessions)
 
