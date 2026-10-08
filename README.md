@@ -58,6 +58,7 @@ Nicht Teil von Version 1: direkter Upload nach Intune, Graph-Anmeldung, Gruppenz
 | M6 | Oberfläche: Standardmodus, Drag-and-drop, Ergebnisse | geplant |
 | M7 | Erweiterter Modus, Projektansicht, Update-Ablauf | geplant |
 | M8 | Distribution, Dokumentation, Geräte-Prüfprotokoll | geplant |
+| M9 | Optional: Intune-Upload per Microsoft Graph (nicht Teil von Version 1) | vorgemerkt |
 
 Die zugehörigen Abnahmeprüfungen A01–A18 stehen in der [Abnahme-Matrix](docs/ABNAHME-MATRIX.md).
 

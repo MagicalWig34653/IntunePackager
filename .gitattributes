@@ -1,0 +1,7 @@
+# Normalize line endings in the repository; working tree uses the platform default.
+* text=auto
+
+*.sln text eol=crlf
+*.cmd text eol=crlf
+*.png binary
+*.ico binary

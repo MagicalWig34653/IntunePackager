@@ -20,6 +20,9 @@ jobs:
           dotnet-version: 8.0.x
       - name: Restore
         run: dotnet restore IntunePackageBuilder.sln
+      - name: Check formatting
+        if: matrix.os == 'windows-latest'
+        run: dotnet format whitespace IntunePackageBuilder.sln --verify-no-changes --no-restore
       - name: Build
         run: dotnet build IntunePackageBuilder.sln --configuration Release --no-restore
       - name: Test
@@ -29,3 +32,30 @@ jobs:
         with:
           name: testresults-${{ matrix.os }}
           path: "**/TestResults/*.trx"
+
+  pester:
+    name: Pester (Windows PowerShell 5.1)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pester 5
+        shell: powershell
+        run: |
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module -Name Pester -MinimumVersion 5.5.0 -Force -SkipPublisherCheck -Scope CurrentUser
+      - name: Run Pester
+        shell: powershell
+        run: |
+          Import-Module Pester -MinimumVersion 5.5.0
+          $config = New-PesterConfiguration
+          $config.Run.Path = 'tests/pester'
+          $config.Run.Exit = $true
+          $config.Output.Verbosity = 'Detailed'
+          $config.TestResult.Enabled = $true
+          $config.TestResult.OutputPath = 'pester-results.xml'
+          Invoke-Pester -Configuration $config
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pester-results
+          path: pester-results.xml
