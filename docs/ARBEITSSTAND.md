@@ -13,7 +13,8 @@ Aufteilung in einzeln mergbare Scheiben:
 | Scheibe | Inhalt | Stand |
 |---|---|---|
 | M1a | Projekt-ID, Versionsnummer, atomares Schreiben, Projekt- und Versionsmodell, Validierung, Schema-Migration, Projektspeicher (Anlegen, Laden, Notizen, Liste) | fertig, CI grün (Lauf 37825409326, 135 xUnit-Tests bestanden), PR 6 zum Merge bereit |
-| M1b | Sperre je Projektversion, Versionsspeicher (Ablage, Liste nach numerischer Version), Einstellungen und Grundordner (nicht unbemerkt ersetzen), zuletzt geöffnet | offen |
+| M1b | Sperre je Projektversion (inkl. Zwei-Prozess-Test), Versionsspeicher (Anlegen, Laden, Speichern, Liste nach numerischer Version), gemeinsamer Helfer für versioniertes JSON | Code und Tests geschrieben, PR offen, CI-Nachweis steht aus |
+| M1c | Einstellungen des Autorentools, Grundordner (nicht unbemerkt ersetzen, Schreibrechte prüfen), zuletzt geöffnete Projekte | offen |
 
 ## Erledigt und verifiziert (CI-Nachweis)
 
@@ -24,7 +25,11 @@ Aufteilung in einzeln mergbare Scheiben:
 
 ## In Arbeit
 
-- M1a ist durch CI verifiziert (Branch `claude/great-feynman-hi1xfp`, PR 6). Danach beginnt M1b.
+- M1a ist durch CI verifiziert und gemergt (PR 6).
+- M1b (Branch `claude/great-feynman-hi1xfp`): Code unverifiziert bis zum CI-Lauf (kein .NET-SDK in der Cloud-Sitzung).
+  - Neu: `Storage/VersionedJsonFile.cs` (gemeinsamer Helfer, `ProjectStore` nutzt ihn jetzt), `Storage/VersionLock.cs`, `Versions/VersionStore.cs`, `Versions/VersionExceptions.cs`.
+  - Tests: `VersionLockTests` (inkl. echter Zwei-Prozess-Test mit Windows PowerShell 5.1, deckt A14 ab), `VersionStoreTests`.
+  - Doku: `docs/DATENFORMAT.md` (Versionsordner, Sperre).
   - Neu in `src/IntunePackageBuilder.Core`: `Projects/` (ProjectId, Project, ProjectStore, Ausnahmen), `Storage/` (AtomicFile, JsonFormat, SchemaMigrator, Ausnahmen), `Versions/` (VersionNumber, PackageVersionConfig, ConfigurationValidator).
   - Tests in `tests/IntunePackageBuilder.Core.Tests` (ProjectId, VersionNumber, AtomicFile, SchemaMigrator, ProjectStore, ConfigurationValidator, JSON-Roundtrip).
   - Doku dazu: `docs/DATENFORMAT.md`, `THIRD-PARTY.md` (Newtonsoft.Json), Entscheidungen in `docs/PLANUNG.md` §8.
@@ -34,7 +39,7 @@ Aufteilung in einzeln mergbare Scheiben:
 ## Nächste Schritte (in Reihenfolge)
 
 1. M1a fertigstellen, CI grün, mergen.
-2. M1b umsetzen (Sperren, Versionsspeicher, Grundordner), mergen.
+2. M1b (Sperre, Versionsspeicher) mergen, danach M1c (Einstellungen, Grundordner, zuletzt geöffnet).
 3. M1 abschließen: `docs/ABNAHME-MATRIX.md` (A03 Modell, A05, A06, A14 mit Nachweis; A14 ist zunächst nur im selben Prozess geprüft, ein Mehrprozess-Test fehlt noch), Roadmaps in READMEs und Webseite (Skill `milestone`).
 4. M2 beginnen (Quellenanalyse: MSI-Reader, EXE-Metadaten, Quellenmanifest, sicherer Import).
 
