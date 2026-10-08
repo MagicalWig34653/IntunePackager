@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using IntunePackageBuilder.Core.Projects;
+using IntunePackageBuilder.Core.Sources;
 using IntunePackageBuilder.Core.Storage;
 
 namespace IntunePackageBuilder.Core.Versions
@@ -73,7 +74,52 @@ namespace IntunePackageBuilder.Core.Versions
         /// <summary>Path of the source manifest of a version (<c>source-manifest.json</c>).</summary>
         public string SourceManifestPath(string projectId, string version)
         {
-            return Path.Combine(VersionDirectory(projectId, version), Core.Sources.SourceManifest.FileName);
+            return Path.Combine(VersionDirectory(projectId, version), SourceManifest.FileName);
+        }
+
+        /// <summary>
+        /// Stores the installation source of a version: copies it into <c>source</c> and writes
+        /// <c>source-manifest.json</c>. Takes the version lock. A version keeps one stored source for good;
+        /// a changed installer needs a new version (SPEC section 6.4).
+        /// </summary>
+        /// <exception cref="ImportRejectedException">The selection or the source is not acceptable; nothing was copied.</exception>
+        public ImportResult ImportSource(string projectId, string version, DroppedItem item, string installerRelativePath)
+        {
+            if (item == null)
+            {
+                throw new ArgumentNullException("item");
+            }
+
+            var directory = VersionDirectory(projectId, version);
+            using (VersionLock.Acquire(directory))
+            {
+                var manifestPath = Path.Combine(directory, SourceManifest.FileName);
+                if (File.Exists(manifestPath))
+                {
+                    throw new ImportRejectedException(ImportProblem.SourceAlreadyStored, manifestPath);
+                }
+
+                var target = Path.Combine(directory, "source");
+                var result = item.Kind == DroppedKind.Folder
+                    ? SourceImporter.ImportFolder(item.Path, installerRelativePath, target)
+                    : SourceImporter.ImportFile(item.Path, target);
+                try
+                {
+                    SourceManifestStore.WriteNew(manifestPath, result.Manifest);
+                }
+                catch
+                {
+                    // Do not leave a stored source without its manifest: remove the copy this call just made.
+                    if (Directory.Exists(target))
+                    {
+                        Directory.Delete(target, true);
+                    }
+
+                    throw;
+                }
+
+                return result;
+            }
         }
 
         /// <summary>Creates a new version from a configuration. The configuration may be incomplete (a draft).</summary>

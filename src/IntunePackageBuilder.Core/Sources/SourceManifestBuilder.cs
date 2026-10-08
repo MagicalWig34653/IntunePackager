@@ -90,7 +90,7 @@ namespace IntunePackageBuilder.Core.Sources
                 throw new ArgumentException("A source directory is required.", "sourceDirectory");
             }
 
-            var root = Path.GetFullPath(sourceDirectory).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var root = PathSafety.Full(sourceDirectory);
             if (!Directory.Exists(root))
             {
                 throw new DirectoryNotFoundException("The source directory does not exist: " + root);
@@ -102,37 +102,18 @@ namespace IntunePackageBuilder.Core.Sources
         private static List<SourceFileEntry> Scan(string root)
         {
             var entries = new List<SourceFileEntry>();
-            ScanDirectory(root, root, entries);
+            foreach (var file in PathSafety.ListFiles(root))
+            {
+                entries.Add(Describe(root, file));
+            }
+
             entries.Sort((left, right) => string.CompareOrdinal(left.Path, right.Path));
             return entries;
         }
 
-        private static void ScanDirectory(string root, string directory, List<SourceFileEntry> entries)
+        internal static SourceFileEntry Describe(string root, string file)
         {
-            foreach (var file in Directory.GetFiles(directory))
-            {
-                RejectReparsePoint(file);
-                entries.Add(Describe(root, file));
-            }
-
-            foreach (var child in Directory.GetDirectories(directory))
-            {
-                RejectReparsePoint(child);
-                ScanDirectory(root, child, entries);
-            }
-        }
-
-        private static void RejectReparsePoint(string path)
-        {
-            if ((File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0)
-            {
-                throw new UnsafeSourceException(path);
-            }
-        }
-
-        private static SourceFileEntry Describe(string root, string file)
-        {
-            var relative = file.Substring(root.Length + 1).Replace('\\', '/');
+            var relative = PathSafety.Relative(root, file);
             using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (var sha = SHA256.Create())
             {

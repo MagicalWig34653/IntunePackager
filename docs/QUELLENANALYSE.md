@@ -94,4 +94,44 @@ Umsetzung: `IntunePackageBuilder.Core` (`Sources/SourceManifest`, `SourceManifes
 
 ## Sicherer Import (M2c)
 
-Noch nicht umgesetzt.
+Umsetzung: `IntunePackageBuilder.Core` (`Sources/SourceImporter`, `Sources/PathSafety`, `VersionStore.ImportSource`).
+
+**Leitgedanke:** Alles wird geprüft, **bevor** das erste Byte kopiert wird. Eine abgelehnte Quelle hinterlässt keine Spur (Spec §7.3, Abnahme A12). Originaldateien werden nie verändert oder gelöscht.
+
+### Auswahl prüfen (`Classify`, Abnahme A04 Logik)
+
+Die Auswahl über Dateidialog und Drag-and-drop läuft durch dieselbe Prüfung, damit beide Wege gleich reagieren.
+
+| Eingabe | Ergebnis |
+|---|---|
+| Nichts, `null` oder leerer Pfad | `NothingDropped` |
+| Mehr als ein Eintrag | `MultipleItems` (auch Datei plus Ordner) |
+| Pfad existiert nicht | `NotFound` |
+| Datei mit anderer Endung als `.msi` oder `.exe` (Groß-/Kleinschreibung egal) | `UnsupportedFileType` |
+| Ordner im Standardmodus | `FolderNotAllowed` (die Oberfläche verweist auf den erweiterten Modus) |
+| Ordner im erweiterten Modus | `DroppedKind.Folder` |
+| eine MSI oder EXE | `DroppedKind.Msi` oder `DroppedKind.Exe` |
+
+### Import einer Einzeldatei (`ImportFile`) und eines Ordners (`ImportFolder`)
+
+Vor dem Kopieren werden geprüft, in dieser Reihenfolge:
+
+1. **Rekursion (A12):** Liegt das Ziel im Quellordner (zum Beispiel wird das Elternverzeichnis des Projekts oder der ganze Grundordner abgelegt), wäre das ein Kopieren in sich selbst: `TargetInsideSource`. Liegt umgekehrt die Quelle im Ziel: `SourceInsideTarget`. Gleiche Ordner zählen als Ziel im Quellordner. Der Vergleich ignoriert Groß-/Kleinschreibung und abschließende Trenner.
+2. **Installer:** Der Pfad muss relativ bleiben und innerhalb des Quellordners liegen (kein `..`, kein Laufwerk, kein UNC-Pfad: `InstallerOutsideSource`), die Datei muss existieren (`InstallerNotFound`) und `.msi` oder `.exe` sein (`UnsupportedFileType`).
+3. **Junctions und Symlinks (A12):** Der Quellordner selbst und alles darunter muss frei von Verknüpfungen sein; nichts wird verfolgt. Fund: `ReparsePointFound` mit dem Pfad.
+4. **Pfadlänge:** Der längste entstehende Zielpfad (einschließlich des temporären Ordners) darf 259 Zeichen nicht überschreiten, weil Windows-Anwendungen ohne Langpfad-Unterstützung sonst mitten im Kopieren mit unverständlichen Fehlern scheitern: `PathTooLong` mit dem betroffenen Pfad.
+5. **Ziel:** Ein Zielordner mit Inhalt wird nie überschrieben (`TargetNotEmpty`); ein vorhandener leerer Ordner ist erlaubt.
+
+Eine einzelne Datei wird allein kopiert, nicht ihre Nachbarn. Leere Unterordner werden nicht übernommen (wie im Manifest).
+
+### Kopieren
+
+- Die Dateien gehen zuerst in einen **temporären Nachbarordner** (`<ziel>.importing-<Zufallskennung>`), nicht direkt ins Ziel.
+- Danach wird jede kopierte Datei gegen das Original geprüft (Größe und SHA-256) und das Manifest aus der Kopie gebildet.
+- Erst wenn alles stimmt, wird der Ordner in einem Schritt in `source` umbenannt. Ein Fehler beim Kopieren (zum Beispiel eine gesperrte Datei) entfernt **nur den eigenen temporären Ordner**; ein vorhandener Zielordner und die Originale bleiben unberührt.
+- `VersionStore.ImportSource` nimmt dabei die Sperre der Version, schreibt anschließend `source-manifest.json` und entfernt die gerade angelegte Kopie wieder, wenn das Manifest nicht geschrieben werden kann. Eine Version behält ihre gespeicherte Quelle für immer: ein zweiter Import wird mit `SourceAlreadyStored` abgelehnt; eine geänderte Setup-Datei braucht eine neue Version (Spec §6.4).
+
+### Grenzen
+
+- Pfade werden als Text verglichen; kurze 8.3-Namen oder andere Aliase desselben Ordners werden nicht aufgelöst.
+- Dateisymlinks lassen sich im Test nur mit Berechtigung erzeugen; getestet ist die Ablehnung echter Junctions (Ordnerverknüpfungen). Der Code prüft dasselbe Attribut (`ReparsePoint`) für Dateien und Ordner.
