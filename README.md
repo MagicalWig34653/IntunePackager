@@ -11,12 +11,12 @@
 
 <p align="center">
   <a href="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml"><img src="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/Status-Core%20fertig%2C%20noch%20keine%20Funktionen-orange" alt="Status: Core fertig, noch keine Funktionen">
+  <img src="https://img.shields.io/badge/Status-Analyse%20fertig%2C%20noch%20keine%20Oberfl%C3%A4che-orange" alt="Status: Analyse fertig, noch keine Oberfläche">
   <img src="https://img.shields.io/badge/Plattform-Windows%2011%20%7C%20Server%202022-blue" alt="Plattform">
   <a href="LICENSE"><img src="https://img.shields.io/badge/Lizenz-AGPL--3.0-green" alt="Lizenz AGPL-3.0"></a>
 </p>
 
-> **Projektstand:** Projektgerüst und Core (Projekte, Versionen, Sperren, Einstellungen) stehen und sind per Windows-CI getestet (M0 und M1 fertig). Die Anwendung hat noch keine nutzbaren Funktionen, und es gibt kein Release. Die Bilder unten sind **Design-Mockups**, keine Screenshots eines lauffähigen Programms.
+> **Projektstand:** Projektgerüst, Core (Projekte, Versionen, Sperren, Einstellungen) und Quellenanalyse (MSI, EXE, Manifest, sicherer Import) stehen und sind per Windows-CI getestet (M0 bis M2 fertig). Die Anwendung hat noch keine Oberfläche und keine nutzbaren Funktionen, und es gibt kein Release. Die Bilder unten sind **Design-Mockups**, keine Screenshots eines lauffähigen Programms.
 
 Der Intune Package Builder ist eine Windows-Desktopanwendung, die aus einer MSI, einer EXE oder einem Herstellerordner ein vollständiges Microsoft-Intune-Win32-Paket erstellt:
 
@@ -51,8 +51,8 @@ Nicht Teil von Version 1: direkter Upload nach Intune, Graph-Anmeldung, Gruppenz
 |---|---|---|
 | M0 | Solution-Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung | fertig |
 | M1 | Core: Projektmodell, atomares Speichern, Migration, Sperren, Einstellungen | fertig |
-| M2 | Quellenanalyse: MSI-Reader, EXE-Metadaten, Manifeste, sicherer Import | als Nächstes |
-| M3 | Generatoren: Erkennungsskript, Intune-Anleitung, JSON/CSV | geplant |
+| M2 | Quellenanalyse: MSI-Reader, EXE-Metadaten, Manifeste, sicherer Import | fertig |
+| M3 | Generatoren: Erkennungsskript, Intune-Anleitung, JSON/CSV | als Nächstes |
 | M4 | Build-Pipeline mit dem Content Prep Tool | geplant |
 | M5 | Client-Laufzeit: Wrapper, Rückgabecodes, Benutzerinteraktion | geplant |
 | M6 | Oberfläche: Standardmodus, Drag-and-drop, Ergebnisse | geplant |

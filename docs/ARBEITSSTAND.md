@@ -6,19 +6,22 @@ Stand: 2026-10-08
 
 ## Aktueller Meilenstein
 
-**M2 - Quellenanalyse** (MSI-Reader, EXE-Metadaten, Quellenmanifest, sicherer Import). Abnahme: A02, A04 (Logik), A11, A12. M1 (Core) ist abgeschlossen.
+**M3 - Generatoren** (Erkennungsskript, `IntuneSettings`, HTML, JSON, CSV, Wrapper-Konfiguration). Abnahme: A15, A16, A17. M0 bis M2 sind abgeschlossen.
 
-Aufteilung in einzeln mergbare Scheiben:
+Alle Ausgaben entstehen aus einem **Snapshot** (Konfiguration, Build-ID, Sprache, Quellenmanifest), nie aus UI-Zustand. Die Befehle in Anleitung, JSON, CSV und Ergebnisseite stammen aus **einer** Quelle (`IntuneSettings`), damit sie nicht auseinanderlaufen. Sprache der Anleitung folgt der Programmsprache beim Build und wird im Snapshot festgehalten (`docs/PLANUNG.md` §8).
+
+Aufteilung in einzeln mergbare Scheiben (Projekt `IntunePackageBuilder.Generation`, hängt nur von Core ab):
 
 | Scheibe | Inhalt | Stand |
 |---|---|---|
-| M2a | MSI-Reader: ProductName, ProductVersion, ProductCode, Manufacturer lesend über `msi.dll` (nur Datenbank öffnen, nie installieren oder Custom Actions ausführen); Test-Helfer, der kontrollierte MSI-Datenbanken erzeugt | fertig, CI grün (Lauf 37832133738) |
-| M2b | EXE-Metadaten über `FileVersionInfo` (nur Dateiinformation); Quellenmanifest `source-manifest.json` (relative Pfade, Größen, SHA-256 aller Dateien) und Erkennung nachträglich veränderter Quellen (A11) | fertig, CI grün (Lauf 37832133738), zusammen mit M2a in PR 9 |
-| M2c | Sicherer Import (Einzeldatei und Ordner): Pfade bleiben im Quellordner, Junctions und Symlinks abgelehnt, kein rekursives Kopieren (Quelle enthält Projekt, Ziel oder Arbeitsordner), Pfadlängen vorab geprüft, mehrere oder falsche Dateitypen abgelehnt (A04 Logik, A12) | Code und Tests geschrieben, PR offen, CI-Nachweis steht aus |
+| M3a | `BuildSnapshot` (unveränderlicher Snapshot aus Konfiguration, Build-ID, Sprache, Manifest-Hash), `IntuneSettings` (Installations- und Deinstallationsbefehl, Rückgabecodes mit Intune-Klassifizierung, Zeitlimit, Neustartverhalten, Erkennungsskript, Anforderungen), JSON- und CSV-Ausgabe mit korrekter Maskierung; erste `.resx`-Ressourcen (neutral Englisch plus `.de.resx`) für Beschriftungen | offen |
+| M3b | Erkennungsskript-Generator: eigenständiges Windows-PowerShell-5.1-Skript, UTF-8 mit BOM; MSI: ProductCode in beiden Registry-Ansichten und `DisplayVersion` mindestens Zielversion; EXE: Datei vorhanden und `FileVersion` mindestens Zielversion; Intune-Vertrag (erkannt: Exitcode 0 und nicht leere Standardausgabe; sonst keine Ausgabe); keine Dateien aus dem Intune-Cache; Pester-Tests A15 und A16 (Skript wird im Test über die gebaute `Generation.dll` erzeugt; der Pester-Job in `ci.yml` muss dafür vorher bauen) | offen |
+| M3c | HTML-Anleitung (lokal lesbar, druckbar, Deutsch und Englisch) mit allen Abschnitten aus Spec §9 (App-Typ, Paketdatei, App-Informationen, Programm, Installationsverhalten, Anforderungen, Zeitlimit, Neustartverhalten, Rückgabecodes, Erkennung, Zuweisung, Abhängigkeiten, Fehleranalyse); Maskierung gegen aktive Inhalte (A17); Warnung vor dem Mischen von `.intunewin` und Erkennungsskript verschiedener Builds; behauptet nie eine erfolgreiche Zuweisung oder Installation | offen |
+| M3d | Wrapper-Konfiguration für die Client-Laufzeit (maschinenlesbar, aus demselben Snapshot) und Abnahme von A17 über alle Formate | offen |
 
-Hinweise für M2a: `msi.dll` per P/Invoke (`MsiOpenDatabase` mit Schreibschutz, `MsiDatabaseOpenView` auf die Tabelle `Property`, `MsiViewExecute`, `MsiViewFetch`, `MsiRecordGetString`, `MsiCloseHandle` für jedes Handle). Der Reader gehört nach `IntunePackageBuilder.Analysis`. Test-MSIs entstehen im Test per `MsiOpenDatabase` im Erzeugungsmodus, `CREATE TABLE` für `Property`, `INSERT` und `MsiDatabaseCommit`; keine Herstellerinstaller, keine Ausführung (A02). Erkennbare externe Quelldateien (Tabellen `File` und `Media`, externe Cabinets) sind zu berücksichtigen oder als erforderlicher Ordnerimport kenntlich zu machen.
+Entscheidungen, die M3 braucht: `docs/PLANUNG.md` §8 listet Mindest-Windows-Build (Anforderungen in Intune), Zielarchitektur und die `ALLUSERS`-Frage (MSI-Standardparameter). Ohne Antwort gelten bis dahin diese Annahmen, die im PR zu nennen sind: Anforderung nur Architektur x64 und Windows 10 Version 1607 oder neuer (Mindestwert für Win32-Apps, nur als Platzhalter markiert), Standardinstallation mit `msiexec /i "<msi>" /qn /norestart /l*v "<log>"`.
 
-M1 (abgeschlossen): M1a Projekt-ID, Versionsnummer, atomares Schreiben, Schema-Migration, Projektspeicher, Versionsmodell mit Validierung; M1b Sperre je Projektversion, Versionsspeicher; M1c Einstellungen, Grundordner, zuletzt geöffnete Projekte.
+Abgeschlossen: M1 (Core) und M2 (Quellenanalyse: M2a MSI-Reader, M2b EXE-Reader und Quellenmanifest, M2c sicherer Import).
 
 ## Erledigt und verifiziert (CI-Nachweis)
 
@@ -31,23 +34,13 @@ Alle Läufe: Windows-CI mit `windows-latest`, `windows-2022` und Pester unter Wi
 | M1b: Sperre je Version (echter Zwei-Prozess-Test), Versionsspeicher, gemeinsamer JSON-Helfer | 37827032442 | 156 xUnit, 10 Pester bestanden |
 | M1c: Einstellungen, Grundordner, zuletzt geöffnete Projekte | 37828209771 | 187 xUnit, 10 Pester bestanden |
 | M2a: MSI-Reader (echte `msi.dll`, kontrollierte Test-MSIs); M2b: EXE-Reader, Quellenmanifest mit Änderungserkennung (echte Junction) | 37832133738 | 203 xUnit (Core) und 31 xUnit (Analysis), 10 Pester bestanden |
+| M2c: sicherer Import (Auswahl, Rekursion, echte Junctions, Pfadlänge, Aufräumen bei Fehler) | 37833609876 | 247 xUnit (Core) und 31 xUnit (Analysis), 10 Pester bestanden, im ersten Lauf ohne Fehler |
 
 Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups, Pages-Webseite (deployt), Claude-Code-Umgebung (`CLAUDE.md`, Agents, Skills, Hook). Neue Dateien und Formate: siehe `docs/DATENFORMAT.md`.
 
 ## In Arbeit
 
-- M2a und M2b sind durch CI verifiziert und gemergt (PR 9).
-- M2c (Branch `claude/great-feynman-hi1xfp`): Code unverifiziert bis zum CI-Lauf.
-  - Neu: `Core/Sources/{PathSafety,SourceImporter}.cs`, `VersionStore.ImportSource`; `SourceManifestBuilder` nutzt `PathSafety`.
-  - Tests: `SourceImporterTests` (Auswahl, Rekursion, echte Junctions, Pfadlänge, Aufräumen bei Fehler, VersionStore).
-  - Doku: `docs/QUELLENANALYSE.md` (Abschnitt Sicherer Import).
-  - Neu: `Analysis/Msi/{NativeMsi,MsiMetadata,MsiReader}.cs`, neues Testprojekt `tests/IntunePackageBuilder.Analysis.Tests` (in der Solution) mit `TestMsi` und `MsiReaderTests`.
-  - Doku: neue Datei `docs/QUELLENANALYSE.md` (wächst mit M2b und M2c).
-  - CI-Lauf 1 von PR 9: Der echte MSI-Reader läuft auf Windows (17 von 18 Analyse-Tests grün). Ein Fehlschlag: Für eine Textdatei liefert `MsiOpenDatabase` weder Fehler 1619 noch 1620. Behoben durch Vorabprüfung der OLE-Kennung (`D0 CF 11 E0 A1 B1 1A E1`).
-- M2b (im selben Branch und PR 9, weil nur auf diesen Branch gepusht werden darf):
-  - Neu: `Analysis/Exe/{ExeMetadata,ExeReader}.cs`, `Core/Sources/{SourceManifest,SourceManifestBuilder,SourceManifestStore}.cs`, `VersionStore.SourceDirectory` und `SourceManifestPath`.
-  - Tests: `ExeReaderTests` (Analysis.Tests), `SourceManifestTests` (Core.Tests, mit echter Junction über `mklink /J`).
-  - Doku: `docs/QUELLENANALYSE.md` (EXE, Manifest), `docs/DATENFORMAT.md` (`source-manifest.json`).
+- PR 10 (Branch `claude/great-feynman-hi1xfp`) enthält M2c samt Abschluss von M2 (Roadmaps, Statusangaben, Matrix). Nach dem Merge ist nichts mehr offen; M3a beginnt auf einem frischen Branch von `main`.
 
 ## Lehren (für künftige Sessions)
 
@@ -61,10 +54,10 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Nächste Schritte (in Reihenfolge)
 
-1. PR 8 mergen (CI ist grün).
-2. M2c mergen (CI grün). Danach M2 abschließen (Skill `milestone`): Roadmaps, Matrix (A04 Logik, A12), und M3 beginnen.
-3. Nach jeder Scheibe: Doku im selben PR (`docs/DATENFORMAT.md` für `source-manifest.json`, Matrix A02, A04, A11, A12 erst mit CI-Nachweis), `docs/ARBEITSSTAND.md` aktualisieren.
-4. Nach M2: M3 (Generatoren: Erkennungsskript, `IntuneSettings`, HTML/JSON/CSV); M4 und M5 können danach parallel laufen (siehe `docs/PLANUNG.md` §4).
+1. PR 10 mergen (CI ist grün).
+2. M3a bis M3d der Reihe nach (siehe oben), jede Scheibe als eigener PR mit Doku im selben PR (`docs/GENERATOREN.md` neu anlegen: Snapshot, `IntuneSettings`, Formate, Maskierung, Erkennungsvertrag).
+3. Danach M4 (Build-Pipeline mit dem Content Prep Tool) und M5 (Client-Laufzeit); beide können nach M3 parallel laufen (siehe `docs/PLANUNG.md` §4). Das Content Prep Tool (`tools/`) braucht Herkunft und SHA-256 in `THIRD-PARTY.md`, bevor es verwendet wird.
+4. M6 (Oberfläche), M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
 
 ## Entscheidungen (Kurzfassung, Details in `docs/PLANUNG.md` §8)
 
