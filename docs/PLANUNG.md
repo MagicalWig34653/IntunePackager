@@ -157,7 +157,7 @@ Quellen: Microsoft Learn (Permissions reference, win32LobApp, mobileAppContentFi
 
 ## 10. Nächste Schritte
 
-Erledigt: M0-Gerüst mit Windows-CI (PR 2), README, Icon, Entwurfs-Mockups, Pages-Seite und Claude-Code-Umgebung (PR 3).
+Erledigt: M0 (Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung; CI grün, .NET-Tests 8/8, Pester 10/10), README, Icon, Entwurfs-Mockups, Pages-Seite und Claude-Code-Umgebung.
 
-1. M0 abschließen: Logging-Grundlage, Pester-Gerüst und Format-Prüfung in der CI (in Arbeit).
-2. M1 beginnen (Core + Tests), danach M2.
+1. M1 beginnen (Core: Modelle, Schema, atomares Speichern, Migration, Projekt-IDs, Sperren, Grundordner) mit Tests für A03 (Modell), A05, A06, A14.
+2. Danach M2 (Quellenanalyse).

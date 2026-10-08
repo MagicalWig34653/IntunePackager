@@ -166,8 +166,8 @@
       <div style="overflow-x:auto"><table class="road">
         <thead><tr><th data-i18n="thMilestone"></th><th data-i18n="thContent"></th><th data-i18n="thState"></th></tr></thead>
         <tbody>
-          <tr><td>M0</td><td data-i18n="m0"></td><td><span class="tag now" data-i18n="stateProgress"></span></td></tr>
-          <tr><td>M1</td><td data-i18n="m1"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
+          <tr><td>M0</td><td data-i18n="m0"></td><td><span class="tag now" data-i18n="stateDone"></span></td></tr>
+          <tr><td>M1</td><td data-i18n="m1"></td><td><span class="tag" data-i18n="stateNext"></span></td></tr>
           <tr><td>M2</td><td data-i18n="m2"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
           <tr><td>M3</td><td data-i18n="m3"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
           <tr><td>M4</td><td data-i18n="m4"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
@@ -197,7 +197,7 @@
       heroTitle: "From installer to Intune package",
       heroLead: "Planned workflow: drop an MSI or EXE, check the details, build. The output will be a .intunewin file, a standalone detection script and a step-by-step Intune guide that matches that exact build.",
       ctaRepo: "View on GitHub", ctaSpec: "Read the specification",
-      status: "Project status: planning and scaffolding. There is no release yet, and the screens below are design mockups, not screenshots of a working program.",
+      status: "Project status: the project scaffold with CI is done, features start with milestone M1. There is no release yet, and the screens below are design mockups, not screenshots of a working program.",
       howTitle: "How it is planned to work", howIntro: "The planned common path has four steps. An MSI should need no technical input at all.",
       s1t: "Drop the installer", s1d: "MSI or EXE, or a whole vendor folder in advanced mode. Metadata is read without running anything.",
       s2t: "Check the details", s2d: "Only the fields your setup needs will be shown. Missing vendor parameters are asked for, never guessed.",
@@ -220,8 +220,8 @@
       outTitle: "Out of scope for version 1",
       outList: "<li>Direct upload to Intune, Microsoft Graph sign-in and group assignments</li><li>Store/MSIX packaging, driver packages, per-user installs, license activation</li><li>Arbitrary multi-step install scripts</li>",
       roadTitle: "Roadmap", roadIntro: "Each milestone is finished only when its automated checks pass. Details and acceptance checks are in the planning documents.",
-      thContent: "Content", thState: "State", stateProgress: "In progress", statePlanned: "Planned", stateNoted: "Noted",
-      m0: "Solution scaffold, Windows CI, dependency manifest",
+      thContent: "Content", thState: "State", stateDone: "Done", stateNext: "Next", statePlanned: "Planned", stateNoted: "Noted",
+      m0: "Solution scaffold, Windows CI, logging foundation, Pester scaffold, format check",
       m1: "Core: project model, atomic saving, migration, locks",
       m2: "Source analysis: MSI reader, EXE metadata, manifests, safe import",
       m3: "Generators: detection script, Intune guide, JSON and CSV",
@@ -238,7 +238,7 @@
       heroTitle: "Vom Installer zum Intune-Paket",
       heroLead: "Geplanter Ablauf: MSI oder EXE ablegen, Angaben prüfen, bauen. Das Ergebnis soll eine .intunewin-Datei, ein eigenständiges Erkennungsskript und eine Intune-Anleitung sein, die genau zu diesem Build passt.",
       ctaRepo: "Auf GitHub ansehen", ctaSpec: "Spezifikation lesen",
-      status: "Projektstand: Planung und Grundgerüst. Es gibt noch kein Release, und die Ansichten unten sind Design-Mockups, keine Screenshots eines lauffähigen Programms.",
+      status: "Projektstand: Das Projektgerüst mit CI steht, Funktionen beginnen mit Meilenstein M1. Es gibt noch kein Release, und die Ansichten unten sind Design-Mockups, keine Screenshots eines lauffähigen Programms.",
       howTitle: "So soll es funktionieren", howIntro: "Der geplante Ablauf hat vier Schritte. Eine MSI soll ohne technische Eingaben auskommen.",
       s1t: "Installer ablegen", s1d: "MSI oder EXE, im erweiterten Modus auch ein ganzer Herstellerordner. Metadaten werden gelesen, ohne etwas auszuführen.",
       s2t: "Angaben prüfen", s2d: "Es sollen nur die Felder erscheinen, die Ihr Setup braucht. Fehlende Herstellerparameter werden abgefragt, nie geraten.",
@@ -261,8 +261,8 @@
       outTitle: "Nicht Teil von Version 1",
       outList: "<li>Direkter Upload nach Intune, Microsoft-Graph-Anmeldung und Gruppenzuweisungen</li><li>Store/MSIX-Paketierung, Treiberpakete, benutzerspezifische Installationen, Lizenzaktivierung</li><li>Beliebige mehrstufige Installationsskripte</li>",
       roadTitle: "Fahrplan", roadIntro: "Ein Meilenstein gilt erst als fertig, wenn seine automatisierten Prüfungen bestehen. Details und Abnahmeprüfungen stehen in den Planungsdokumenten.",
-      thContent: "Inhalt", thState: "Stand", stateProgress: "In Arbeit", statePlanned: "Geplant", stateNoted: "Vorgemerkt",
-      m0: "Solution-Gerüst, Windows-CI, Abhängigkeitsmanifest",
+      thContent: "Inhalt", thState: "Stand", stateDone: "Fertig", stateNext: "Als Nächstes", statePlanned: "Geplant", stateNoted: "Vorgemerkt",
+      m0: "Solution-Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung",
       m1: "Core: Projektmodell, atomares Speichern, Migration, Sperren",
       m2: "Quellenanalyse: MSI-Reader, EXE-Metadaten, Manifeste, sicherer Import",
       m3: "Generatoren: Erkennungsskript, Intune-Anleitung, JSON und CSV",
