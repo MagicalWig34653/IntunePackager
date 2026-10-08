@@ -86,6 +86,7 @@ Jeder Meilenstein ist erst abgeschlossen, wenn seine automatisierten Tests grün
 | **M6** | App-UI: Start, Standardmodus MSI/EXE, Drag-and-drop, Validierung, Ergebnisseite | A01, A03, A04, A08, A09 | Vollständiger Standardablauf |
 | **M7** | Erweiterter Modus, Projektansicht, Update-Ablauf, Notizen | A05–A08 | Updates und Versionsverwaltung |
 | **M8** | Distribution und Abnahme: ZIP-Bau, Prüfsummen, Doku, Prüfprotokoll, Gerätetests | A18, §12.2 | Abnahmefähiges Release |
+| **M9** (optional, vorgemerkt) | Intune-Upload per Microsoft Graph, siehe §9 | noch festzulegen | Paket landet unzugewiesen in Intune |
 
 Reihenfolge: M0 → M1 → M2 → M3 sind sequenziell; M4 und M5 können nach M3 parallel laufen; M6 beginnt, sobald M1/M2 Schnittstellen stehen (gegen Fakes), und wird nach M4 integriert.
 
@@ -134,9 +135,29 @@ Offen (vor M5 bzw. M8 zu klären):
 4. **Zielarchitektur:** Nur x64-Zielgeräte, oder auch x86-Intune-Geräte?
 5. **Test-Infrastruktur:** Stehen Windows-11- und Server-2022-VMs sowie ein Intune-Pilot-Tenant für M8 zur Verfügung?
 
-## 9. Nächste Schritte
+## 9. Vorgemerkt: optionales Intune-Upload-Modul (M9)
+
+Nicht Teil von Version 1 (Spec §3, §10); als spätere Erweiterung in Spec §14 genannt. Vorgemerkt, nicht beschlossen.
+
+**Idee:** Der Intune-Admin meldet sich im Browser mit dem eigenen Konto an (delegiert, interaktiv). Das Programm lädt das gebaute Paket über Microsoft Graph hoch (`win32LobApp`, Content-Version, Datei in Azure Storage, Commit mit Verschlüsselungsdaten aus der `Detection.xml`).
+
+**Rahmen, falls umgesetzt:**
+- Standardmäßig abgeschaltet; der manuelle Weg (`.intunewin` plus Anleitung) bleibt vollwertig.
+- App wird unzugewiesen angelegt; keine Gruppenzuweisung, keine automatische Freigabe.
+- Vorschau und ausdrückliche Bestätigung vor dem Upload; Ergebnis nennt die App-ID, behauptet aber keine erfolgreiche Verteilung.
+- Keine Secrets, kein gespeichertes Passwort, keine Telemetrie. Token nur im Speicher.
+
+**Offene Punkte vor einer Umsetzung:**
+1. **App-Identität:** Der Graph-Zugriff braucht eine Anwendung mit Client-ID; im Tenant entsteht dafür ein Eintrag unter „Unternehmensanwendungen“. Optionen: eigene App-Registrierung (empfohlen, klar begrenzt) oder die Client-ID eines Microsoft-Tools (fremde ID, nicht geprüft). Ganz ohne App im Tenant ist nur der manuelle Upload möglich.
+2. **Einwilligung:** Laut Microsoft braucht `DeviceManagementApps.ReadWrite.All` (delegiert) eine Admin-Einwilligung. Wer sie im Zieltenant erteilen darf und ob die Rolle Intune-Administrator genügt, ist zu klären.
+3. **API-Stabilität:** Die Referenz für das Anlegen steht in der beta-API; gemeldete Fälle von `commitFileFailed` trotz erfolgreichem Commit. Vor der Umsetzung gegen einen Pilot-Tenant prüfen.
+4. **Testumgebung:** Pilot-Tenant mit Intune-Lizenz nötig (siehe offene Punkte in §8).
+
+Quellen: Microsoft Learn (Permissions reference, win32LobApp, mobileAppContentFile commit) und das Beispielprojekt `microsoftgraph/powershell-intune-samples`.
+
+## 10. Nächste Schritte
 
 Erledigt: M0-Gerüst mit Windows-CI (PR 2), README, Icon, Entwurfs-Mockups, Pages-Seite und Claude-Code-Umgebung (PR 3).
 
-1. M0 abschließen: Test-Gerüst für Pester, Lint/Format und Logging-Grundlage ergänzen.
+1. M0 abschließen: Logging-Grundlage, Pester-Gerüst und Format-Prüfung in der CI (in Arbeit).
 2. M1 beginnen (Core + Tests), danach M2.

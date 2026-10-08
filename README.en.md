@@ -58,6 +58,7 @@ Out of scope for version 1: direct Intune upload, Graph sign-in, group assignmen
 | M6 | UI: standard mode, drag and drop, results | planned |
 | M7 | Advanced mode, project view, update flow | planned |
 | M8 | Distribution, documentation, device test protocol | planned |
+| M9 | Optional: Intune upload via Microsoft Graph (not part of version 1) | noted |
 
 The matching acceptance checks A01–A18 are listed in the [acceptance matrix](docs/ABNAHME-MATRIX.md) (German).
 
