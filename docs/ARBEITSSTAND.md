@@ -14,7 +14,7 @@ Aufteilung in einzeln mergbare Scheiben:
 |---|---|---|
 | M1a | Projekt-ID, Versionsnummer, atomares Schreiben, Projekt- und Versionsmodell, Validierung, Schema-Migration, Projektspeicher (Anlegen, Laden, Notizen, Liste) | fertig, CI grün (Lauf 37825409326, 135 xUnit-Tests bestanden), PR 6 zum Merge bereit |
 | M1b | Sperre je Projektversion (inkl. Zwei-Prozess-Test), Versionsspeicher (Anlegen, Laden, Speichern, Liste nach numerischer Version), gemeinsamer Helfer für versioniertes JSON | fertig, CI grün (Lauf 37827032442, 156 xUnit-Tests bestanden, darunter der echte Zwei-Prozess-Test), PR 7 zum Merge bereit |
-| M1c | Einstellungen des Autorentools, Grundordner (nicht unbemerkt ersetzen, Schreibrechte prüfen), zuletzt geöffnete Projekte | offen |
+| M1c | Einstellungen des Autorentools, Grundordner (nicht unbemerkt ersetzen, Schreibrechte prüfen), zuletzt geöffnete Projekte | Code und Tests geschrieben, PR offen, CI-Nachweis steht aus |
 
 ## Erledigt und verifiziert (CI-Nachweis)
 
@@ -28,7 +28,11 @@ Aufteilung in einzeln mergbare Scheiben:
 ## In Arbeit
 
 - M1a ist durch CI verifiziert und gemergt (PR 6).
-- M1b ist durch CI verifiziert (Branch `claude/great-feynman-hi1xfp`, PR 7).
+- M1b ist durch CI verifiziert und gemergt (PR 7).
+- M1c (Branch `claude/great-feynman-hi1xfp`): Code unverifiziert bis zum CI-Lauf (kein .NET-SDK in der Cloud-Sitzung).
+  - Neu: `Settings/AppSettings.cs`, `Settings/SettingsStore.cs`, `Settings/BaseFolderResolver.cs`.
+  - Tests: `AppSettingsTests`, `SettingsStoreTests`, `BaseFolderResolverTests`.
+  - Doku: `docs/DATENFORMAT.md` (settings.json, Grundordner-Status).
   - Neu: `Storage/VersionedJsonFile.cs` (gemeinsamer Helfer, `ProjectStore` nutzt ihn jetzt), `Storage/VersionLock.cs`, `Versions/VersionStore.cs`, `Versions/VersionExceptions.cs`.
   - Tests: `VersionLockTests` (inkl. echter Zwei-Prozess-Test mit Windows PowerShell 5.1, deckt A14 ab), `VersionStoreTests`.
   - Doku: `docs/DATENFORMAT.md` (Versionsordner, Sperre).
@@ -42,7 +46,7 @@ Aufteilung in einzeln mergbare Scheiben:
 ## Nächste Schritte (in Reihenfolge)
 
 1. M1a fertigstellen, CI grün, mergen.
-2. M1c umsetzen (Einstellungen, Grundordner, zuletzt geöffnet), mergen.
+2. M1c mergen. Danach M1 abschließen (Skill `milestone`): Roadmaps in READMEs und Webseite auf M1 fertig und M2 als Nächstes, Matrix prüfen.
 3. M1 abschließen: `docs/ABNAHME-MATRIX.md` (A03 Modell, A05, A06, A14 mit Nachweis; A14 ist zunächst nur im selben Prozess geprüft, ein Mehrprozess-Test fehlt noch), Roadmaps in READMEs und Webseite (Skill `milestone`).
 4. M2 beginnen (Quellenanalyse: MSI-Reader, EXE-Metadaten, Quellenmanifest, sicherer Import).
 
