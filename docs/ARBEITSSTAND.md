@@ -30,6 +30,7 @@ Aufteilung in einzeln mergbare Scheiben:
   - Neu: `Storage/VersionedJsonFile.cs` (gemeinsamer Helfer, `ProjectStore` nutzt ihn jetzt), `Storage/VersionLock.cs`, `Versions/VersionStore.cs`, `Versions/VersionExceptions.cs`.
   - Tests: `VersionLockTests` (inkl. echter Zwei-Prozess-Test mit Windows PowerShell 5.1, deckt A14 ab), `VersionStoreTests`.
   - Doku: `docs/DATENFORMAT.md` (Versionsordner, Sperre).
+  - CI-Lauf 1 von PR 7: Build fehlerfrei (0 Warnungen), 155 von 156 Tests grün. Der eine Fehlschlag war ein Testproblem: Der Kindprozess fand Newtonsoft.Json nicht, weil xUnit Assemblies in einen Shadow-Copy-Ordner kopiert und `Assembly.Location` dorthin zeigt. Behoben, indem der Test die DLLs aus dem Originalordner (CodeBase) in einen eigenen Ordner für den Kindprozess kopiert.
   - Neu in `src/IntunePackageBuilder.Core`: `Projects/` (ProjectId, Project, ProjectStore, Ausnahmen), `Storage/` (AtomicFile, JsonFormat, SchemaMigrator, Ausnahmen), `Versions/` (VersionNumber, PackageVersionConfig, ConfigurationValidator).
   - Tests in `tests/IntunePackageBuilder.Core.Tests` (ProjectId, VersionNumber, AtomicFile, SchemaMigrator, ProjectStore, ConfigurationValidator, JSON-Roundtrip).
   - Doku dazu: `docs/DATENFORMAT.md`, `THIRD-PARTY.md` (Newtonsoft.Json), Entscheidungen in `docs/PLANUNG.md` §8.

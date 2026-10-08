@@ -2,8 +2,10 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Reflection;
 using System.Threading;
 using IntunePackageBuilder.Core.Storage;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace IntunePackageBuilder.Core.Tests
@@ -106,7 +108,7 @@ namespace IntunePackageBuilder.Core.Tests
             Directory.CreateDirectory(_root);
             var script = Path.Combine(_root, "hold-lock.ps1");
             File.WriteAllText(script, ChildScript);
-            var coreDll = typeof(VersionLock).Assembly.Location;
+            var coreDll = CopyAssembliesForChild(Path.Combine(_root, "child"));
 
             var info = new ProcessStartInfo
             {
@@ -150,6 +152,23 @@ namespace IntunePackageBuilder.Core.Tests
             {
                 Assert.True(Directory.Exists(directory));
             }
+        }
+
+        // The test runner loads assemblies from a shadow-copy folder, where dependencies may be missing.
+        // The child process therefore gets its own copy of the Core assembly and Newtonsoft.Json,
+        // taken from the original build output (CodeBase), side by side in one folder.
+        private static string CopyAssembliesForChild(string childDirectory)
+        {
+            Directory.CreateDirectory(childDirectory);
+            var coreTarget = Path.Combine(childDirectory, "IntunePackageBuilder.Core.dll");
+            File.Copy(OriginalPath(typeof(VersionLock).Assembly), coreTarget);
+            File.Copy(OriginalPath(typeof(JsonConvert).Assembly), Path.Combine(childDirectory, "Newtonsoft.Json.dll"));
+            return coreTarget;
+        }
+
+        private static string OriginalPath(Assembly assembly)
+        {
+            return new Uri(assembly.CodeBase).LocalPath;
         }
 
         // The holder keeps the file open for writing, so a reader must allow writers.
