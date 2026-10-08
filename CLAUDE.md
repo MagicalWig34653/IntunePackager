@@ -2,7 +2,18 @@
 
 Windows desktop tool (C# / WPF, .NET Framework 4.8) that turns an MSI, EXE or vendor folder into a Microsoft Intune Win32 package (`.intunewin`, standalone detection script, Intune guide). The product specification is `docs/SPEC.md` (German, normative). Architecture, milestones and test strategy are in `docs/PLANUNG.md`; acceptance checks A01-A18 are tracked in `docs/ABNAHME-MATRIX.md`.
 
-**Status:** scaffold complete (M0 done: solution, Windows CI, logging foundation, Pester scaffold, format check). Features start with M1; nothing beyond the scaffold is implemented. Never describe planned behavior as existing.
+**Status:** M0 done (scaffold, Windows CI, logging, Pester, format check). M1 (Core) in progress; current slice and next steps are in `docs/ARBEITSSTAND.md`. Never describe planned behavior as existing.
+
+## Sessions are disposable
+
+A session can end at any moment (container reclaimed, context lost, user switches device). Nothing may live only in a session.
+
+- **The repository is the memory.** Decisions, status, open questions and next steps are written to files in the same change that causes them, never "at the end".
+- **Document in parallel with code.** Every PR that changes behavior also updates the matching documentation (`docs/DATENFORMAT.md` for formats, `docs/ABNAHME-MATRIX.md` for check status, `docs/PLANUNG.md` for decisions) and `docs/ARBEITSSTAND.md`.
+- **`docs/ARBEITSSTAND.md` is the handoff file.** It must always let a fresh session continue without asking: current milestone and step, what is done and verified, what is in progress, next steps in order, open questions, and how to resume. Update it in every PR; read it first at the start of every session.
+- **Commit and push small and often.** Work in slices that can be merged on their own (one PR per slice). Unpushed work counts as lost. Push after each green local check; do not batch a milestone into one PR.
+- **State what is unverified** in the PR and in `docs/ARBEITSSTAND.md`; verified means CI evidence, not local belief.
+- Chat is not documentation. Anything the user decided in conversation goes into `docs/PLANUNG.md` section 8 (decisions) before the work continues.
 
 ## Language rules
 
@@ -45,7 +56,7 @@ Dependency direction is enforced by project references; do not add `Core -> anyt
 
 ## Working conventions
 
-- Work in small steps along the milestones M0-M8. A milestone is done only when its automated checks pass in CI.
+- Read `docs/ARBEITSSTAND.md` first, then work in small steps along the milestones M0-M8. A milestone is done only when its automated checks pass in CI.
 - When a milestone changes, update `docs/ABNAHME-MATRIX.md`, the roadmap tables in both READMEs and in `site/index.html` (`milestone` skill).
 - Third-party components are added to `THIRD-PARTY.md` with version, source, license and SHA-256 before they are used.
 - Assets (icons, mockup PNGs) are generated; regenerate with the `render-assets` skill, do not hand-edit PNGs. Mockups must stay labeled as design mockups until real screenshots exist.
