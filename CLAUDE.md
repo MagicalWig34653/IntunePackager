@@ -2,7 +2,7 @@
 
 Windows desktop tool (C# / WPF, .NET Framework 4.8) that turns an MSI, EXE or vendor folder into a Microsoft Intune Win32 package (`.intunewin`, standalone detection script, Intune guide). The product specification is `docs/SPEC.md` (German, normative). Architecture, milestones and test strategy are in `docs/PLANUNG.md`; acceptance checks A01-A18 are tracked in `docs/ABNAHME-MATRIX.md`.
 
-**Status:** M0 done (scaffold, Windows CI, logging, Pester, format check). M1 (Core) in progress; current slice and next steps are in `docs/ARBEITSSTAND.md`. Never describe planned behavior as existing.
+**Status:** M0 done (scaffold, Windows CI, logging, Pester, format check). M1 done (core: projects, versions, locks, settings). M2 (source analysis) is next; current slice and next steps are in `docs/ARBEITSSTAND.md`. Never describe planned behavior as existing.
 
 ## Sessions are disposable
 
