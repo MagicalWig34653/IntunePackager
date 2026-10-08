@@ -13,7 +13,7 @@ Aufteilung in einzeln mergbare Scheiben:
 | Scheibe | Inhalt | Stand |
 |---|---|---|
 | M2a | MSI-Reader: ProductName, ProductVersion, ProductCode, Manufacturer lesend über `msi.dll` (nur Datenbank öffnen, nie installieren oder Custom Actions ausführen); Test-Helfer, der kontrollierte MSI-Datenbanken erzeugt | Code und Tests geschrieben, PR offen, CI-Nachweis steht aus |
-| M2b | EXE-Metadaten über `FileVersionInfo` (nur Dateiinformation); Quellenmanifest `source-manifest.json` (relative Pfade, Größen, SHA-256 aller Dateien) und Erkennung nachträglich veränderter Quellen (A11) | offen |
+| M2b | EXE-Metadaten über `FileVersionInfo` (nur Dateiinformation); Quellenmanifest `source-manifest.json` (relative Pfade, Größen, SHA-256 aller Dateien) und Erkennung nachträglich veränderter Quellen (A11) | Code und Tests geschrieben, in PR 9 zusammen mit M2a, CI-Nachweis steht aus |
 | M2c | Sicherer Import (Einzeldatei und Ordner): Pfade bleiben im Quellordner, Junctions und Symlinks abgelehnt, kein rekursives Kopieren (Quelle enthält Projekt, Ziel oder Arbeitsordner), Pfadlängen vorab geprüft, mehrere oder falsche Dateitypen abgelehnt (A04 Logik, A12) | offen |
 
 Hinweise für M2a: `msi.dll` per P/Invoke (`MsiOpenDatabase` mit Schreibschutz, `MsiDatabaseOpenView` auf die Tabelle `Property`, `MsiViewExecute`, `MsiViewFetch`, `MsiRecordGetString`, `MsiCloseHandle` für jedes Handle). Der Reader gehört nach `IntunePackageBuilder.Analysis`. Test-MSIs entstehen im Test per `MsiOpenDatabase` im Erzeugungsmodus, `CREATE TABLE` für `Property`, `INSERT` und `MsiDatabaseCommit`; keine Herstellerinstaller, keine Ausführung (A02). Erkennbare externe Quelldateien (Tabellen `File` und `Media`, externe Cabinets) sind zu berücksichtigen oder als erforderlicher Ordnerimport kenntlich zu machen.
@@ -38,6 +38,11 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 - M2a (Branch `claude/great-feynman-hi1xfp`): Code unverifiziert bis zum CI-Lauf (kein .NET-SDK und keine Windows-Installer-API in der Cloud-Sitzung).
   - Neu: `Analysis/Msi/{NativeMsi,MsiMetadata,MsiReader}.cs`, neues Testprojekt `tests/IntunePackageBuilder.Analysis.Tests` (in der Solution) mit `TestMsi` und `MsiReaderTests`.
   - Doku: neue Datei `docs/QUELLENANALYSE.md` (wächst mit M2b und M2c).
+  - CI-Lauf 1 von PR 9: Der echte MSI-Reader läuft auf Windows (17 von 18 Analyse-Tests grün). Ein Fehlschlag: Für eine Textdatei liefert `MsiOpenDatabase` weder Fehler 1619 noch 1620. Behoben durch Vorabprüfung der OLE-Kennung (`D0 CF 11 E0 A1 B1 1A E1`).
+- M2b (im selben Branch und PR 9, weil nur auf diesen Branch gepusht werden darf): Code unverifiziert bis zum CI-Lauf.
+  - Neu: `Analysis/Exe/{ExeMetadata,ExeReader}.cs`, `Core/Sources/{SourceManifest,SourceManifestBuilder,SourceManifestStore}.cs`, `VersionStore.SourceDirectory` und `SourceManifestPath`.
+  - Tests: `ExeReaderTests` (Analysis.Tests), `SourceManifestTests` (Core.Tests, mit echter Junction über `mklink /J`).
+  - Doku: `docs/QUELLENANALYSE.md` (EXE, Manifest), `docs/DATENFORMAT.md` (`source-manifest.json`).
 
 ## Lehren (für künftige Sessions)
 
@@ -52,7 +57,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 ## Nächste Schritte (in Reihenfolge)
 
 1. PR 8 mergen (CI ist grün).
-2. M2a mergen (CI grün), danach M2b und M2c.
+2. PR 9 (M2a und M2b) mergen, sobald die CI grün ist; danach M2c.
 3. Nach jeder Scheibe: Doku im selben PR (`docs/DATENFORMAT.md` für `source-manifest.json`, Matrix A02, A04, A11, A12 erst mit CI-Nachweis), `docs/ARBEITSSTAND.md` aktualisieren.
 4. Nach M2: M3 (Generatoren: Erkennungsskript, `IntuneSettings`, HTML/JSON/CSV); M4 und M5 können danach parallel laufen (siehe `docs/PLANUNG.md` §4).
 

@@ -59,9 +59,38 @@ Setzt eine MSI `ALLUSERS` nicht, installiert sie standardmäßig pro Benutzer. U
 
 `IntunePackageBuilder.Analysis.Tests` erzeugt kontrollierte MSI-Datenbanken mit einem Test-Helfer (`TestMsi`), der nur Tabellen schreibt (`Property`, optional `Media`, `File`, `CustomAction`); es wird nie ein Herstellerinstaller verwendet. Geprüft werden unter anderem: Identitätswerte, Sonderzeichen und lange Werte, unveränderte Datei, kein Ausführen (eine `CustomAction`-Tabelle mit einem Programmstart verändert nichts, es entsteht keine Markerdatei und kein Uninstall-Eintrag), alle Fehlerfälle und die Quellordner-Erkennung. Die Tests laufen nur auf Windows (CI).
 
-## EXE und Quellenmanifest (M2b)
+## EXE (M2b)
 
-Noch nicht umgesetzt.
+Umsetzung: `IntunePackageBuilder.Analysis` (`Exe/ExeReader`, `Exe/ExeMetadata`).
+
+### Vorgehen
+
+- Es wird **nur das Versionsresource** der Datei gelesen (`FileVersionInfo`); die Datei wird nie gestartet.
+- Als ausführbar gilt eine Datei mit dem DOS-Kopf `MZ` und mindestens 64 Byte. Alles andere (Textdatei mit Endung `.exe`, zu kurze Datei) wird mit `NotAnExecutable` abgelehnt, eine fehlende Datei mit `FileNotFound`.
+- Eine EXE ohne Versionsinformation ist gültig: `HasVersionInfo` ist `false` und es gibt keine Vorschläge; Name, Hersteller und Version muss der Benutzer dann selbst eintragen.
+
+### Ergebnis (`ExeMetadata`)
+
+| Feld | Bedeutung |
+|---|---|
+| `ProductName`, `CompanyName`, `FileDescription`, `OriginalFilename` | Textwerte aus dem Versionsresource, `null` wenn leer |
+| `ProductVersion` | Produktversion als Text, unverändert (kann nichtnumerische Teile enthalten) |
+| `FileVersion` | Numerische Dateiversion mit bis zu vier Teilen, `null` wenn die Datei keine hat |
+| `SuggestedSoftwareName` | `ProductName`, sonst `FileDescription` |
+| `SuggestedManufacturer` | `CompanyName` |
+| `SuggestedVersion` | Numerische Version als Vorschlag: `FileVersion`, sonst numerische `ProductVersion`; nachgestellte Nullteile entfallen, mindestens zwei Teile bleiben (`12.0.0.0` wird `12.0`), `null` ohne numerische Version |
+
+**Alles davon sind Vorschläge.** Die Version des Setup-Programms kann von der Version der Datei abweichen, die später installiert wird. Bei einer EXE muss die Zielversion zur Erkennung passen (Erkennungsdatei mit Versionsinformation); die Oberfläche markiert die Werte als Vorschlag und lässt den Benutzer die Zielversion korrigieren. Silent-Parameter, Deinstallationsprogramm und Erkennungsdatei werden **nie** aus der Datei abgeleitet (Spec §5.2).
+
+## Quellenmanifest (M2b)
+
+Umsetzung: `IntunePackageBuilder.Core` (`Sources/SourceManifest`, `SourceManifestBuilder`, `SourceManifestStore`). Das Format steht in `docs/DATENFORMAT.md`.
+
+- **Aufbau:** `SourceManifestBuilder.Build` durchläuft den gespeicherten Quellordner rekursiv und erfasst je Datei den relativen Pfad (mit `/`), die Größe und den SHA-256 (hexadezimal, Kleinbuchstaben), sortiert nach Pfad (ordinal). Junctions und Symlinks werden nie verfolgt; findet der Aufbau eine, bricht er mit `UnsafeSourceException` ab.
+- **Prüfung:** `Compare` vergleicht den Ordner mit dem Manifest und liefert jede Abweichung: `Missing` (im Manifest, nicht mehr im Ordner), `Added` (im Ordner, nicht im Manifest) und `Modified` (Größe oder Prüfsumme verschieden). Eine Umbenennung erscheint als `Missing` plus `Added`. `RequireUnchanged` wirft `SourceChangedException` mit der Liste. Ein erneuter Build **muss** vor der Verwendung der Quelle prüfen, damit nie still mit einer veränderten Quelle gebaut wird (Abnahme A11).
+- **Unveränderlich:** Ein vorhandenes `source-manifest.json` wird nie überschrieben (`WriteNew` verweigert es). Eine geänderte Setup-Datei erfordert eine neue Version (Spec §6.4).
+- **Ablage:** `VersionStore.SourceDirectory` und `VersionStore.SourceManifestPath` liefern `versions/<version>/source` und `versions/<version>/source-manifest.json`.
+- **Grenze:** Die Prüfung vergleicht Dateien und Inhalte, keine Zeitstempel oder Attribute. Leere Ordner werden nicht erfasst.
 
 ## Sicherer Import (M2c)
 

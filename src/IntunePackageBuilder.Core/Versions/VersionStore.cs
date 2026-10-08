@@ -64,6 +64,18 @@ namespace IntunePackageBuilder.Core.Versions
             return Path.Combine(VersionsDirectory(projectId), folder);
         }
 
+        /// <summary>Folder that holds the stored installation source of a version (<c>source</c>).</summary>
+        public string SourceDirectory(string projectId, string version)
+        {
+            return Path.Combine(VersionDirectory(projectId, version), "source");
+        }
+
+        /// <summary>Path of the source manifest of a version (<c>source-manifest.json</c>).</summary>
+        public string SourceManifestPath(string projectId, string version)
+        {
+            return Path.Combine(VersionDirectory(projectId, version), Core.Sources.SourceManifest.FileName);
+        }
+
         /// <summary>Creates a new version from a configuration. The configuration may be incomplete (a draft).</summary>
         public PackageVersionConfig Create(string projectId, PackageVersionConfig config)
         {

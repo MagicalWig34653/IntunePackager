@@ -2,7 +2,7 @@
 
 Beschreibt die Dateien, die der Core liest und schreibt (Spec §6, Liefergegenstand 4 in §13). Das Dokument wird zusammen mit dem Code gepflegt; beim Ändern eines Formats gehören Schema-Version, Migration, Tests und dieses Dokument in denselben PR.
 
-Stand: M1c (Projekt, Versionskonfiguration, Versionsordner, Sperre, Einstellungen des Autorentools). Quellenmanifest folgt mit M2, Build-Manifest mit M4.
+Stand: M2b (Projekt, Versionskonfiguration, Versionsordner, Sperre, Einstellungen des Autorentools, Quellenmanifest). Build-Manifest folgt mit M4.
 
 ## Ablage
 
@@ -12,8 +12,8 @@ Stand: M1c (Projekt, Versionskonfiguration, Versionsordner, Sperre, Einstellunge
     project.json
     versions/<zielversion>/
       configuration.json
-      source-manifest.json        (M2)
-      source/...                  (M2)
+      source-manifest.json
+      source/...
       builds/<build-id>/...       (M4)
 ```
 
@@ -104,6 +104,18 @@ Jede Softwareversion liegt in `versions/<version>/` unterhalb des Projekts. Der 
 
 Numerisch, 1 bis 4 Teile aus je höchstens 9 Ziffern. Der Vergleich ist numerisch und ignoriert nachgestellte Nullen (`1.0` = `1.0.0`, `1.10` > `1.9`). Die Versionsliste einer Software wird nach dieser Ordnung sortiert, nicht nach Text und nicht nach Build-Zeitpunkt.
 
+## `source-manifest.json` (Schema 1)
+
+Liegt in `versions/<version>/` neben dem Ordner `source/` und beschreibt jede Datei der gespeicherten Installationsquelle. Siehe `docs/QUELLENANALYSE.md` für Aufbau und Prüfung.
+
+| Feld | Typ | Bedeutung |
+|---|---|---|
+| `schemaVersion` | Zahl | 1 |
+| `createdUtc` | Zeitstempel | Zeitpunkt der Erfassung (UTC) |
+| `files` | Liste | je Datei `path` (relativ, `/` als Trenner), `size` (Byte), `sha256` (64 Zeichen, Kleinbuchstaben); sortiert nach `path` (ordinal) |
+
+Das Manifest ist ein unveränderlicher Nachweis der Quelle: Es wird nie überschrieben, und eine Datei ohne `path` oder `sha256` gilt als defekt (`StorageFormatException`). Eine neuere Schema-Version wird nicht gelesen.
+
 ## `settings.json` des Autorentools (Schema 1)
 
 Liegt **nicht** im Grundordner, sondern unter `%LOCALAPPDATA%\Intune Package Builder\settings.json` (ohne Administratorrechte beschreibbar, getrennt von austauschbaren Programmdateien und von den Projekten).
@@ -133,4 +145,4 @@ Liegt **nicht** im Grundordner, sondern unter `%LOCALAPPDATA%\Intune Package Bui
 
 ## Geplante Formate
 
-- `source-manifest.json` (M2), `build-manifest.json` und `configuration.snapshot.json` (M4).
+- `build-manifest.json` und `configuration.snapshot.json` (M4).
