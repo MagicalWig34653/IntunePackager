@@ -2,7 +2,7 @@
 
 Beschreibt die Dateien, die der Core liest und schreibt (Spec §6, Liefergegenstand 4 in §13). Das Dokument wird zusammen mit dem Code gepflegt; beim Ändern eines Formats gehören Schema-Version, Migration, Tests und dieses Dokument in denselben PR.
 
-Stand: M2b (Projekt, Versionskonfiguration, Versionsordner, Sperre, Einstellungen des Autorentools, Quellenmanifest). Build-Manifest folgt mit M4.
+Stand: M3a (Projekt, Versionskonfiguration, Versionsordner, Sperre, Einstellungen des Autorentools, Quellenmanifest, Build-Snapshot). Build-Manifest folgt mit M4.
 
 ## Ablage
 
@@ -116,6 +116,22 @@ Liegt in `versions/<version>/` neben dem Ordner `source/` und beschreibt jede Da
 
 Das Manifest ist ein unveränderlicher Nachweis der Quelle: Es wird nie überschrieben, und eine Datei ohne `path` oder `sha256` gilt als defekt (`StorageFormatException`). Eine neuere Schema-Version wird nicht gelesen.
 
+## `configuration.snapshot.json` (Schema 1)
+
+Liegt in `versions/<version>/builds/<build-id>/` neben dem Build-Ergebnis. Der Snapshot hält fest, was die Ausgabe dieses Builds bestimmt, und wird **einmal geschrieben und nie ersetzt** (`BuildSnapshotStore.WriteNew` verweigert es). So bleiben frühere Ergebnisse nachvollziehbar, auch wenn die Konfiguration der Version später geändert wird (Spec §6.4). Siehe `docs/GENERATOREN.md`.
+
+| Feld | Typ | Bedeutung |
+|---|---|---|
+| `schemaVersion` | Zahl | 1 |
+| `buildId` | Text | `yyyyMMdd-HHmmss-xxxx` (UTC, vier Hexzeichen in Kleinbuchstaben); dateisystemsicher |
+| `createdUtc` | Zeitstempel | Zeitpunkt des Builds (UTC) |
+| `language` | Text | `de` oder `en`: Sprache der erzeugten Texte, beim Build festgelegt |
+| `toolVersion` | Text | Version des Autorentools |
+| `sourceFingerprint` | Text | SHA-256 über Pfad, Größe und Prüfsumme aller Quelldateien (64 Kleinbuchstaben-Hexzeichen), ohne Zeitstempel |
+| `configuration` | Objekt | private Kopie der `configuration.json` zum Zeitpunkt des Builds |
+
+Eine Datei ohne gültige Build-ID oder ohne Konfiguration gilt als defekt (`StorageFormatException`); eine neuere Schema-Version wird nicht gelesen.
+
 ## `settings.json` des Autorentools (Schema 1)
 
 Liegt **nicht** im Grundordner, sondern unter `%LOCALAPPDATA%\Intune Package Builder\settings.json` (ohne Administratorrechte beschreibbar, getrennt von austauschbaren Programmdateien und von den Projekten).
@@ -145,4 +161,4 @@ Liegt **nicht** im Grundordner, sondern unter `%LOCALAPPDATA%\Intune Package Bui
 
 ## Geplante Formate
 
-- `build-manifest.json` und `configuration.snapshot.json` (M4).
+- `build-manifest.json` (M4), `Einstellungen.json` und `Einstellungen.csv` als Ausgabe (Format in `docs/GENERATOREN.md`).
