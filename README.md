@@ -2,7 +2,7 @@
 
 Windows-Desktopanwendung, die aus einer MSI, einer EXE oder einem Herstellerordner ein vollständiges Microsoft-Intune-Win32-Paket erstellt: `.intunewin`, eigenständiges Erkennungsskript und eine konkrete Einrichtungsanleitung.
 
-**Status:** Planung. Es gibt noch keine Implementierung und keine Abnahme.
+**Status:** Planung und Projektgerüst (M0). Noch keine Funktionen und keine Abnahme.
 
 ## Dokumente
 
@@ -11,6 +11,7 @@ Windows-Desktopanwendung, die aus einer MSI, einer EXE oder einem Herstellerordn
 | [docs/SPEC.md](docs/SPEC.md) | Produktspezifikation (Version 1.0) |
 | [docs/PLANUNG.md](docs/PLANUNG.md) | Architektur, Meilensteine, Teststrategie, offene Entscheidungen |
 | [docs/ABNAHME-MATRIX.md](docs/ABNAHME-MATRIX.md) | Zuordnung der Abnahmeprüfungen A01–A18 zu Meilensteinen |
+| [THIRD-PARTY.md](THIRD-PARTY.md) | Abhängigkeitsmanifest |
 
 ## Geplante Struktur
 

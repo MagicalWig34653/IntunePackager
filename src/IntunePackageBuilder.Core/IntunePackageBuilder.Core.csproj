@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>IntunePackageBuilder.Core</RootNamespace>
+    <AssemblyName>IntunePackageBuilder.Core</AssemblyName>
+  </PropertyGroup>
+</Project>

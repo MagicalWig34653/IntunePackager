@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <Deterministic>true</Deterministic>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Version>0.0.1</Version>
+    <Company>Intune Package Builder</Company>
+    <Product>Intune Package Builder</Product>
+  </PropertyGroup>
+</Project>

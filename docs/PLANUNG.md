@@ -14,6 +14,9 @@ Grundlage: [SPEC.md](SPEC.md) (Version 1.0). Dieses Dokument übersetzt die Spez
 | Client-Wrapper | Windows PowerShell 5.1, 64-Bit, UTF-8 mit BOM | §4; Vorlagen liegen als Dateien in `deploy/` |
 | Benutzerinteraktion | PSAppDeployToolkit, feste Version, unverändert (Vendor-Ordner) | §4/§8.2; Version wird in M5 anhand Server 2022 / Win 11 festgelegt |
 | Konfiguration | JSON mit `schemaVersion`; atomares Schreiben (Temp-Datei + `File.Replace`) | §6.3, kein halbgeschriebenes `project.json` |
+| Code language | English only: identifiers, comments, log messages, commit messages, config and workflow files | Project decision; documentation under `docs/` stays German |
+| UI language | German and English via .resx resources, follows the program language (default: Windows UI language, switchable in settings) | Project decision; no user-visible string is hard-coded in code |
+| Generated output language | Intune guide, deployment texts and user notices follow the program language active at build time and are stored in the build snapshot | Keeps a build reproducible regardless of later language changes |
 | Tests | xUnit (C#), Pester 5 (PowerShell), FlaUI (UI-Abläufe) | A01–A18, §12.1 |
 | CI | GitHub Actions auf `windows-latest` (+ `windows-2022`) | WPF und Pester lassen sich hier nicht bauen; siehe §6 |
 
@@ -114,21 +117,25 @@ Diese Cloud-Sitzung läuft unter Linux ohne .NET-SDK, Mono oder PowerShell. WPF,
 | Fremd-/Neuerprodukt wird bei Deinstallation entfernt | Deinstallation nur über ProductCode bzw. konfigurierten Pfad, keine Namenssuche |
 | Spec-Umfang größer als eine Iteration | Meilensteine liefern jeweils testbare Teilergebnisse; M6/M7 notfalls schneiden, nicht M2–M5 |
 
-## 8. Offene Entscheidungen
+## 8. Entscheidungen und offene Punkte
 
-Diese Punkte beeinflussen die Umsetzung und sollten vor M1 bzw. M5 geklärt werden:
+Entschieden:
 
-1. **Produktname und Namespace:** „Intune Package Builder“ ist der Arbeitsname. Soll er bleiben?
-2. **UI-Sprache:** Deutsch (Spec ist deutsch) – mit Ressourcendateien für spätere Mehrsprachigkeit, oder nur Deutsch?
-3. **Zielsprache der erzeugten Anleitung und Benutzerhinweise:** Deutsch fest, oder konfigurierbar?
-4. **PSADT-Version:** 4.x (aktuell, PS-5.1-kompatibel) oder 3.x – Festlegung nach Test auf Server 2022 und Win 11.
-5. **Zielgeräte-Betriebssystem in der Intune-Anforderung:** Mindest-Windows-Build (z. B. 22H2?) – Spec verlangt „für das konkrete Paket festgelegte OS-Anforderungen“.
-6. **Signierung:** Gibt es ein Code-Signing-Zertifikat für Autorentool und/oder Skripte? Sonst bleibt der Status „nicht signiert“.
-7. **Installation von Zielarchitektur:** Nur x64-Zielgeräte, oder auch x86-Intune-Geräte?
-8. **Test-Infrastruktur:** Stehen Windows-11- und Server-2022-VMs sowie ein Intune-Pilot-Tenant für M8 zur Verfügung?
+1. **Produktname:** „Intune Package Builder“ bleibt.
+2. **UI-Sprache:** Deutsch und Englisch, je nach Programmsprache (.resx-Ressourcen).
+3. **Sprache der erzeugten Anleitung und Benutzerhinweise:** folgt der Programmsprache beim Build; die Sprache wird im Snapshot festgehalten.
+4. **Quellcode:** vollständig Englisch (Bezeichner, Kommentare, Logmeldungen, Konfiguration). Sichtbare Texte nur über Ressourcen.
+
+Offen (vor M5 bzw. M8 zu klären):
+
+1. **PSADT-Version:** 4.x (aktuell, PS-5.1-kompatibel) oder 3.x – Festlegung nach Test auf Server 2022 und Win 11.
+2. **Zielgeräte-Betriebssystem in der Intune-Anforderung:** Mindest-Windows-Build – die Spec verlangt „für das konkrete Paket festgelegte OS-Anforderungen“.
+3. **Signierung:** Gibt es ein Code-Signing-Zertifikat für Autorentool und/oder Skripte? Sonst bleibt der Status „nicht signiert“.
+4. **Zielarchitektur:** Nur x64-Zielgeräte, oder auch x86-Intune-Geräte?
+5. **Test-Infrastruktur:** Stehen Windows-11- und Server-2022-VMs sowie ein Intune-Pilot-Tenant für M8 zur Verfügung?
 
 ## 9. Nächste Schritte
 
-1. Offene Entscheidungen §8 beantworten (mindestens 1, 2, 3).
-2. M0 umsetzen: Solution-Gerüst, `.github/workflows/ci.yml` (Build + Test auf `windows-latest`), `THIRD-PARTY.md`-Gerüst.
+1. M0 abschließen (PR 2, CI grün).
+2. README, Icon, Entwurfs-Mockups und GitHub-Pages-Landingpage.
 3. M1 beginnen (Core + Tests), danach M2.

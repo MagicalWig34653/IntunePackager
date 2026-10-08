@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>IntunePackageBuilder.Build</RootNamespace>
+    <AssemblyName>IntunePackageBuilder.Build</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IntunePackageBuilder.Core\IntunePackageBuilder.Core.csproj" />
+    <ProjectReference Include="..\IntunePackageBuilder.Analysis\IntunePackageBuilder.Analysis.csproj" />
+    <ProjectReference Include="..\IntunePackageBuilder.Generation\IntunePackageBuilder.Generation.csproj" />
+  </ItemGroup>
+</Project>
