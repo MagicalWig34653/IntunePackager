@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace IntunePackageBuilder.Core.Sources
 {
@@ -35,6 +38,36 @@ namespace IntunePackageBuilder.Core.Sources
 
         /// <summary>All files, sorted by path (ordinal).</summary>
         public List<SourceFileEntry> Files { get; set; }
+
+        /// <summary>
+        /// SHA-256 over every file's path, size and checksum (sorted by path). The timestamp is not part of it,
+        /// so the same source always gives the same fingerprint. A build records it to prove which source it used.
+        /// </summary>
+        public string ComputeFingerprint()
+        {
+            var ordered = new List<SourceFileEntry>(Files);
+            ordered.Sort((left, right) => string.CompareOrdinal(left.Path, right.Path));
+
+            var text = new StringBuilder();
+            foreach (var file in ordered)
+            {
+                text.Append(file.Path).Append('\n')
+                    .Append(file.Size.ToString(CultureInfo.InvariantCulture)).Append('\n')
+                    .Append(file.Sha256).Append('\n');
+            }
+
+            using (var sha = SHA256.Create())
+            {
+                var hash = sha.ComputeHash(new UTF8Encoding(false).GetBytes(text.ToString()));
+                var hex = new StringBuilder(hash.Length * 2);
+                foreach (var b in hash)
+                {
+                    hex.Append(b.ToString("x2", CultureInfo.InvariantCulture));
+                }
+
+                return hex.ToString();
+            }
+        }
     }
 
     public enum SourceDifferenceKind

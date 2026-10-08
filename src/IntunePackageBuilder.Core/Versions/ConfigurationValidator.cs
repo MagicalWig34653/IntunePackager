@@ -182,9 +182,22 @@ namespace IntunePackageBuilder.Core.Versions
                 issues.Add(new ValidationIssue("runtime.timeoutMinutes", ValidationCode.InvalidTimeout));
             }
 
+            // 1641 means the installer already triggered a restart. It is never a quiet success and is not
+            // accepted as a soft restart or retry code either: the vendor installer needs different restart
+            // parameters (SPEC section 8.4). Intune classifies 1641 as a hard reboot.
             if (runtime.SuccessCodes.Contains(InstallerRestartedCode))
             {
                 issues.Add(new ValidationIssue("runtime.successCodes", ValidationCode.ForcedRestartCodeNotAllowed));
+            }
+
+            if (runtime.RebootCodes.Contains(InstallerRestartedCode))
+            {
+                issues.Add(new ValidationIssue("runtime.rebootCodes", ValidationCode.ForcedRestartCodeNotAllowed));
+            }
+
+            if (runtime.RetryCodes.Contains(InstallerRestartedCode))
+            {
+                issues.Add(new ValidationIssue("runtime.retryCodes", ValidationCode.ForcedRestartCodeNotAllowed));
             }
 
             if (Overlaps(runtime.SuccessCodes, runtime.RebootCodes)

@@ -14,7 +14,7 @@ Aufteilung in einzeln mergbare Scheiben (Projekt `IntunePackageBuilder.Generatio
 
 | Scheibe | Inhalt | Stand |
 |---|---|---|
-| M3a | `BuildSnapshot` (unveränderlicher Snapshot aus Konfiguration, Build-ID, Sprache, Manifest-Hash), `IntuneSettings` (Installations- und Deinstallationsbefehl, Rückgabecodes mit Intune-Klassifizierung, Zeitlimit, Neustartverhalten, Erkennungsskript, Anforderungen), JSON- und CSV-Ausgabe mit korrekter Maskierung; erste `.resx`-Ressourcen (neutral Englisch plus `.de.resx`) für Beschriftungen | offen |
+| M3a | `BuildSnapshot` (unveränderlicher Snapshot aus Konfiguration, Build-ID, Sprache, Quellen-Fingerabdruck), `IntuneSettings` (Installations- und Deinstallationsbefehl, Rückgabecodes mit Intune-Klassifizierung, Zeitlimit, Neustartverhalten, Erkennungsskript, Anforderungen), JSON- und CSV-Ausgabe mit korrekter Maskierung. Die ersten `.resx`-Ressourcen (neutral Englisch plus `.de.resx`) kommen mit der HTML-Anleitung in M3c, weil erst dort Beschriftungen entstehen | Code und Tests geschrieben, PR offen, CI-Nachweis steht aus |
 | M3b | Erkennungsskript-Generator: eigenständiges Windows-PowerShell-5.1-Skript, UTF-8 mit BOM; MSI: ProductCode in beiden Registry-Ansichten und `DisplayVersion` mindestens Zielversion; EXE: Datei vorhanden und `FileVersion` mindestens Zielversion; Intune-Vertrag (erkannt: Exitcode 0 und nicht leere Standardausgabe; sonst keine Ausgabe); keine Dateien aus dem Intune-Cache; Pester-Tests A15 und A16 (Skript wird im Test über die gebaute `Generation.dll` erzeugt; der Pester-Job in `ci.yml` muss dafür vorher bauen) | offen |
 | M3c | HTML-Anleitung (lokal lesbar, druckbar, Deutsch und Englisch) mit allen Abschnitten aus Spec §9 (App-Typ, Paketdatei, App-Informationen, Programm, Installationsverhalten, Anforderungen, Zeitlimit, Neustartverhalten, Rückgabecodes, Erkennung, Zuweisung, Abhängigkeiten, Fehleranalyse); Maskierung gegen aktive Inhalte (A17); Warnung vor dem Mischen von `.intunewin` und Erkennungsskript verschiedener Builds; behauptet nie eine erfolgreiche Zuweisung oder Installation | offen |
 | M3d | Wrapper-Konfiguration für die Client-Laufzeit (maschinenlesbar, aus demselben Snapshot) und Abnahme von A17 über alle Formate | offen |
@@ -40,7 +40,14 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## In Arbeit
 
-- PR 10 (Branch `claude/great-feynman-hi1xfp`) enthält M2c samt Abschluss von M2 (Roadmaps, Statusangaben, Matrix). Nach dem Merge ist nichts mehr offen; M3a beginnt auf einem frischen Branch von `main`.
+- M2 ist abgeschlossen und gemergt (PR 10).
+- M3a (Branch `claude/great-feynman-hi1xfp`): Code unverifiziert bis zum CI-Lauf.
+  - Neu in `Core`: `Builds/{BuildId,BuildSnapshot}.cs` (inkl. `BuildSnapshotStore`), `SourceManifest.ComputeFingerprint`, `AtomicFile.WriteAllText` mit Kodierung; der Validator lehnt `1641` jetzt in allen drei Codelisten ab.
+  - Neu in `Generation`: `Intune/{DeploymentInterface,IntuneSettings,IntuneSettingsBuilder,SettingsWriter}.cs`.
+  - Neues Testprojekt `tests/IntunePackageBuilder.Generation.Tests` (in der Solution): `IntuneSettingsTests`, `SettingsWriterTests`; Ergänzungen in `Core.Tests` (`BuildSnapshotTests`, `RestartCodeAndEncodingTests`).
+  - Doku: neue Datei `docs/GENERATOREN.md`, `docs/DATENFORMAT.md` (`configuration.snapshot.json`), Annahmen in `docs/PLANUNG.md` §8.
+  - CI-Lauf 1 von PR 11: Build-Fehler im Testprojekt (`CsvCell` ist `internal`, `InternalsVisibleTo` fehlte im Generation-Projekt). Behoben; alle anderen Projekte haben gebaut.
+  - CI-Lauf 2 von PR 11: Build grün, 32 von 33 Generation-Tests. Der Fehlschlag war ein Testfehler: Der Test las das JSON mit dem Standard-`JObject.Parse`, der datumsähnlichen Text in ein Datum verwandelt. Tests benutzen jetzt `JsonFormat.ParseObject`. Lehre: in Tests, die JSON-Texte prüfen, nie `JObject.Parse` verwenden.
 
 ## Lehren (für künftige Sessions)
 
@@ -54,8 +61,8 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Nächste Schritte (in Reihenfolge)
 
-1. PR 10 mergen (CI ist grün).
-2. M3a bis M3d der Reihe nach (siehe oben), jede Scheibe als eigener PR mit Doku im selben PR (`docs/GENERATOREN.md` neu anlegen: Snapshot, `IntuneSettings`, Formate, Maskierung, Erkennungsvertrag).
+1. M3a mergen (CI grün).
+2. M3b bis M3d der Reihe nach (siehe oben), jede Scheibe als eigener PR mit Doku im selben PR (`docs/GENERATOREN.md` erweitern: Erkennungsvertrag, Anleitung, Wrapper-Konfiguration).
 3. Danach M4 (Build-Pipeline mit dem Content Prep Tool) und M5 (Client-Laufzeit); beide können nach M3 parallel laufen (siehe `docs/PLANUNG.md` §4). Das Content Prep Tool (`tools/`) braucht Herkunft und SHA-256 in `THIRD-PARTY.md`, bevor es verwendet wird.
 4. M6 (Oberfläche), M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
 

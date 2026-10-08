@@ -6,4 +6,7 @@
   <ItemGroup>
     <ProjectReference Include="..\IntunePackageBuilder.Core\IntunePackageBuilder.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="IntunePackageBuilder.Generation.Tests" />
+  </ItemGroup>
 </Project>

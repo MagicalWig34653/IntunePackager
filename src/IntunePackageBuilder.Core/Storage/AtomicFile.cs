@@ -15,6 +15,12 @@ namespace IntunePackageBuilder.Core.Storage
 
         public static void WriteAllText(string path, string contents)
         {
+            WriteAllText(path, contents, Utf8NoBom);
+        }
+
+        /// <summary>Same as <see cref="WriteAllText(string,string)"/> with an explicit encoding (the preamble, for example a BOM, is written).</summary>
+        public static void WriteAllText(string path, string contents, Encoding encoding)
+        {
             var fullPath = Path.GetFullPath(path);
             var directory = Path.GetDirectoryName(fullPath);
             Directory.CreateDirectory(directory);
@@ -24,7 +30,9 @@ namespace IntunePackageBuilder.Core.Storage
             {
                 using (var stream = new FileStream(temp, FileMode.CreateNew, FileAccess.Write, FileShare.None))
                 {
-                    var bytes = Utf8NoBom.GetBytes(contents ?? string.Empty);
+                    var preamble = encoding.GetPreamble();
+                    stream.Write(preamble, 0, preamble.Length);
+                    var bytes = encoding.GetBytes(contents ?? string.Empty);
                     stream.Write(bytes, 0, bytes.Length);
                     stream.Flush(true);
                 }
