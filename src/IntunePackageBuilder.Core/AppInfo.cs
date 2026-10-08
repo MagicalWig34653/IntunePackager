@@ -2,7 +2,7 @@ using System.Reflection;
 
 namespace IntunePackageBuilder.Core
 {
-    /// <summary>Produktname und Version des Autorentools.</summary>
+    /// <summary>Product name and version of the authoring tool.</summary>
     public static class AppInfo
     {
         public const string ProductName = "Intune Package Builder";

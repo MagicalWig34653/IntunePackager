@@ -1,4 +1,4 @@
-# Build-Ausgaben
+# Build output
 bin/
 obj/
 dist/
@@ -9,13 +9,13 @@ artifacts/
 TestResults/
 packages/
 
-# Benutzerdaten und Herstellerdateien dürfen nie ins Repository (SPEC §10)
+# User projects and vendor installers must never be committed (SPEC §10)
 Intune-Paketprojekte/
 *.intunewin
 *.msi
 *.exe
 !tools/**/*.exe
 
-# Temporär
+# Temporary
 *.log
 *.tmp
