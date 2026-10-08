@@ -78,10 +78,10 @@ Jeder Meilenstein ist erst abgeschlossen, wenn seine automatisierten Tests grün
 | M | Inhalt | Abnahme | Ergebnis |
 |---|---|---|---|
 | **M0** | Repo-Grundlage: Solution, CI auf Windows, Lint/Format, Abhängigkeitsmanifest-Gerüst, Logging-Grundlage | – | Leeres, baubares Gerüst; CI grün |
-| **M1** | Core: Modelle, Schema, atomares Speichern, Migration, Projekt-IDs, Sperren, Grundordner | A05, A06, A14 | Projekte lassen sich anlegen, laden, sperren |
+| **M1** | Core: Modelle, Schema, atomares Speichern, Migration, Projekt-IDs, Sperren, Grundordner | A03 (Modell), A05, A06, A14 | Projekte lassen sich anlegen, laden, sperren |
 | **M2** | Analysis: MSI-Reader, EXE-Metadaten, Quellenmanifest, Importprüfungen | A02, A04 (Logik), A11, A12 | Quellen werden sicher analysiert und gesichert |
 | **M3** | Generation: Detection, `IntuneSettings`, HTML/JSON/CSV, Wrapper-Konfiguration | A15, A16, A17 | Alle Artefakte eines Builds aus einem Snapshot erzeugbar |
-| **M4** | Build: Pipeline, Content-Prep-Runner, Veröffentlichung, Fehlerpfade | A09 (Logik), A10, A13 | Echte `.intunewin` aus Testquelle |
+| **M4** | Build: Pipeline, Content-Prep-Runner, Veröffentlichung, Fehlerpfade | A09 (Logik), A10, A11, A13 | Echte `.intunewin` aus Testquelle |
 | **M5** | Client-Laufzeit: Wrapper, Rückgabecodes, Interaktion, Nacharbeiten, Pester-Tests | A15, A16 | Wrapper auf Test-VM lauffähig |
 | **M6** | App-UI: Start, Standardmodus MSI/EXE, Drag-and-drop, Validierung, Ergebnisseite | A01, A03, A04, A08, A09 | Vollständiger Standardablauf |
 | **M7** | Erweiterter Modus, Projektansicht, Update-Ablauf, Notizen | A05–A08 | Updates und Versionsverwaltung |
@@ -136,6 +136,7 @@ Offen (vor M5 bzw. M8 zu klären):
 
 ## 9. Nächste Schritte
 
-1. M0 abschließen (PR 2, CI grün).
-2. README, Icon, Entwurfs-Mockups und GitHub-Pages-Landingpage.
-3. M1 beginnen (Core + Tests), danach M2.
+Erledigt: M0-Gerüst mit Windows-CI (PR 2), README, Icon, Entwurfs-Mockups, Pages-Seite und Claude-Code-Umgebung (PR 3).
+
+1. M0 abschließen: Test-Gerüst für Pester, Lint/Format und Logging-Grundlage ergänzen.
+2. M1 beginnen (Core + Tests), danach M2.

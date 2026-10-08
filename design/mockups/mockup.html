@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Intune Package Builder - design mockup</title>
+<style>
+  :root {
+    --bg: #f3f5f9; --card: #ffffff; --line: #dde3ec; --text: #17202e; --muted: #5d6b82;
+    --accent: #1f6fd6; --accent-dark: #0b3a8f; --ok: #1a7f4b; --ok-bg: #e5f5ec; --warn-bg: #fff4dc;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { width: 1280px; height: 800px; font: 14px/1.45 "Segoe UI", "Noto Sans", "Helvetica Neue", Arial, sans-serif; color: var(--text); background: #cfd6e2; overflow: hidden; position: relative; }
+  .window { width: 1280px; height: 800px; background: var(--bg); display: flex; flex-direction: column; }
+  .titlebar { height: 38px; background: #ffffff; border-bottom: 1px solid var(--line); display: flex; align-items: center; padding: 0 0 0 12px; gap: 10px; }
+  .titlebar img { width: 18px; height: 18px; }
+  .titlebar .t { font-size: 12px; color: var(--muted); }
+  .titlebar .ctl { margin-left: auto; display: flex; height: 100%; }
+  .titlebar .ctl span { width: 46px; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 13px; }
+  .body { flex: 1; display: flex; min-height: 0; }
+  .nav { width: 200px; padding: 14px 10px; border-right: 1px solid var(--line); background: #eef1f7; display: flex; flex-direction: column; gap: 4px; }
+  .nav .item { padding: 9px 12px; border-radius: 6px; color: var(--muted); display: flex; gap: 10px; align-items: center; }
+  .nav .item.on { background: #fff; color: var(--text); font-weight: 600; box-shadow: 0 1px 2px rgba(20,40,80,.08); position: relative; }
+  .nav .item.on::before { content: ""; position: absolute; left: -10px; top: 9px; bottom: 9px; width: 3px; border-radius: 2px; background: var(--accent); }
+  .nav .ico { width: 16px; height: 16px; border-radius: 4px; background: currentColor; opacity: .35; }
+  .nav .spacer { flex: 1; }
+  .main { flex: 1; padding: 22px 28px 0; display: flex; flex-direction: column; min-width: 0; }
+  h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 6px; border: 1px solid var(--line); background: #fff; color: var(--text); font: inherit; font-weight: 600; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.sm { padding: 5px 12px; font-weight: 500; }
+  .row { display: flex; gap: 16px; }
+  .grow { flex: 1; min-width: 0; }
+  .drop { border: 2px dashed #9db8e0; background: #f4f8ff; border-radius: 12px; height: 190px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  .drop .big { font-size: 18px; font-weight: 600; color: var(--accent-dark); }
+  .drop .small { color: var(--muted); }
+  .drop img { width: 56px; height: 56px; }
+  .search { border: 1px solid var(--line); border-radius: 6px; padding: 7px 12px; color: var(--muted); background: #fff; width: 280px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; color: var(--muted); font-weight: 500; font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  td { padding: 9px 8px; border-bottom: 1px solid #edf0f5; }
+  tr:last-child td { border-bottom: 0; }
+  .mono { font-family: "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace; font-size: 12.5px; }
+  .folder { color: var(--muted); font-size: 12.5px; display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+  /* form */
+  .form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+  .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .input { border: 1px solid var(--line); border-bottom: 2px solid #8aa2c8; border-radius: 6px; padding: 8px 10px; background: #fff; min-height: 36px; }
+  .input.ro { background: #f1f4f9; color: var(--muted); }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .badge { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 10px; background: var(--ok-bg); color: var(--ok); font-weight: 600; margin-left: 6px; }
+  .badge.info { background: #e6effc; color: var(--accent-dark); }
+  .file { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin-bottom: 14px; }
+  .pill { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; background: var(--accent-dark); color: #fff; letter-spacing: .5px; }
+  .switch { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: #fff; }
+  .seg span { padding: 5px 14px; font-size: 13px; color: var(--muted); }
+  .seg span.on { background: var(--accent); color: #fff; font-weight: 600; }
+  .bar { margin: auto -28px 0; padding: 12px 28px; background: #fff; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 12px; }
+  .bar .msg { color: var(--muted); }
+  /* result */
+  .ok-card { background: var(--ok-bg); border: 1px solid #b9e2c9; border-radius: 10px; padding: 16px 18px; display: flex; gap: 14px; align-items: center; margin-bottom: 14px; }
+  .check { width: 34px; height: 34px; border-radius: 50%; background: var(--ok); color: #fff; font-size: 20px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  .kv { display: grid; grid-template-columns: 180px 1fr; gap: 8px 12px; }
+  .kv .k { color: var(--muted); }
+  .cmd { background: #101a2b; color: #d7e6ff; border-radius: 6px; padding: 8px 12px; }
+  .actions { display: flex; gap: 10px; margin-top: 14px; }
+  .mark { position: absolute; left: 50%; transform: translateX(-50%); top: 8px; font-size: 11px; color: #8a96aa; background: rgba(255,255,255,.85); border: 1px solid var(--line); padding: 2px 8px; border-radius: 10px; }
+</style>
+</head>
+<body>
+<div class="window" id="app"></div>
+<script>
+const params = new URLSearchParams(location.search);
+const lang = params.get("lang") === "de" ? "de" : "en";
+const screen = params.get("screen") || "start";
+document.documentElement.lang = lang;
+
+const T = {
+  en: {
+    nav: ["Start", "Projects", "Settings"], help: "Help",
+    startTitle: "Create a package", startSub: "Drop an installer to get started. No project needed.",
+    drop: "Drop an MSI or EXE here", dropSub: "or", choose: "Choose installer file",
+    recent: "Recent projects", all: "All projects", search: "Search by name or project ID",
+    cols: ["Project", "Latest version", "Last build"], baseFolder: "Base folder", change: "Change", open: "Open existing project",
+    formTitle: "Package details", file: "setup.msi", fileSub: "MSI installer, read without running it",
+    std: "Standard", adv: "Advanced", fName: "Software name", fVendor: "Vendor", fVersion: "Target version",
+    fPC: "Product code", fSilent: "Silent install parameters", fUninst: "Uninstall",
+    read: "read from MSI", safe: "Safe MSI defaults (quiet, no restart, log)", auto: "Automatic via product code",
+    vHint: "Detection requires this version or higher.", create: "Create package", ready: "All required details are valid.",
+    resTitle: "Package created", resSub: "Contoso Reader 4.2.1 is ready for Intune.",
+    kv: ["Software", "Target version", "Build ID", "Output", "Install command", "Uninstall command", "Install context", "Detection"],
+    context: "System", detection: "Script Detect-App.ps1 (product code, version 4.2.1 or higher)",
+    openFolder: "Open package folder", openGuide: "Open Intune guide", copy: "Copy Intune values",
+    log: "Build log", mock: "Design mockup, not a real screenshot"
+  },
+  de: {
+    nav: ["Start", "Projekte", "Einstellungen"], help: "Hilfe",
+    startTitle: "Paket erstellen", startSub: "Installationsdatei ablegen und loslegen. Kein Projekt nötig.",
+    drop: "MSI oder EXE hier ablegen", dropSub: "oder", choose: "Installationsdatei auswählen",
+    recent: "Zuletzt geöffnet", all: "Alle Projekte", search: "Suche nach Name oder Projekt-ID",
+    cols: ["Projekt", "Neueste Version", "Letzter Build"], baseFolder: "Grundordner", change: "Ändern", open: "Bestehendes Projekt öffnen",
+    formTitle: "Paketangaben", file: "setup.msi", fileSub: "MSI-Installer, ausgelesen ohne Ausführung",
+    std: "Standard", adv: "Erweitert", fName: "Softwarename", fVendor: "Hersteller", fVersion: "Zielversion",
+    fPC: "ProductCode", fSilent: "Stille Installationsparameter", fUninst: "Deinstallation",
+    read: "aus MSI gelesen", safe: "Sichere MSI-Vorgaben (still, kein Neustart, Log)", auto: "Automatisch über ProductCode",
+    vHint: "Die Erkennung verlangt diese Version oder höher.", create: "Paket erstellen", ready: "Alle Pflichtangaben sind gültig.",
+    resTitle: "Paket erstellt", resSub: "Contoso Reader 4.2.1 ist bereit für Intune.",
+    kv: ["Software", "Zielversion", "Build-ID", "Ausgabe", "Installationsbefehl", "Deinstallationsbefehl", "Installationskontext", "Erkennung"],
+    context: "System", detection: "Skript Detect-App.ps1 (ProductCode, Version 4.2.1 oder höher)",
+    openFolder: "Paketordner öffnen", openGuide: "Intune-Anleitung öffnen", copy: "Intune-Werte kopieren",
+    log: "Build-Log", mock: "Design-Mockup, kein echter Screenshot"
+  }
+}[lang];
+
+const nav = (on) => T.nav.map((n, i) => `<div class="item ${i === on ? "on" : ""}"><span class="ico"></span>${n}</div>`).join("") +
+  `<div class="spacer"></div><div class="item"><span class="ico"></span>${T.help}</div>`;
+
+const screens = {
+  start: () => `
+    <h1>${T.startTitle}</h1><p class="sub">${T.startSub}</p>
+    <div class="drop"><img src="../../assets/icon-128.png" alt=""><div class="big">${T.drop}</div>
+      <div class="small">${T.dropSub}</div><div class="btn primary">${T.choose}</div></div>
+    <div class="row" style="margin-top:16px">
+      <div class="card grow"><b>${T.recent}</b>
+        <table style="margin-top:6px"><tr>${T.cols.map(c => `<th>${c}</th>`).join("")}</tr>
+          <tr><td>Contoso Reader</td><td class="mono">4.1.0</td><td>2026-09-30</td></tr>
+          <tr><td>Fabrikam Editor</td><td class="mono">12.0.3</td><td>2026-09-24</td></tr>
+          <tr><td>Northwind Viewer</td><td class="mono">2.8.0</td><td>2026-09-12</td></tr></table></div>
+      <div class="card" style="width:330px"><b>${T.all}</b>
+        <div class="search" style="margin:10px 0;width:100%">${T.search}</div>
+        <div class="btn sm">${T.open}</div></div>
+    </div>
+    <div class="folder">${T.baseFolder}: <span class="mono">C:\\Users\\admin\\Documents\\Intune-Paketprojekte</span><span class="btn sm">${T.change}</span></div>`,
+  form: () => `
+    <div class="row" style="align-items:center;margin-bottom:12px"><h1 class="grow">${T.formTitle}</h1>
+      <div class="seg"><span class="on">${T.std}</span><span>${T.adv}</span></div></div>
+    <div class="card file"><span class="pill">MSI</span><div class="grow"><b>${T.file}</b><div class="hint" style="margin:0">${T.fileSub}</div></div><span class="badge">OK</span></div>
+    <div class="card"><div class="form">
+      <div class="field"><label>${T.fName} <span class="badge info">${T.read}</span></label><div class="input">Contoso Reader</div></div>
+      <div class="field"><label>${T.fVendor} <span class="badge info">${T.read}</span></label><div class="input">Contoso Ltd.</div></div>
+      <div class="field"><label>${T.fVersion} <span class="badge info">${T.read}</span></label><div class="input mono">4.2.1</div><div class="hint">${T.vHint}</div></div>
+      <div class="field"><label>${T.fPC}</label><div class="input ro mono">{8F2C41A7-5B3E-4D19-A7C0-3E6D21B94F05}</div></div>
+      <div class="field"><label>${T.fSilent}</label><div class="input ro">${T.safe}</div></div>
+      <div class="field"><label>${T.fUninst}</label><div class="input ro">${T.auto}</div></div>
+    </div></div>
+    <div class="bar"><span class="check" style="width:22px;height:22px;font-size:13px">&#10003;</span><span class="msg">${T.ready}</span><span style="margin-left:auto" class="btn primary">${T.create}</span></div>`,
+  result: () => `
+    <div class="ok-card"><div class="check">&#10003;</div><div><h1 style="margin:0">${T.resTitle}</h1><div class="sub" style="margin:0">${T.resSub}</div></div></div>
+    <div class="card"><div class="kv">
+      <div class="k">${T.kv[0]}</div><div>Contoso Reader</div>
+      <div class="k">${T.kv[1]}</div><div class="mono">4.2.1</div>
+      <div class="k">${T.kv[2]}</div><div class="mono">20261008-153412</div>
+      <div class="k">${T.kv[3]}</div><div class="mono">contoso-reader\\versions\\4.2.1\\builds\\20261008-153412\\contoso-reader.intunewin</div>
+      <div class="k">${T.kv[4]}</div><div class="cmd mono">Install.cmd</div>
+      <div class="k">${T.kv[5]}</div><div class="cmd mono">Install.cmd -DeploymentType Uninstall</div>
+      <div class="k">${T.kv[6]}</div><div>${T.context}</div>
+      <div class="k">${T.kv[7]}</div><div>${T.detection}</div>
+    </div>
+    <div class="actions"><span class="btn primary">${T.openFolder}</span><span class="btn">${T.openGuide}</span><span class="btn">${T.copy}</span><span class="btn">${T.log}</span></div></div>`
+};
+
+document.getElementById("app").innerHTML = `
+  <div class="titlebar"><img src="../../assets/icon-32.png" alt=""><span class="t">Intune Package Builder</span>
+    <div class="ctl"><span>&#8211;</span><span>&#9633;</span><span>&#10005;</span></div></div>
+  <div class="body"><div class="nav">${nav(screen === "start" ? 0 : 0)}</div>
+    <div class="main">${screens[screen === "form" ? "form" : screen === "result" ? "result" : "start"]()}</div></div>
+  <div class="mark">${T.mock}</div>`;
+</script>
+</body>
+</html>
