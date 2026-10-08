@@ -2,7 +2,7 @@
 
 Beschreibt die Dateien, die der Core liest und schreibt (Spec §6, Liefergegenstand 4 in §13). Das Dokument wird zusammen mit dem Code gepflegt; beim Ändern eines Formats gehören Schema-Version, Migration, Tests und dieses Dokument in denselben PR.
 
-Stand: M1b (Projekt, Versionskonfiguration, Versionsordner, Sperre). Einstellungen folgen mit M1c, Quellenmanifest mit M2, Build-Manifest mit M4.
+Stand: M1c (Projekt, Versionskonfiguration, Versionsordner, Sperre, Einstellungen des Autorentools). Quellenmanifest folgt mit M2, Build-Manifest mit M4.
 
 ## Ablage
 
@@ -104,6 +104,33 @@ Jede Softwareversion liegt in `versions/<version>/` unterhalb des Projekts. Der 
 
 Numerisch, 1 bis 4 Teile aus je höchstens 9 Ziffern. Der Vergleich ist numerisch und ignoriert nachgestellte Nullen (`1.0` = `1.0.0`, `1.10` > `1.9`). Die Versionsliste einer Software wird nach dieser Ordnung sortiert, nicht nach Text und nicht nach Build-Zeitpunkt.
 
+## `settings.json` des Autorentools (Schema 1)
+
+Liegt **nicht** im Grundordner, sondern unter `%LOCALAPPDATA%\Intune Package Builder\settings.json` (ohne Administratorrechte beschreibbar, getrennt von austauschbaren Programmdateien und von den Projekten).
+
+| Feld | Typ | Bedeutung |
+|---|---|---|
+| `schemaVersion` | Zahl | 1 |
+| `baseFolder` | Text oder fehlt | Gewählter Grundordner; fehlt, solange der Benutzer noch keinen gewählt hat |
+| `recentProjects` | Liste aus `projectId` und `lastOpenedUtc` | Zuletzt geöffnete Projekte, neueste zuerst, höchstens 10, ohne Duplikate |
+
+- **Der Programmmodus (Standard oder Erweitert) wird nicht gespeichert.** Der Standardmodus ist bei jedem Start aktiv (Spec §5.2).
+- **Die Einstellungen verhindern nie den Programmstart.** Fehlt die Datei, ist sie beschädigt oder neuer als bekannt, liefert `Load` Standardwerte und den Fehler zur Anzeige. Eine beschädigte Datei wird vor dem Ersetzen als `settings.json.invalid-<Zeitstempel>.bak` gesichert; eine neuere Datei wird nie überschrieben (`UnsupportedSchemaException`).
+- **Ungültige oder doppelte Einträge** in `recentProjects` (zum Beispiel aus einer von Hand bearbeiteten Datei) werden beim Laden verworfen.
+
+### Grundordner
+
+`BaseFolderResolver.Resolve` bewertet den konfigurierten Grundordner:
+
+| Status | Bedeutung | `Path` |
+|---|---|---|
+| `NotConfigured` | Noch nichts gewählt (Erststart) | Vorschlag `Dokumente\Intune-Paketprojekte`, wird nicht angelegt |
+| `Ok` | Ordner existiert und ist beschreibbar (Schreibprobe mit einer temporären Datei) | der konfigurierte Ordner |
+| `Unreachable` | Ordner fehlt, ist kein Ordner, ist nicht absolut oder nicht erreichbar (zum Beispiel Netzlaufwerk offline) | der konfigurierte Ordner |
+| `NotWritable` | Ordner existiert, aber der Benutzer darf dort nicht schreiben | der konfigurierte Ordner |
+
+**Ein bereits konfigurierter Grundordner wird nie unbemerkt durch einen anderen ersetzt**, auch wenn er nicht erreichbar ist: der Status wird gemeldet, der Pfad bleibt. Ein relativer Pfad wird nicht angenommen, weil er vom Arbeitsverzeichnis abhinge.
+
 ## Geplante Formate
 
-- `source-manifest.json` (M2), `build-manifest.json` und `configuration.snapshot.json` (M4), `settings.json` des Autorentools mit Grundordner und zuletzt geöffneten Projekten (M1c).
+- `source-manifest.json` (M2), `build-manifest.json` und `configuration.snapshot.json` (M4).
