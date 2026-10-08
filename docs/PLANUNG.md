@@ -126,6 +126,8 @@ Entschieden:
 2. **UI-Sprache:** Deutsch und Englisch, je nach Programmsprache (.resx-Ressourcen).
 3. **Sprache der erzeugten Anleitung und Benutzerhinweise:** folgt der Programmsprache beim Build; die Sprache wird im Snapshot festgehalten.
 4. **Quellcode:** vollständig Englisch (Bezeichner, Kommentare, Logmeldungen, Konfiguration). Sichtbare Texte nur über Ressourcen.
+5. **JSON-Bibliothek:** Newtonsoft.Json (MIT). `System.Text.Json` zieht auf .NET Framework 4.8 viele Zusatzabhängigkeiten nach; Newtonsoft ist dort der robustere Weg. Das Format selbst ist in `docs/DATENFORMAT.md` beschrieben.
+6. **Sessions are disposable:** Stand, Entscheidungen und nächste Schritte stehen im Repository (`docs/ARBEITSSTAND.md`), jede Änderung dokumentiert sich im selben PR (Regel in `CLAUDE.md`).
 
 Offen (vor M5 bzw. M8 zu klären):
 

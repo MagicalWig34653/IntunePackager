@@ -3,4 +3,10 @@
     <RootNamespace>IntunePackageBuilder.Core</RootNamespace>
     <AssemblyName>IntunePackageBuilder.Core</AssemblyName>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="IntunePackageBuilder.Core.Tests" />
+  </ItemGroup>
 </Project>

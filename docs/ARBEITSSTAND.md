@@ -12,7 +12,7 @@ Aufteilung in einzeln mergbare Scheiben:
 
 | Scheibe | Inhalt | Stand |
 |---|---|---|
-| M1a | Projekt-ID, Versionsnummer, atomares Schreiben, Projekt- und Versionsmodell, Validierung, Schema-Migration, Projektspeicher (Anlegen, Laden, Notizen, Liste) | in Arbeit |
+| M1a | Projekt-ID, Versionsnummer, atomares Schreiben, Projekt- und Versionsmodell, Validierung, Schema-Migration, Projektspeicher (Anlegen, Laden, Notizen, Liste) | Code und Tests geschrieben, PR offen, CI-Nachweis steht aus |
 | M1b | Sperre je Projektversion, Versionsspeicher (Ablage, Liste nach numerischer Version), Einstellungen und Grundordner (nicht unbemerkt ersetzen), zuletzt geöffnet | offen |
 
 ## Erledigt und verifiziert (CI-Nachweis)
@@ -23,12 +23,16 @@ Aufteilung in einzeln mergbare Scheiben:
 ## In Arbeit
 
 - M1a (Branch `claude/great-feynman-hi1xfp`). Code ist bis zum ersten CI-Lauf unverifiziert, weil die Cloud-Sitzung kein .NET-SDK hat.
+  - Neu in `src/IntunePackageBuilder.Core`: `Projects/` (ProjectId, Project, ProjectStore, Ausnahmen), `Storage/` (AtomicFile, JsonFormat, SchemaMigrator, Ausnahmen), `Versions/` (VersionNumber, PackageVersionConfig, ConfigurationValidator).
+  - Tests in `tests/IntunePackageBuilder.Core.Tests` (ProjectId, VersionNumber, AtomicFile, SchemaMigrator, ProjectStore, ConfigurationValidator, JSON-Roundtrip).
+  - Doku dazu: `docs/DATENFORMAT.md`, `THIRD-PARTY.md` (Newtonsoft.Json), Entscheidungen in `docs/PLANUNG.md` §8.
+  - Lehre: Der Edit/Write-Hook greift nicht bei Dateien, die per Bash-Heredoc entstehen. Nach solchen Schreibvorgängen immer `check_i18n.py` laufen lassen (hat hier echte Umlaute in drei C#-Dateien gefunden; Umlaute im Code als `\u00e4`-Escapes schreiben).
 
 ## Nächste Schritte (in Reihenfolge)
 
 1. M1a fertigstellen, CI grün, mergen.
 2. M1b umsetzen (Sperren, Versionsspeicher, Grundordner), mergen.
-3. M1 abschließen: `docs/ABNAHME-MATRIX.md` (A03 Modell, A05, A06, A14 mit Nachweis), Roadmaps in READMEs und Webseite (Skill `milestone`).
+3. M1 abschließen: `docs/ABNAHME-MATRIX.md` (A03 Modell, A05, A06, A14 mit Nachweis; A14 ist zunächst nur im selben Prozess geprüft, ein Mehrprozess-Test fehlt noch), Roadmaps in READMEs und Webseite (Skill `milestone`).
 4. M2 beginnen (Quellenanalyse: MSI-Reader, EXE-Metadaten, Quellenmanifest, sicherer Import).
 
 ## Entscheidungen (Kurzfassung, Details in `docs/PLANUNG.md` §8)

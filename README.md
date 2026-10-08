@@ -69,7 +69,7 @@ src/      Autorentool (C# / WPF, .NET Framework 4.8) in getrennten Modulen
 deploy/   Client-Laufzeit: Wrapper-Vorlagen und gepinnte Drittanbieter-Bibliothek (geplant, M5)
 tools/    Win32 Content Prep Tool samt Herkunfts- und Prüfsummenmanifest (geplant, M4)
 tests/    xUnit vorhanden; Pester und UI-Tests geplant
-docs/     Spezifikation, Planung, Abnahme-Matrix
+docs/     Spezifikation, Planung, Abnahme-Matrix, Datenformat, Arbeitsstand
 assets/   App-Icon (SVG, PNG, ICO)
 design/   Quellen der Design-Mockups
 site/     GitHub-Pages-Webseite
