@@ -6,6 +6,7 @@ Verbindliches Abhängigkeitsmanifest (SPEC §4, §11). Jede Komponente mit Versi
 |---|---|---|---|---|---|---|
 | Microsoft Win32 Content Prep Tool (`IntuneWinAppUtil.exe`) | offen (M4) | github.com/microsoft/Microsoft-Win32-Content-Prep-Tool | MIT | offen | Erzeugt `.intunewin` | geplant |
 | PSAppDeployToolkit | offen (M5) | psappdeploytoolkit.com | LGPL-3.0 | offen | Benutzerinteraktion auf dem Zielgerät | geplant |
+| Newtonsoft.Json | 13.0.3 | NuGet (www.nuget.org/packages/Newtonsoft.Json) | MIT | wird beim Distributionsbau (M8) erfasst | JSON lesen und schreiben im Core; wird mit dem Autorentool ausgeliefert | aktiv |
 | xUnit | 2.9.2 | NuGet | Apache-2.0 | n/a (NuGet-Paket) | Nur Tests, nicht in der Distribution | aktiv |
 | Microsoft.NET.Test.Sdk | 17.11.1 | NuGet | MIT | n/a (NuGet-Paket) | Nur Tests, nicht in der Distribution | aktiv |
 | xunit.runner.visualstudio | 2.8.2 | NuGet | Apache-2.0 | n/a (NuGet-Paket) | Nur Tests, nicht in der Distribution | aktiv |

@@ -9,6 +9,7 @@ Authorization: the owner allowed Claude to create, drive and merge pull requests
 
 ## Steps
 
+0. Update `docs/ARBEITSSTAND.md` (and the matching docs) in the same change. A PR without the handoff update is not ready (sessions are disposable, see CLAUDE.md).
 1. Make sure the branch is the session-assigned one and rebased/merged onto the latest `origin/main`. If the previous PR of this branch was already merged, restart the branch from `origin/main` (same name) before committing new work.
 2. Run the local checks that exist: `python3 -I .claude/skills/check-i18n/check_i18n.py .`, plus `dotnet build/test` only where a .NET SDK is available. Cloud sessions usually have none; then CI is the first real build and the PR must say so.
 3. Push with `git push -u origin <branch>`; retry only on network errors (2s, 4s, 8s, 16s).

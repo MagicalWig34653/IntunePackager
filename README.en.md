@@ -69,7 +69,7 @@ src/      Authoring tool (C# / WPF, .NET Framework 4.8) in separate modules
 deploy/   Client runtime: wrapper templates and pinned third-party library (planned, M5)
 tools/    Win32 Content Prep Tool with provenance and checksum manifest (planned, M4)
 tests/    xUnit exists; Pester and UI tests planned
-docs/     Specification, planning, acceptance matrix (German)
+docs/     Specification, planning, acceptance matrix, data format, work status (German)
 assets/   App icon (SVG, PNG, ICO)
 design/   Sources of the design mockups
 site/     GitHub Pages website
