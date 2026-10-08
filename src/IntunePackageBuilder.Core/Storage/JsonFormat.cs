@@ -18,6 +18,9 @@ namespace IntunePackageBuilder.Core.Storage
                 NullValueHandling = NullValueHandling.Ignore,
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
                 DateParseHandling = DateParseHandling.None,
+                // Lists initialized with defaults in a constructor must be replaced by the stored values,
+                // otherwise every load would append to the defaults.
+                ObjectCreationHandling = ObjectCreationHandling.Replace,
                 Converters = { new StringEnumConverter() }
             };
         }

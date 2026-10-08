@@ -26,6 +26,7 @@ Aufteilung in einzeln mergbare Scheiben:
   - Neu in `src/IntunePackageBuilder.Core`: `Projects/` (ProjectId, Project, ProjectStore, Ausnahmen), `Storage/` (AtomicFile, JsonFormat, SchemaMigrator, Ausnahmen), `Versions/` (VersionNumber, PackageVersionConfig, ConfigurationValidator).
   - Tests in `tests/IntunePackageBuilder.Core.Tests` (ProjectId, VersionNumber, AtomicFile, SchemaMigrator, ProjectStore, ConfigurationValidator, JSON-Roundtrip).
   - Doku dazu: `docs/DATENFORMAT.md`, `THIRD-PARTY.md` (Newtonsoft.Json), Entscheidungen in `docs/PLANUNG.md` §8.
+  - CI-Lauf 1 von PR 6: Build fehlerfrei (0 Warnungen), 132 von 133 Tests grün. Fehler war echt: Newtonsoft hängt Listen beim Laden an Konstruktor-Standards an (`[0]` wurde `[0, 0]`). Behoben mit `ObjectCreationHandling.Replace` plus Regressionstests.
   - Lehre: Der Edit/Write-Hook greift nicht bei Dateien, die per Bash-Heredoc entstehen. Nach solchen Schreibvorgängen immer `check_i18n.py` laufen lassen (hat hier echte Umlaute in drei C#-Dateien gefunden; Umlaute im Code als `\u00e4`-Escapes schreiben).
 
 ## Nächste Schritte (in Reihenfolge)

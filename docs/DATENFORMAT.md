@@ -24,6 +24,7 @@ Alle JSON-Dateien: UTF-8 ohne BOM, eingerückt, Namen in camelCase, Enumeratione
 - **`schemaVersion`** (ganze Zahl ab 1) steht in jeder Datei. Fehlt sie oder ist sie keine positive ganze Zahl, ist die Datei nicht lesbar.
 - **Schreiben ist atomar:** Inhalt wird in eine temporäre Datei im selben Ordner geschrieben, auf den Datenträger geflusht und dann in einem Schritt an die Stelle der Zieldatei gesetzt. Ein Absturz hinterlässt keine halb geschriebene Datei. Schlägt das Ersetzen fehl (zum Beispiel weil die Zieldatei gesperrt ist), bleibt das Original unverändert und die temporäre Datei wird entfernt.
 - **Neuere Formate werden nie überschrieben:** Hat eine Datei eine höhere `schemaVersion` als das Programm kennt, wird sie nicht gelesen und `Save` verweigert das Überschreiben (`UnsupportedSchemaException`). Der Benutzer soll das Programm aktualisieren.
+- **Listen werden beim Lesen ersetzt, nicht ergänzt:** Die Standardwerte aus dem Programm (zum Beispiel Erfolgscode 0) werden durch die gespeicherte Liste ersetzt; wiederholtes Laden und Speichern verändert eine Liste nicht. (Ein Test hat das als Fehler aufgedeckt: Newtonsoft ergänzt standardmäßig.)
 - **Unbekannte Felder** gleicher Schema-Version werden beim Lesen ignoriert und beim erneuten Speichern nicht erhalten. Das ist eine bekannte Grenze; Felder werden nur mit einer neuen Schema-Version hinzugefügt.
 
 ## Migration

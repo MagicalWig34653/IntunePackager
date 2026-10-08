@@ -42,6 +42,37 @@ namespace IntunePackageBuilder.Core.Tests
         }
 
         [Fact]
+        public void RepeatedLoadAndSave_DoesNotGrowDefaultLists()
+        {
+            var json = JsonConvert.SerializeObject(Sample(), JsonFormat.CreateSettings());
+
+            for (var i = 0; i < 3; i++)
+            {
+                var config = JsonConvert.DeserializeObject<PackageVersionConfig>(json, JsonFormat.CreateSettings());
+                json = JsonConvert.SerializeObject(config, JsonFormat.CreateSettings());
+            }
+
+            var result = JsonConvert.DeserializeObject<PackageVersionConfig>(json, JsonFormat.CreateSettings());
+            Assert.Equal(new[] { 0 }, result.Runtime.SuccessCodes.ToArray());
+            Assert.Equal(new[] { 3010 }, result.Runtime.RebootCodes.ToArray());
+            Assert.Equal(new[] { 1618 }, result.Runtime.RetryCodes.ToArray());
+            Assert.Equal(new[] { "reader.exe" }, result.Interaction.ProcessesToClose.ToArray());
+            Assert.Single(result.PostInstall.SharedShortcutsToRemove);
+        }
+
+        [Fact]
+        public void StoredListsReplaceTheDefaults()
+        {
+            const string json = "{\"schemaVersion\":1,\"runtime\":{\"successCodes\":[0,3011],\"rebootCodes\":[],\"retryCodes\":[1618,1619]}}";
+
+            var config = JsonConvert.DeserializeObject<PackageVersionConfig>(json, JsonFormat.CreateSettings());
+
+            Assert.Equal(new[] { 0, 3011 }, config.Runtime.SuccessCodes.ToArray());
+            Assert.Empty(config.Runtime.RebootCodes);
+            Assert.Equal(new[] { 1618, 1619 }, config.Runtime.RetryCodes.ToArray());
+        }
+
+        [Fact]
         public void Serialization_UsesCamelCaseNamesAndStringEnums()
         {
             var document = JObject.Parse(JsonConvert.SerializeObject(Sample(), JsonFormat.CreateSettings()));
