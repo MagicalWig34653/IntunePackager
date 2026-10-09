@@ -39,6 +39,7 @@ Alle Läufe: Windows-CI mit `windows-latest`, `windows-2022` und Pester unter Wi
 | M3b: Erkennungsskript-Generator (Lauf 1 mit Build-Fehler durch rohe Zeilentrenner, behoben) | 37884553567 | 273 xUnit (Core), 31 (Analysis), 61 (Generation), 44 Pester (davon 34 neue Erkennungstests mit echter Registry und Dateien) bestanden |
 | M3c: HTML-Anleitung de/en (Lauf 1: ein Testfehler, Lauf 2: Pester scheiterte am Runner-Image vor jedem Test, Lauf 3 grün) | 37885403336 | alle drei Jobs bestanden (Generation: 79 xUnit; Core 273, Analysis 31, Pester 44) |
 | M3d: Wrapper-Konfiguration, Gesamterzeugung, A17 über alle Formate (erster Lauf grün) | 37885815101 | 273 xUnit (Core), 31 (Analysis), 97 (Generation), 44 Pester bestanden |
+| M4a: Prozessstart, Content Prep Tool (Fake und echtes Werkzeug 1.8.7), `.intunewin`-Prüfung (Lauf 1: Prozessbaum-Fund, Lauf 2 grün) | 37886853214 | alle drei Jobs bestanden (Build.Tests: 49, davon 3 gegen das echte Werkzeug; Core 273, Analysis 31, Generation 97, Pester 44) |
 
 Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups, Pages-Webseite (deployt), Claude-Code-Umgebung (`CLAUDE.md`, Agents, Skills, Hook). Neue Dateien und Formate: siehe `docs/DATENFORMAT.md`.
 
