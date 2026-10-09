@@ -1,0 +1,47 @@
+<UserControl x:Class="IntunePackageBuilder.App.Views.ResultView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:infra="clr-namespace:IntunePackageBuilder.App.Infrastructure">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="{infra:Loc Result_NewPackage}" Command="{Binding NewPackageCommand}" Margin="0,0,10,0"
+                    AutomationProperties.AutomationId="NewPackage" />
+            <Button Content="{infra:Loc Result_CopyValues}" Command="{Binding CopyValuesCommand}" Margin="0,0,10,0"
+                    AutomationProperties.AutomationId="CopyValues" />
+            <Button Content="{infra:Loc Result_OpenGuide}" Command="{Binding OpenGuideCommand}" Margin="0,0,10,0"
+                    AutomationProperties.AutomationId="OpenGuide" />
+            <Button Content="{infra:Loc Result_OpenFolder}" Command="{Binding OpenFolderCommand}" IsDefault="True" FontWeight="SemiBold"
+                    AutomationProperties.AutomationId="OpenFolder" />
+        </StackPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel MaxWidth="760" HorizontalAlignment="Left">
+                <TextBlock Style="{StaticResource Heading}" Text="{infra:Loc Result_Heading}" AutomationProperties.AutomationId="ResultHeading" />
+                <TextBlock TextWrapping="Wrap" Text="{infra:Loc Result_StatusDone}" />
+                <TextBlock Style="{StaticResource Note}" Text="{infra:Loc Result_Note}" />
+                <TextBlock Style="{StaticResource Note}" Text="{Binding CopiedText}"
+                           Visibility="{Binding Copied, Converter={StaticResource Visible}}" AutomationProperties.AutomationId="CopiedNote" />
+
+                <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Result_Software}" />
+                <TextBlock TextWrapping="Wrap" Text="{Binding Outcome.SoftwareName}" />
+                <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Result_Version}" />
+                <TextBlock Text="{Binding Outcome.TargetVersion}" />
+                <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Result_BuildId}" />
+                <TextBlock Text="{Binding Outcome.BuildId}" />
+                <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Result_Output}" />
+                <TextBlock TextWrapping="Wrap" Text="{Binding Outcome.BuildDirectory}" AutomationProperties.AutomationId="OutputFolder" />
+                <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Result_InstallCommand}" />
+                <TextBox IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Outcome.InstallCommand, Mode=OneWay}" />
+                <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Result_UninstallCommand}" />
+                <TextBox IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Outcome.UninstallCommand, Mode=OneWay}" />
+                <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Result_InstallContext}" />
+                <TextBlock Text="{Binding Outcome.InstallContext}" />
+                <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Result_Detection}" />
+                <TextBlock TextWrapping="Wrap" Text="{Binding Outcome.DetectionScript}" />
+                <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Result_DetectionTarget}" />
+                <TextBlock TextWrapping="Wrap" Text="{Binding Outcome.DetectionTarget}" />
+                <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Result_Log}" />
+                <TextBlock TextWrapping="Wrap" Text="{Binding Outcome.LogPath}" />
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

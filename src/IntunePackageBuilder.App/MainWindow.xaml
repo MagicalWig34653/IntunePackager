@@ -1,8 +1,29 @@
 <Window x:Class="IntunePackageBuilder.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Intune Package Builder" Height="600" Width="900" MinHeight="480" MinWidth="720">
-    <Grid>
-        <TextBlock x:Name="VersionText" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" />
-    </Grid>
+        xmlns:vm="clr-namespace:IntunePackageBuilder.App.ViewModels"
+        xmlns:views="clr-namespace:IntunePackageBuilder.App.Views"
+        Title="Intune Package Builder" Height="720" Width="980" MinHeight="480" MinWidth="720"
+        UseLayoutRounding="True" AutomationProperties.AutomationId="MainWindow">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:StartViewModel}">
+            <views:StartView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:FormViewModel}">
+            <views:FormView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ResultViewModel}">
+            <views:ResultView />
+        </DataTemplate>
+    </Window.Resources>
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Padding="16,8" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
+            <DockPanel>
+                <ToggleButton DockPanel.Dock="Right" Padding="12,4" IsChecked="{Binding AdvancedMode}" Content="{Binding ModeText}"
+                              AutomationProperties.AutomationId="ModeToggle" />
+                <TextBlock x:Name="ProductText" VerticalAlignment="Center" FontWeight="SemiBold" />
+            </DockPanel>
+        </Border>
+        <ContentControl Content="{Binding Current}" Margin="16" IsTabStop="False" />
+    </DockPanel>
 </Window>

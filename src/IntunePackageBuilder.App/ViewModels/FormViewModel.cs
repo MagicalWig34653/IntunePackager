@@ -92,6 +92,20 @@ namespace IntunePackageBuilder.App.ViewModels
                 RebootCodes, RetryCodes, InstallMessage, UninstallMessage, DetailMessage
             };
 
+            foreach (var field in Fields)
+            {
+                field.Label = Loc.Get("Form_" + field.Key);
+            }
+
+            InstallArguments.Label = InstallArgumentsLabel;
+            TargetVersion.Hint = Loc.Get("Form_TargetVersionHint");
+            InstallArguments.Hint = IsExe ? Loc.Get("Form_InstallArgumentsHint") : null;
+            DetectionPath.Hint = Loc.Get("Form_DetectionPathHint");
+            foreach (var field in new[] { ProcessesToClose, Shortcuts, InstallMessage, UninstallMessage, DetailMessage })
+            {
+                field.IsMultiline = true;
+            }
+
             SoftwareName.Assign(draft.Identity.SoftwareName);
             Manufacturer.Assign(draft.Identity.Manufacturer);
             TargetVersion.Assign(draft.Identity.TargetVersion);

@@ -23,6 +23,11 @@ namespace IntunePackageBuilder.App.ViewModels
 
         public AppServices Services { get; private set; }
 
+        public string ModeText
+        {
+            get { return Loc.Get(_advancedMode ? "Mode_Advanced" : "Mode_Standard"); }
+        }
+
         public StartViewModel Start { get; private set; }
 
         public bool AdvancedMode

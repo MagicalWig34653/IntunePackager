@@ -31,6 +31,11 @@ namespace IntunePackageBuilder.App.ViewModels
 
         public ICommand NewPackageCommand { get; private set; }
 
+        public string CopiedText
+        {
+            get { return Loc.Get("Result_Copied"); }
+        }
+
         /// <summary>True after the copy; the page then says that the values of this build were copied.</summary>
         public bool Copied
         {

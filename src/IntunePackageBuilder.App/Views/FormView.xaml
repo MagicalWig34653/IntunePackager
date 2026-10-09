@@ -1,0 +1,99 @@
+<UserControl x:Class="IntunePackageBuilder.App.Views.FormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:infra="clr-namespace:IntunePackageBuilder.App.Infrastructure">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8"
+                        Visibility="{Binding IsBusy, Converter={StaticResource Visible}}" AutomationProperties.AutomationId="BuildProgress">
+                <ProgressBar IsIndeterminate="True" Width="160" Height="14" VerticalAlignment="Center" />
+                <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Text="{Binding PhaseText}" />
+                <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Text="{Binding ElapsedText}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="{infra:Loc Common_Back}" Command="{Binding BackCommand}" Margin="0,0,10,0" AutomationProperties.AutomationId="Back" />
+                <Button Content="{infra:Loc Form_Create}" Command="{Binding CreateCommand}" IsDefault="True" FontWeight="SemiBold"
+                        AutomationProperties.AutomationId="Create" />
+            </StackPanel>
+        </StackPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel MaxWidth="760" HorizontalAlignment="Left">
+                <TextBlock Style="{StaticResource Heading}" Text="{infra:Loc Form_Heading}" />
+                <TextBlock Style="{StaticResource Label}" Margin="0" Text="{infra:Loc Form_Source}" />
+                <TextBlock TextWrapping="Wrap" Text="{Binding SourceText}" AutomationProperties.AutomationId="SourceText" />
+
+                <ItemsControl ItemsSource="{Binding Notes}" Margin="0,8,0,0" Focusable="False">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Style="{StaticResource Note}" Text="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <StackPanel Margin="0,10,0,0" Visibility="{Binding HasProblems, Converter={StaticResource Visible}}"
+                            AutomationProperties.AutomationId="Problems">
+                    <TextBlock Style="{StaticResource ErrorText}" Text="{infra:Loc Form_ProblemsHeading}" />
+                    <ItemsControl ItemsSource="{Binding Problems}" Focusable="False">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Style="{StaticResource ErrorText}" Margin="12,0,0,0" Text="{Binding Message}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0" Visibility="{Binding NeedsTool, Converter={StaticResource Visible}}"
+                            AutomationProperties.AutomationId="ToolNeeded">
+                    <TextBlock Style="{StaticResource ErrorText}" Text="{infra:Loc Tool_Heading}" />
+                    <TextBlock TextWrapping="Wrap" Text="{infra:Loc Tool_Text}" />
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <Button Content="{infra:Loc Tool_Choose}" Command="{Binding ChooseToolCommand}" Margin="0,0,10,0"
+                                AutomationProperties.AutomationId="ChooseTool" />
+                        <Button Content="{infra:Loc Tool_Link}" Command="{Binding OpenToolDownloadCommand}" />
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0" Visibility="{Binding HasError, Converter={StaticResource Visible}}"
+                            AutomationProperties.AutomationId="BuildError">
+                    <TextBlock Style="{StaticResource ErrorText}" Text="{infra:Loc Error_Heading}" />
+                    <TextBlock TextWrapping="Wrap" Text="{Binding ErrorText}" />
+                </StackPanel>
+
+                <ItemsControl ItemsSource="{Binding Fields}" IsEnabled="{Binding IsEditable}" Focusable="False" Margin="0,4,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Visibility="{Binding IsVisible, Converter={StaticResource Visible}}">
+                                <TextBlock Style="{StaticResource Label}" Text="{Binding Label}" />
+                                <TextBox Tag="{Binding Key}" AutomationProperties.AutomationId="{Binding Key}"
+                                         AutomationProperties.Name="{Binding Label}"
+                                         IsReadOnly="{Binding IsReadOnly}"
+                                         Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMultiline}" Value="True">
+                                                    <Setter Property="AcceptsReturn" Value="True" />
+                                                    <Setter Property="TextWrapping" Value="Wrap" />
+                                                    <Setter Property="MinHeight" Value="56" />
+                                                    <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding HasError}" Value="True">
+                                                    <Setter Property="BorderBrush" Value="#B00020" />
+                                                    <Setter Property="BorderThickness" Value="2" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                                <TextBlock Style="{StaticResource ErrorText}" Text="{Binding Error}"
+                                           Visibility="{Binding HasError, Converter={StaticResource Visible}}" />
+                                <TextBlock Style="{StaticResource Note}" Text="{Binding Hint}"
+                                           Visibility="{Binding HasHint, Converter={StaticResource Visible}}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

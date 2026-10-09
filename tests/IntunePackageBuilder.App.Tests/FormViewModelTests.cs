@@ -47,6 +47,33 @@ namespace IntunePackageBuilder.App.Tests
             Assert.Equal(string.Empty, form.UninstallProgram.Value);
         }
 
+        [Theory]
+        [InlineData("en")]
+        [InlineData("de")]
+        public void EveryEntryHasALabelFromTheResources(string culture)
+        {
+            using (var fixture = new AppFixture(culture))
+            {
+                var main = new MainViewModel(fixture.Services);
+                var form = new FormViewModel(main, fixture.Services, fixture.ExeAnalysis());
+
+                Assert.All(form.Fields, field => Assert.False(string.IsNullOrEmpty(field.Label) || field.Label.StartsWith("!", StringComparison.Ordinal), field.Key));
+                Assert.True(form.InstallArguments.HasHint);
+                Assert.True(form.ProcessesToClose.IsMultiline);
+            }
+        }
+
+        [Fact]
+        public void TheModeTextFollowsTheMode()
+        {
+            var main = new MainViewModel(_fixture.Services);
+            var standard = main.ModeText;
+
+            main.AdvancedMode = true;
+
+            Assert.NotEqual(standard, main.ModeText);
+        }
+
         [Fact]
         public void AnExeAsksForTheVendorInputAndStandardModeHidesTheRest()
         {
