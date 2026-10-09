@@ -11,12 +11,12 @@
 
 <p align="center">
   <a href="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml"><img src="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/Status-Paketbau%20fertig%2C%20noch%20keine%20Oberfl%C3%A4che-orange" alt="Status: Paketbau fertig, noch keine Oberfläche">
+  <img src="https://img.shields.io/badge/Status-Laufzeit%20fertig%2C%20noch%20keine%20Oberfl%C3%A4che-orange" alt="Status: Laufzeit fertig, noch keine Oberfläche">
   <img src="https://img.shields.io/badge/Plattform-Windows%2011%20%7C%20Server%202022-blue" alt="Plattform">
   <a href="LICENSE"><img src="https://img.shields.io/badge/Lizenz-AGPL--3.0-green" alt="Lizenz AGPL-3.0"></a>
 </p>
 
-> **Projektstand:** Projektgerüst, Core (Projekte, Versionen, Sperren, Einstellungen) Quellenanalyse (MSI, EXE, Manifest, sicherer Import) und die Generatoren (Erkennungsskript, Intune-Anleitung, JSON/CSV, Wrapper-Konfiguration) stehen und sind per Windows-CI getestet (M0 bis M4 fertig). Der Paketbau mit dem Content Prep Tool steht, das Werkzeug muss der Benutzer aber selbst beschaffen (Lizenz). Es gibt noch keine Client-Laufzeit und keine Oberfläche, also keine nutzbaren Funktionen, und es gibt kein Release. Die Bilder unten sind **Design-Mockups**, keine Screenshots eines lauffähigen Programms.
+> **Projektstand:** Projektgerüst, Core (Projekte, Versionen, Sperren, Einstellungen) Quellenanalyse (MSI, EXE, Manifest, sicherer Import) und die Generatoren (Erkennungsskript, Intune-Anleitung, JSON/CSV, Wrapper-Konfiguration) stehen und sind per Windows-CI getestet (M0 bis M5 fertig). Der Paketbau mit dem Content Prep Tool steht, das Werkzeug muss der Benutzer aber selbst beschaffen (Lizenz). Die Client-Laufzeit (Wrapper, Rückgabecodes, Hinweis zum Schließen von Programmen) ist per Pester getestet, ein Fortschrittsfenster und Gerätetests fehlen noch. Es gibt keine Oberfläche, also keine nutzbaren Funktionen, und es gibt kein Release. Die Bilder unten sind **Design-Mockups**, keine Screenshots eines lauffähigen Programms.
 
 Der Intune Package Builder ist eine Windows-Desktopanwendung, die aus einer MSI, einer EXE oder einem Herstellerordner ein vollständiges Microsoft-Intune-Win32-Paket erstellt:
 
@@ -54,8 +54,8 @@ Nicht Teil von Version 1: direkter Upload nach Intune, Graph-Anmeldung, Gruppenz
 | M2 | Quellenanalyse: MSI-Reader, EXE-Metadaten, Manifeste, sicherer Import | fertig |
 | M3 | Generatoren: Erkennungsskript, Intune-Anleitung, JSON/CSV, Wrapper-Konfiguration | fertig |
 | M4 | Build-Pipeline mit dem Content Prep Tool | fertig |
-| M5 | Client-Laufzeit: Wrapper, Rückgabecodes, Benutzerinteraktion | als Nächstes |
-| M6 | Oberfläche: Standardmodus, Drag-and-drop, Ergebnisse | geplant |
+| M5 | Client-Laufzeit: Wrapper, Rückgabecodes, Benutzerinteraktion | fertig, ohne Fortschrittsfenster |
+| M6 | Oberfläche: Standardmodus, Drag-and-drop, Ergebnisse | als Nächstes |
 | M7 | Erweiterter Modus, Projektansicht, Update-Ablauf | geplant |
 | M8 | Distribution, Dokumentation, Geräte-Prüfprotokoll | geplant |
 | M9 | Optional: Intune-Upload per Microsoft Graph (nicht Teil von Version 1) | vorgemerkt |
@@ -66,7 +66,7 @@ Die zugehörigen Abnahmeprüfungen A01–A18 stehen in der [Abnahme-Matrix](docs
 
 ```text
 src/      Autorentool (C# / WPF, .NET Framework 4.8) in getrennten Modulen
-deploy/   Client-Laufzeit: Wrapper-Vorlagen und gepinnte Drittanbieter-Bibliothek (geplant, M5)
+deploy/   Client-Laufzeit: Wrapper-Vorlagen (`deploy/template`)
 tools/    Herkunfts- und Prüfsummenangaben zum Win32 Content Prep Tool (das Programm selbst wird nicht mitgeliefert, M4)
 tests/    xUnit und Pester vorhanden; UI-Tests geplant
 docs/     Spezifikation, Planung, Abnahme-Matrix, Datenformat, Arbeitsstand

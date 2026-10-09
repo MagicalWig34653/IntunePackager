@@ -18,8 +18,8 @@ Zuordnung der verbindlichen automatisierten Prüfungen aus [SPEC.md](SPEC.md) §
 | A12 | Rekursiver Ordner / Junction abgelehnt | M2 | xUnit | bestanden (CI 37833609876), mit echten Junctions |
 | A13 | Rechte-/Platz-/Packwerkzeugfehler | M4 | xUnit | bestanden (CI 37887554732; Werkzeug: CI 37886853214): nicht beschreibbarer Build-Ordner, zu wenig Platz (über austauschbare Messung), zu lange Pfade, Werkzeugfehler, Zeitüberschreitung, ungültiges Paket, fehlende Vorlagen; nichts Halbes veröffentlicht, Aufräumen nur mit Marker. Nicht real provoziert: ein wirklich volles Laufwerk |
 | A14 | Zweiter Prozess, gleiche Version | M1 | xUnit (Mehrprozess) | Sperre auf Speicherebene bestanden mit echtem Zweitprozess (CI 37827032442); Verhalten in der UI offen |
-| A15 | Erkennung älter / passend / neuer / fremd | M3, M5 | Pester | Erzeugtes Skript gegen echte Registry-Schlüssel und Dateien bestanden (CI 37884553567); Verhalten im Wrapper (M5) und unter LocalSystem (M8) offen |
-| A16 | Erkennung ohne Paketcache | M3, M5 | Pester | Skript allein in leerem Ordner, anderer Arbeitsordner, ohne Bezug zu Paket oder Cache bestanden (CI 37884553567) |
+| A15 | Erkennung älter / passend / neuer / fremd | M3, M5 | Pester | Erzeugtes Skript gegen echte Registry-Schlüssel und Dateien bestanden (CI 37884553567); die Zielzustandsprüfung des Wrappers liefert für dieselben Fälle dasselbe Ergebnis und der Wrapper reicht den Installer-Code durch (CI 37888755850); unter LocalSystem auf einem Gerät (M8) offen |
+| A16 | Erkennung ohne Paketcache | M3, M5 | Pester | Skript allein in leerem Ordner, anderer Arbeitsordner, ohne Bezug zu Paket oder Cache bestanden (CI 37884553567); die Wrapper-Prüfung liest den Zustand direkt, nicht aus dem Cache (CI 37888755850) |
 | A17 | Sonderzeichen in HTML/JSON/CSV/PowerShell | M3 | xUnit, Pester | bestanden über alle Formate: JSON/CSV (CI 37835593601), PowerShell (CI 37884553567), HTML, Wrapper-Konfiguration und Gesamterzeugung mit feindlichen Werten (CI 37885815101) |
 | A18 | Distributionsinhalt und Prüfsummen | M8 | Skript in CI | offen |
 
