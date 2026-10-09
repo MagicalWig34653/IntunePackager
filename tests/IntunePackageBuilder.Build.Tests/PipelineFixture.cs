@@ -96,6 +96,18 @@ namespace IntunePackageBuilder.Build.Tests
             get { return Path.Combine(VersionDirectory, "builds"); }
         }
 
+        /// <summary>Replaces the stored source and its manifest (for tests that need other files than the standard ones).</summary>
+        public void ReplaceSource(Action<string> populate)
+        {
+            Directory.Delete(SourceDirectory, true);
+            Directory.CreateDirectory(SourceDirectory);
+            populate(SourceDirectory);
+            var manifestPath = Path.Combine(VersionDirectory, SourceManifest.FileName);
+            File.Delete(manifestPath);
+            Manifest = SourceManifestBuilder.Build(SourceDirectory);
+            SourceManifestStore.WriteNew(manifestPath, Manifest);
+        }
+
         public static PackageVersionConfig MsiConfiguration()
         {
             var config = PackageVersionConfig.CreateDefault("contoso-reader", InstallerType.Msi);

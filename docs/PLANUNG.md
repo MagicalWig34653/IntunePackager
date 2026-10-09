@@ -129,7 +129,9 @@ Entschieden:
 5. **JSON-Bibliothek:** Newtonsoft.Json (MIT). `System.Text.Json` zieht auf .NET Framework 4.8 viele Zusatzabhängigkeiten nach; Newtonsoft ist dort der robustere Weg. Das Format selbst ist in `docs/DATENFORMAT.md` beschrieben.
 6. **Paketschnittstelle (M3d):** Das Paket enthält im Wurzelordner `Install.cmd`, `Deployment.config.json` und den Ordner `Files\` mit den gesicherten Quellen (Installer und Herstellerdateien, Pfade wie in `configuration.json`). Das Erkennungsskript `Detect-App.ps1` liegt **nicht** im Paket, sondern im Ordner `intune` des Builds. Die Namen stehen in `DeploymentInterface`; M4 und M5 richten sich danach.
 7. **Content Prep Tool nicht mitliefern (vorläufig, M4):** Die Lizenz des Tools ist keine Open-Source-Lizenz; Abschnitt 4e verbietet, die Software zu teilen oder zu veröffentlichen. Deshalb kommt `IntuneWinAppUtil.exe` weder ins Repository noch in die Distribution. Das Autorentool nimmt den Pfad zum Tool aus den Einstellungen, prüft Größe und SHA-256 gegen die in `THIRD-PARTY.md` festgehaltene Version (1.8.7) und baut nur mit einer bekannten Version (andere Versionen nur nach ausdrücklicher Bestätigung). Die CI lädt das Tool für ihre Tests selbst vom Microsoft-Repository und prüft dieselbe SHA-256. Der Benutzer liest die Lizenzbedingungen und beschafft das Tool selbst; die Oberfläche (M6) führt ihn dorthin. **Ob eine Mitlieferung erlaubt ist, klärt der Projekteigentümer mit Microsoft; bis dahin gilt diese Regelung.** Das weicht von der Skizze `tools/` in der Spec ab.
-8. **Sessions are disposable:** Stand, Entscheidungen und nächste Schritte stehen im Repository (`docs/ARBEITSSTAND.md`), jede Änderung dokumentiert sich im selben PR (Regel in `CLAUDE.md`).
+8. **Benutzerinteraktion in M5 ohne PSAppDeployToolkit (vorläufig):** Die Planung sah PSADT vor. Für M5 ist stattdessen eine kleine eigene Sitzungsvermittlung über `WTSSendMessage` umgesetzt, weil sich PSADT (Version, Vendor-Prüfsumme, Oberfläche aus SYSTEM) in der Cloud-Sitzung nicht prüfen lässt und ein unverifizierter Fremdcode im Paket schwerer wiegt als ein kleiner, getesteter Eigenbau. Folge: Es gibt Hinweisfenster zum Schließen von Programmen, aber **noch kein Fortschrittsfenster**. Die Schnittstelle (`Send-UserMessage`, `Request-CloseProcesses`) ist austauschbar. Entscheidung PSADT-Version (offen, Nr. 1) bleibt bestehen, falls das Fortschrittsfenster mit PSADT gelöst werden soll. Siehe `docs/CLIENT.md`.
+9. **MSI und `ALLUSERS` (Annahme für M5):** Der Wrapper ergänzt `ALLUSERS` nicht; die Installationsparameter der Konfiguration können es enthalten. Die Entscheidung (offen, Nr. 5) bleibt bestehen.
+10. **Sessions are disposable:** Stand, Entscheidungen und nächste Schritte stehen im Repository (`docs/ARBEITSSTAND.md`), jede Änderung dokumentiert sich im selben PR (Regel in `CLAUDE.md`).
 
 Offen (vor M5 bzw. M8 zu klären):
 
@@ -165,7 +167,7 @@ Quellen: Microsoft Learn (Permissions reference, win32LobApp, mobileAppContentFi
 
 Erledigt: M0 (Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung; CI grün, .NET-Tests 8/8, Pester 10/10), README, Icon, Entwurfs-Mockups, Pages-Seite und Claude-Code-Umgebung.
 
-Erledigt: M1 (Core), M2 (Quellenanalyse), M3 (Generatoren) und M4 (Build-Pipeline), jeweils mit CI-Nachweis in `docs/ARBEITSSTAND.md`.
+Erledigt: M1 (Core), M2 (Quellenanalyse), M3 (Generatoren) M4 (Build-Pipeline) und M5 (Client-Laufzeit, ohne Fortschrittsfenster), jeweils mit CI-Nachweis in `docs/ARBEITSSTAND.md`.
 
-1. M5 (Client-Laufzeit: `Install.cmd`, Wrapper, Rückgabecodes, Benutzerinteraktion). Vorher die offenen Entscheidungen PSADT-Version und `ALLUSERS` (§8) mit Annahme dokumentieren.
-2. Danach M6 bis M8 (Oberfläche, erweiterter Modus, Distribution und Prüfprotokoll).
+1. M6 (Oberfläche: Standardmodus, Drag-and-drop, Ergebnisse) gegen die fertigen Module; Fortschrittsfenster der Client-Laufzeit als offenen Punkt führen (`docs/CLIENT.md`).
+2. Danach M7 und M8 (Oberfläche, erweiterter Modus, Distribution und Prüfprotokoll).
