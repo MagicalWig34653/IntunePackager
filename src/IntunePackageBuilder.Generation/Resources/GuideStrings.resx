@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PageTitle" xml:space="preserve"><value>Intune setup guide - {0}</value></data>
+  <data name="Heading" xml:space="preserve"><value>Intune setup guide</value></data>
+  <data name="Intro" xml:space="preserve"><value>This guide lists the values to enter in the Microsoft Intune admin center for build {0}. It only describes settings. It does not show that anything was uploaded, assigned or installed.</value></data>
+  <data name="LabelBuild" xml:space="preserve"><value>Build ID</value></data>
+  <data name="LabelSoftware" xml:space="preserve"><value>Software</value></data>
+  <data name="LabelTargetVersion" xml:space="preserve"><value>Target version</value></data>
+  <data name="MixWarningTitle" xml:space="preserve"><value>Do not mix builds</value></data>
+  <data name="MixWarningText" xml:space="preserve"><value>Use the package file {0} and the detection script {1} of this build ({2}) only together. If you combine the .intunewin file of one version with the detection script of another build, Intune checks for the wrong state.</value></data>
+  <data name="ColSetting" xml:space="preserve"><value>Intune setting</value></data>
+  <data name="ColValue" xml:space="preserve"><value>Value</value></data>
+  <data name="ColCode" xml:space="preserve"><value>Return code</value></data>
+  <data name="ColType" xml:space="preserve"><value>Code type</value></data>
+  <data name="SecAppType" xml:space="preserve"><value>1. App type</value></data>
+  <data name="FldAppType" xml:space="preserve"><value>Select app type</value></data>
+  <data name="ValAppType" xml:space="preserve"><value>Windows app (Win32)</value></data>
+  <data name="SecPackage" xml:space="preserve"><value>2. App package file</value></data>
+  <data name="FldPackageFile" xml:space="preserve"><value>App package file</value></data>
+  <data name="SecInfo" xml:space="preserve"><value>3. App information</value></data>
+  <data name="FldName" xml:space="preserve"><value>Name</value></data>
+  <data name="FldPublisher" xml:space="preserve"><value>Publisher</value></data>
+  <data name="FldVersion" xml:space="preserve"><value>App version</value></data>
+  <data name="FldDescription" xml:space="preserve"><value>Description</value></data>
+  <data name="SecProgram" xml:space="preserve"><value>4. Program</value></data>
+  <data name="FldInstallCmd" xml:space="preserve"><value>Install command</value></data>
+  <data name="FldUninstallCmd" xml:space="preserve"><value>Uninstall command</value></data>
+  <data name="FldInstallBehavior" xml:space="preserve"><value>Install behavior</value></data>
+  <data name="ValSystem" xml:space="preserve"><value>System</value></data>
+  <data name="FldTimeout" xml:space="preserve"><value>Maximum allowed run time (minutes)</value></data>
+  <data name="FldRestart" xml:space="preserve"><value>Device restart behavior</value></data>
+  <data name="ValRestartByCodes" xml:space="preserve"><value>Determine behavior based on return codes</value></data>
+  <data name="NoteRestart" xml:space="preserve"><value>The package never forces a restart. A restart is only requested through the return codes in section 6.</value></data>
+  <data name="FldProcessesToClose" xml:space="preserve"><value>Programs that must be closed</value></data>
+  <data name="NoteProcessesToClose" xml:space="preserve"><value>The package asks the user to close these programs. It does not end them by force.</value></data>
+  <data name="SecRequirements" xml:space="preserve"><value>5. Requirements</value></data>
+  <data name="FldArch" xml:space="preserve"><value>Operating system architecture</value></data>
+  <data name="ValArch64" xml:space="preserve"><value>64-bit</value></data>
+  <data name="FldMinOs" xml:space="preserve"><value>Minimum operating system</value></data>
+  <data name="NotePlaceholder" xml:space="preserve"><value>Placeholder: this value has not been decided yet. Check it against your environment before you rely on it.</value></data>
+  <data name="SecReturnCodes" xml:space="preserve"><value>6. Return codes</value></data>
+  <data name="TypeSuccess" xml:space="preserve"><value>Success</value></data>
+  <data name="TypeSoftReboot" xml:space="preserve"><value>Soft reboot</value></data>
+  <data name="TypeHardReboot" xml:space="preserve"><value>Hard reboot</value></data>
+  <data name="TypeRetry" xml:space="preserve"><value>Retry</value></data>
+  <data name="NoteReturnCodes" xml:space="preserve"><value>Enter every code of this table. Intune treats codes that are not listed as failures.</value></data>
+  <data name="NoteReturn1641" xml:space="preserve"><value>Code 1641 means that the installer already restarted the device. It is listed as hard reboot and never as a quiet success.</value></data>
+  <data name="SecDetection" xml:space="preserve"><value>7. Detection rules</value></data>
+  <data name="FldRuleFormat" xml:space="preserve"><value>Rules format</value></data>
+  <data name="ValRuleFormatScript" xml:space="preserve"><value>Use a custom detection script</value></data>
+  <data name="FldScriptFile" xml:space="preserve"><value>Script file</value></data>
+  <data name="FldRun32" xml:space="preserve"><value>Run script as 32-bit process on 64-bit clients</value></data>
+  <data name="FldSignatureCheck" xml:space="preserve"><value>Enforce script signature check and run script silently</value></data>
+  <data name="ValYes" xml:space="preserve"><value>Yes</value></data>
+  <data name="ValNo" xml:space="preserve"><value>No</value></data>
+  <data name="FldSignatureStatus" xml:space="preserve"><value>Signature status of the script</value></data>
+  <data name="ValUnsigned" xml:space="preserve"><value>Not signed</value></data>
+  <data name="ValSigned" xml:space="preserve"><value>Signed</value></data>
+  <data name="NoteSignature" xml:space="preserve"><value>The script is not signed, so the signature check must stay off. Intune would not accept an unsigned script with the check on.</value></data>
+  <data name="FldRule" xml:space="preserve"><value>What the script checks</value></data>
+  <data name="RuleMsi" xml:space="preserve"><value>The product code {0} is installed (32-bit or 64-bit registry view) with version {1} or higher.</value></data>
+  <data name="RuleFile" xml:space="preserve"><value>The file {0} exists and has file version {1} or higher.</value></data>
+  <data name="NoteContract" xml:space="preserve"><value>Intune treats the app as detected when the script ends with exit code 0 and writes text to standard output. The script reads the real state of the device and uses no files of the package.</value></data>
+  <data name="SecAssignment" xml:space="preserve"><value>8. Assignments</value></data>
+  <data name="AssignPilot" xml:space="preserve"><value>Assign the app to a pilot group first and check the result on test devices before a wider rollout. This tool assigns nothing and has no access to your tenant.</value></data>
+  <data name="AssignRequired" xml:space="preserve"><value>Required: Intune installs the app on the devices or for the users of the group.</value></data>
+  <data name="AssignAvailable" xml:space="preserve"><value>Available for enrolled devices: users decide themselves and install the app from the Company Portal.</value></data>
+  <data name="SecDependencies" xml:space="preserve"><value>9. Dependencies and supersedence</value></data>
+  <data name="DepNone" xml:space="preserve"><value>This package defines none. Add them in Intune only if you need them.</value></data>
+  <data name="SecTroubleshooting" xml:space="preserve"><value>10. Troubleshooting</value></data>
+  <data name="FldLogDir" xml:space="preserve"><value>Log folder on the device</value></data>
+  <data name="FldDeploymentLog" xml:space="preserve"><value>Deployment log</value></data>
+  <data name="FldMsiInstallLog" xml:space="preserve"><value>MSI install log</value></data>
+  <data name="FldMsiUninstallLog" xml:space="preserve"><value>MSI uninstall log</value></data>
+  <data name="FldImeLogs" xml:space="preserve"><value>Intune Management Extension logs</value></data>
+  <data name="TroubleStep1" xml:space="preserve"><value>Open the deployment log and read the last entries first.</value></data>
+  <data name="TroubleStep2" xml:space="preserve"><value>For an MSI package, open the MSI log and search for the text "return value 3".</value></data>
+  <data name="TroubleStep3" xml:space="preserve"><value>Check the Intune Management Extension logs for the exit code that Intune received.</value></data>
+  <data name="TroubleStep4" xml:space="preserve"><value>Run the detection script in a 64-bit Windows PowerShell with administrator rights. Exit code 0 with output means detected.</value></data>
+  <data name="NoteVendorLogs" xml:space="preserve"><value>Vendor installers can write more logs to their own paths. Check the vendor documentation.</value></data>
+  <data name="Footer" xml:space="preserve"><value>Generated by Intune Package Builder for build {0}. The values on this page belong to this build only.</value></data>
+</root>

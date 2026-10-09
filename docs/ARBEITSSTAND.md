@@ -16,7 +16,7 @@ Aufteilung in einzeln mergbare Scheiben (Projekt `IntunePackageBuilder.Generatio
 |---|---|---|
 | M3a | `BuildSnapshot` (unveränderlicher Snapshot aus Konfiguration, Build-ID, Sprache, Quellen-Fingerabdruck), `IntuneSettings` (Installations- und Deinstallationsbefehl, Rückgabecodes mit Intune-Klassifizierung, Zeitlimit, Neustartverhalten, Erkennungsskript, Anforderungen), JSON- und CSV-Ausgabe mit korrekter Maskierung. Die ersten `.resx`-Ressourcen (neutral Englisch plus `.de.resx`) kommen mit der HTML-Anleitung in M3c, weil erst dort Beschriftungen entstehen | fertig, gemergt (PR 11), CI-Nachweis unten |
 | M3b | Erkennungsskript-Generator: eigenständiges Windows-PowerShell-5.1-Skript, UTF-8 mit BOM; MSI: ProductCode in beiden Registry-Ansichten und `DisplayVersion` mindestens Zielversion; EXE: Datei vorhanden und `FileVersion` mindestens Zielversion; Intune-Vertrag (erkannt: Exitcode 0 und nicht leere Standardausgabe; sonst keine Ausgabe); keine Dateien aus dem Intune-Cache; Pester-Tests A15 und A16 (Skript wird im Test über die gebaute `Generation.dll` erzeugt; der Pester-Job in `ci.yml` baut dafür vorher) | fertig, CI-Nachweis unten (PR 12) |
-| M3c | HTML-Anleitung (lokal lesbar, druckbar, Deutsch und Englisch) mit allen Abschnitten aus Spec §9 (App-Typ, Paketdatei, App-Informationen, Programm, Installationsverhalten, Anforderungen, Zeitlimit, Neustartverhalten, Rückgabecodes, Erkennung, Zuweisung, Abhängigkeiten, Fehleranalyse); Maskierung gegen aktive Inhalte (A17); Warnung vor dem Mischen von `.intunewin` und Erkennungsskript verschiedener Builds; behauptet nie eine erfolgreiche Zuweisung oder Installation | offen |
+| M3c | (in Arbeit, PR offen, CI-Nachweis steht aus) HTML-Anleitung (lokal lesbar, druckbar, Deutsch und Englisch) mit allen Abschnitten aus Spec §9 (App-Typ, Paketdatei, App-Informationen, Programm, Installationsverhalten, Anforderungen, Zeitlimit, Neustartverhalten, Rückgabecodes, Erkennung, Zuweisung, Abhängigkeiten, Fehleranalyse); Maskierung gegen aktive Inhalte (A17); Warnung vor dem Mischen von `.intunewin` und Erkennungsskript verschiedener Builds; behauptet nie eine erfolgreiche Zuweisung oder Installation | offen |
 | M3d | Wrapper-Konfiguration für die Client-Laufzeit (maschinenlesbar, aus demselben Snapshot) und Abnahme von A17 über alle Formate | offen |
 
 Entscheidungen, die M3 braucht: `docs/PLANUNG.md` §8 listet Mindest-Windows-Build (Anforderungen in Intune), Zielarchitektur und die `ALLUSERS`-Frage (MSI-Standardparameter). Ohne Antwort gelten bis dahin diese Annahmen, die im PR zu nennen sind: Anforderung nur Architektur x64 und Windows 10 Version 1607 oder neuer (Mindestwert für Win32-Apps, nur als Platzhalter markiert), Standardinstallation mit `msiexec /i "<msi>" /qn /norestart /l*v "<log>"`.
@@ -45,13 +45,17 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 - M2 ist abgeschlossen und gemergt (PR 10).
 - M3a ist gemergt (PR 11, CI-Lauf 37835593601 grün).
 - M3b ist in PR 12 abgeschlossen (CI-Lauf 37884553567 grün; vorher Lauf 37884460677 mit Build-Fehler, siehe Lehren).
-- Als Nächstes M3c (HTML-Anleitung); noch nichts begonnen.
+- M3c (Branch `claude/great-feynman-hi1xfp`): **unverifiziert bis zum CI-Lauf.**
+  - Neu in `Generation`: `Guide/{GuideText,HtmlText,GuideGenerator}.cs`, `Resources/GuideStrings.resx` und `GuideStrings.de.resx` (79 Schlüssel); `RequirementsSection.MinimumWindowsVersionIsPlaceholder` und `IntuneSettingsOptions.MinimumWindowsVersionConfirmed`.
+  - Neue Tests: `GuideGeneratorTests` (xUnit). CI-Lauf 1 (37885229469): 78 von 79 Generation-Tests bestanden, die deutsche Satelliten-Assembly entsteht also beim Bauen; der eine Fehlschlag war ein Testfehler (der Snapshot lehnt `fr` ab, der Test baut die Einstellungen jetzt direkt).
+  - Doku: `docs/GENERATOREN.md` Abschnitt „HTML-Anleitung (M3c)“.
 
 ## Lehren (für künftige Sessions)
 
 - **Die CI findet echte Fehler.** M1a: Newtonsoft hängt Listen beim Laden an Konstruktor-Standards an (`[0]` wurde `[0, 0]`); behoben mit `ObjectCreationHandling.Replace`. M1b: der Kindprozess im Sperr-Test fand Newtonsoft.Json nicht, weil xUnit Assemblies in einen Shadow-Copy-Ordner kopiert; der Test kopiert die DLLs jetzt aus dem Originalordner (`CodeBase`).
 - **Der Edit/Write-Hook greift nicht bei Dateien, die per Bash-Heredoc entstehen.** Danach immer `python3 -I .claude/skills/check-i18n/check_i18n.py .` laufen lassen. Umlaute im C#-Code als `\u00e4`-Escapes schreiben; mein Schreibwerkzeug löst Escapes manchmal schon beim Schreiben zu echten Zeichen auf.
 - **Zeilentrenner (U+2028/U+2029) und Steuerzeichen im C#-Quelltext bauen den Compiler aus** (CS1010 in M3b-CI-Lauf 1): Das Schreibwerkzeug löst `\u2028`-Escapes zu echten Zeichen auf. `check_i18n.py` meldet solche Zeichen jetzt; nach dem Schreiben immer ausführen.
+- **Der Pester-Job kann am Runner-Image scheitern, bevor ein Test läuft** (`Set-PSRepository : No repository with the name 'PSGallery' was found`, PR 13, Lauf 37885323164). Der Installationsschritt in `ci.yml` registriert PSGallery jetzt bei Bedarf und wiederholt die Installation bis zu dreimal.
 - **`Assert.True(false, ...)` löst xUnit2020 aus** und bricht den Build (Warnungen sind Fehler); `Assert.Fail(...)` verwenden.
 - **`JObject.Parse` formatiert datumsähnliche Texte um**; deshalb `JsonFormat.ParseObject` benutzen (Notizen bleiben unverändert).
 - **Die Sperrdatei hat der Halter schreibend offen**; zum Lesen `FileShare.ReadWrite | FileShare.Delete` angeben.
@@ -60,7 +64,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Nächste Schritte (in Reihenfolge)
 
-1. M3c und M3d der Reihe nach (siehe oben), jede Scheibe als eigener PR mit Doku im selben PR (`docs/GENERATOREN.md` erweitern: Erkennungsvertrag, Anleitung, Wrapper-Konfiguration).
+1. M3c: CI auswerten, Nachweis eintragen, mergen. Danach M3d (siehe oben), jede Scheibe als eigener PR mit Doku im selben PR (`docs/GENERATOREN.md` erweitern: Erkennungsvertrag, Anleitung, Wrapper-Konfiguration).
 3. Danach M4 (Build-Pipeline mit dem Content Prep Tool) und M5 (Client-Laufzeit); beide können nach M3 parallel laufen (siehe `docs/PLANUNG.md` §4). Das Content Prep Tool (`tools/`) braucht Herkunft und SHA-256 in `THIRD-PARTY.md`, bevor es verwendet wird.
 4. M6 (Oberfläche), M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
 
