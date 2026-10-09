@@ -68,7 +68,7 @@ namespace IntunePackageBuilder.UiTests
             using (var app = new AppDriver(openPath: text))
             {
                 Assert.NotNull(app.Require("StartMessage"));
-                Assert.NotNull(app.Find("DropArea"));
+                Assert.NotNull(app.Require("DropArea"));
                 Assert.Null(app.Find("Create"));
             }
         }
@@ -81,9 +81,9 @@ namespace IntunePackageBuilder.UiTests
                 app.Require("Create").AsButton().Invoke();
 
                 Assert.NotNull(app.Require("Problems"));
-                Assert.NotNull(app.Find("InstallArguments"));
-                Assert.NotNull(app.Find("UninstallProgram"));
-                Assert.NotNull(app.Find("DetectionPath"));
+                Assert.NotNull(app.Require("InstallArguments"));
+                Assert.NotNull(app.Require("UninstallProgram"));
+                Assert.NotNull(app.Require("DetectionPath"));
                 Assert.Null(app.Find("ResultHeading"));
                 Assert.Null(app.Find("BuildProgress"));
             }

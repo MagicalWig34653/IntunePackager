@@ -17,10 +17,11 @@
         <Border Grid.Row="1" x:Name="DropArea" AllowDrop="True" MinHeight="130" Padding="16"
                 BorderThickness="2" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
                 Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
-                AutomationProperties.AutomationId="DropArea"
                 DragOver="OnDragOver" DragLeave="OnDragLeave" Drop="OnDrop">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock x:Name="DropTitle" FontSize="18" HorizontalAlignment="Center" Text="{infra:Loc Start_DropTitle}" />
+                <!-- Panels and borders have no automation peer; the title carries the ID of the drop area. -->
+                <TextBlock x:Name="DropTitle" FontSize="18" HorizontalAlignment="Center" Text="{infra:Loc Start_DropTitle}"
+                           AutomationProperties.AutomationId="DropArea" />
                 <TextBlock Style="{StaticResource Note}" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding DropHint}" />
                 <Button Margin="0,12,0,0" HorizontalAlignment="Center" Content="{infra:Loc Start_ChooseFile}"
                         Command="{Binding ChooseInstallerCommand}" AutomationProperties.AutomationId="ChooseInstaller" />
