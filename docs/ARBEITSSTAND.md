@@ -43,6 +43,7 @@ Alle Läufe: Windows-CI mit `windows-latest`, `windows-2022` und Pester unter Wi
 | M3d: Wrapper-Konfiguration, Gesamterzeugung, A17 über alle Formate (erster Lauf grün) | 37885815101 | 273 xUnit (Core), 31 (Analysis), 97 (Generation), 44 Pester bestanden |
 | M4a: Prozessstart, Content Prep Tool (Fake und echtes Werkzeug 1.8.7), `.intunewin`-Prüfung (Lauf 1: Prozessbaum-Fund, Lauf 2 grün) | 37886853214 | alle drei Jobs bestanden (Build.Tests: 49, davon 3 gegen das echte Werkzeug; Core 273, Analysis 31, Generation 97, Pester 44) |
 | M4b: Pipeline mit Veröffentlichung, A09-Logik, A10, A11, A13 (Lauf 1: xUnit1031-Buildfehler, Lauf 2 grün) | 37887554732 | alle drei Jobs bestanden (Build.Tests mit Pipeline-Tests und dem Test gegen das echte Werkzeug; Core 273, Analysis 31, Generation 97, Pester 44) |
+| M4c: Pfad des Content Prep Tools in den Einstellungen, Abschluss von M4 | 37887912671 | alle drei Jobs bestanden |
 
 Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups, Pages-Webseite (deployt), Claude-Code-Umgebung (`CLAUDE.md`, Agents, Skills, Hook). Neue Dateien und Formate: siehe `docs/DATENFORMAT.md`.
 
@@ -50,8 +51,13 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 - M4a ist gemergt (PR 15, CI-Lauf 37886853214 grün; Lauf 1 hatte den Prozessbaum-Fund, siehe Lehren).
 - M4b ist gemergt (PR 16, CI-Lauf 37887554732 grün).
-- M4c (Branch `claude/great-feynman-hi1xfp`): Einstellung `contentPrepToolPath` in `settings.json` (`AppSettings`, zwei neue Tests) und Abschluss von M4 (Matrix A09, A10, A11, A13, READMEs, Webseite, `CLAUDE.md`). **Unverifiziert bis zum CI-Lauf.**
-- M2 bis M4b sind gemergt (PR 10 bis 16).
+- M4 ist abgeschlossen und gemergt (PR 15 bis 17).
+- M5 (Branch `claude/great-feynman-hi1xfp`): Client-Laufzeit, **unverifiziert bis zum CI-Lauf; das ist reiner PowerShell-Code, der in der Cloud-Sitzung nie ausgeführt werden konnte.**
+  - Neu in `deploy/template/`: `Install.cmd`, `Deploy-Wrapper.ps1`, `DeployCore.psm1`, `Messages.en.psd1`, `Messages.de.psd1`.
+  - Neue Tests: `tests/pester/Wrapper.Tests.ps1` (viele Fälle, echte Prozesse und Registry), `WrapperChainTests` (xUnit: Paket der Pipeline läuft über `Install.cmd`); `PipelineFixture.ReplaceSource`.
+  - Doku: neue Datei `docs/CLIENT.md` (Ablauf, Rückgabecodes, Verhalten ohne Benutzer), `docs/PLANUNG.md` §8 Nr. 8 und 9, `THIRD-PARTY.md` (PSADT nicht verwendet).
+  - **Bewusst offen:** Fortschrittsfenster (Spec §8.2) und Anzeige der Hinweise `installMessage`/`uninstallMessage`; echter SYSTEM-Test der Sitzungsvermittlung (M8).
+- M2 bis M4 sind gemergt (PR 10 bis 17).
 - Die Annahmen, die M3 aus den offenen Entscheidungen getroffen hat (Mindest-Windows-Version als Platzhalter, 64-Bit-Anforderung, Standard-`msiexec`-Aufruf), stehen in `docs/GENERATOREN.md` und in `docs/PLANUNG.md` §8.
 
 ## Lehren (für künftige Sessions)
@@ -70,7 +76,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Nächste Schritte (in Reihenfolge)
 
-1. M4c: CI auswerten, Nachweis eintragen, mergen. Danach M5 (Client-Laufzeit: Vorlagen unter `deploy/template/`, Wrapper, Pester-Tests).
+1. M5: CI auswerten, Fehler beheben (viel ungeprüfter PowerShell-Code), Nachweis in Matrix (A15, A16 gegen den Wrapper) und Tabelle eintragen, M5 abschließen (Skill `milestone`), mergen. Danach M6.
 2. M6 (Oberfläche), M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
 
 ## Entscheidungen (Kurzfassung, Details in `docs/PLANUNG.md` §8)
