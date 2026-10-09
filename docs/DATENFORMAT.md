@@ -2,7 +2,7 @@
 
 Beschreibt die Dateien, die der Core liest und schreibt (Spec §6, Liefergegenstand 4 in §13). Das Dokument wird zusammen mit dem Code gepflegt; beim Ändern eines Formats gehören Schema-Version, Migration, Tests und dieses Dokument in denselben PR.
 
-Stand: M3d (Projekt, Versionskonfiguration, Versionsordner, Sperre, Einstellungen des Autorentools, Quellenmanifest, Build-Snapshot, Wrapper-Konfiguration). Build-Manifest folgt mit M4.
+Stand: M4b (Projekt, Versionskonfiguration, Versionsordner, Sperre, Einstellungen des Autorentools, Quellenmanifest, Build-Snapshot, Wrapper-Konfiguration, Build-Manifest).
 
 ## Ablage
 
@@ -14,7 +14,7 @@ Stand: M3d (Projekt, Versionskonfiguration, Versionsordner, Sperre, Einstellunge
       configuration.json
       source-manifest.json
       source/...
-      builds/<build-id>/...       (M4)
+      builds/<build-id>/...       (siehe docs/BUILD.md)
 ```
 
 Alle JSON-Dateien: UTF-8 ohne BOM, eingerückt, Namen in camelCase, Enumerationen als Text. Zeitstempel sind UTC im ISO-8601-Format. Datumsähnliche Texte (zum Beispiel in Notizen) bleiben beim Lesen unverändert. **Ausnahme:** `Deployment.config.json` (unten) ist UTF-8 **mit** BOM, weil Windows PowerShell 5.1 BOM-lose Dateien als ANSI liest.
@@ -177,6 +177,22 @@ Konfiguration der Client-Laufzeit. Liegt im **Wurzelordner des Pakets** neben `I
 
 Felder ohne Wert fehlen. Der Wrapper (M5) liest nur diese Datei und erfindet keine Werte.
 
+## `build-manifest.json` (Schema 1)
+
+Liegt in `versions/<version>/builds/<build-id>/`. Wird **einmal** nach den Dateien geschrieben, die es aufführt, und nie ersetzt (`BuildManifestStore.WriteNew`).
+
+| Feld | Bedeutung |
+|---|---|
+| `schemaVersion`, `buildId`, `createdUtc` | wie im Snapshot |
+| `projectId`, `softwareVersion` | Projekt und **Zielversion der Software** (nicht die Build-ID) |
+| `language`, `toolVersion` | Sprache der erzeugten Texte, Version des Autorentools |
+| `sourceFingerprint` | Fingerabdruck der verwendeten Quelle (`source-manifest.json`) |
+| `contentPrepToolVersion`, `contentPrepToolSha256` | Version (nur wenn die SHA-256 einer bekannten Version entspricht) und SHA-256 des verwendeten Content Prep Tools |
+| `package` | `path`, `size`, `sha256` der `.intunewin`-Datei |
+| `files` | alle weiteren Dateien des Build-Ordners außer dem Manifest selbst und `build.log`: `path` (relativ, `/`), `size`, `sha256` |
+
+Ein Manifest ohne gültige Build-ID oder ohne Paketeintrag gilt als defekt (`StorageFormatException`).
+
 ## Geplante Formate
 
-- `build-manifest.json` (M4). `Einstellungen.json` und `Einstellungen.csv` sind Ausgaben (Format in `docs/GENERATOREN.md`).
+- Keine weiteren Dateiformate sind geplant, die noch nicht beschrieben sind. `Einstellungen.json` und `Einstellungen.csv` sind Ausgaben (Format in `docs/GENERATOREN.md`).
