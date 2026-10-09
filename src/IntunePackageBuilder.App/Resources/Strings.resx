@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Mode_Advanced" xml:space="preserve"><value>Advanced mode</value></data>
+  <data name="Mode_Standard" xml:space="preserve"><value>Standard mode</value></data>
+  <data name="Common_Back" xml:space="preserve"><value>Back</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Start_Heading" xml:space="preserve"><value>From installer to Intune package</value></data>
+  <data name="Start_DropTitle" xml:space="preserve"><value>Drop an MSI or EXE here</value></data>
+  <data name="Start_DropHintStandard" xml:space="preserve"><value>Drop one installer file. For a whole vendor folder, switch to advanced mode.</value></data>
+  <data name="Start_DropHintAdvanced" xml:space="preserve"><value>You can drop one installer file or a whole vendor folder.</value></data>
+  <data name="Start_ChooseFile" xml:space="preserve"><value>Choose installer file</value></data>
+  <data name="Start_ChooseFolder" xml:space="preserve"><value>Choose vendor folder</value></data>
+  <data name="Start_RecentHeading" xml:space="preserve"><value>Recently opened projects</value></data>
+  <data name="Start_AllProjects" xml:space="preserve"><value>Show all projects in the base folder</value></data>
+  <data name="Start_Search" xml:space="preserve"><value>Search by project name or ID</value></data>
+  <data name="Start_BaseFolder" xml:space="preserve"><value>Base folder</value></data>
+  <data name="Start_ChangeFolder" xml:space="preserve"><value>Change…</value></data>
+  <data name="Start_EmptyState" xml:space="preserve"><value>No projects yet. Drop an installer above to create your first package. The project is created when you start the build.</value></data>
+  <data name="Start_NoMatches" xml:space="preserve"><value>No project matches your search.</value></data>
+  <data name="Start_BrokenProject" xml:space="preserve"><value>(cannot be read)</value></data>
+  <data name="Start_SettingsProblem" xml:space="preserve"><value>The settings could not be read ({0}). Defaults are used.</value></data>
+  <data name="BaseFolder_Ok" xml:space="preserve"><value>{0}</value></data>
+  <data name="BaseFolder_NotConfigured" xml:space="preserve"><value>Not chosen yet. Proposed folder: {0}</value></data>
+  <data name="BaseFolder_Unreachable" xml:space="preserve"><value>{0} is not reachable. It was not replaced. Reconnect it or choose another folder.</value></data>
+  <data name="BaseFolder_NotWritable" xml:space="preserve"><value>You cannot write to {0}. Choose another folder.</value></data>
+  <data name="Dialog_ChooseInstaller" xml:space="preserve"><value>Choose an installer</value></data>
+  <data name="Dialog_InstallerFilter" xml:space="preserve"><value>Installers (*.msi;*.exe)|*.msi;*.exe</value></data>
+  <data name="Dialog_ChooseVendorFolder" xml:space="preserve"><value>Choose the vendor folder</value></data>
+  <data name="Dialog_ChooseBaseFolder" xml:space="preserve"><value>Choose the base folder for all projects</value></data>
+  <data name="Dialog_ChooseTool" xml:space="preserve"><value>Choose IntuneWinAppUtil.exe</value></data>
+  <data name="Dialog_ToolFilter" xml:space="preserve"><value>Content Prep Tool (IntuneWinAppUtil.exe)|IntuneWinAppUtil.exe|Programs (*.exe)|*.exe</value></data>
+  <data name="Import_NothingDropped" xml:space="preserve"><value>Nothing was dropped.</value></data>
+  <data name="Import_MultipleItems" xml:space="preserve"><value>Please drop only one item.</value></data>
+  <data name="Import_NotFound" xml:space="preserve"><value>The file or folder was not found: {0}</value></data>
+  <data name="Import_UnsupportedFileType" xml:space="preserve"><value>Only MSI and EXE files are supported.</value></data>
+  <data name="Import_FolderNotAllowed" xml:space="preserve"><value>A folder can only be used in advanced mode. Switch the mode or drop a single MSI or EXE.</value></data>
+  <data name="Import_ReparsePointFound" xml:space="preserve"><value>The source contains a junction or symbolic link ({0}). It cannot be used.</value></data>
+  <data name="Import_TargetInsideSource" xml:space="preserve"><value>The project folder lies inside the folder you chose. Choose a different folder.</value></data>
+  <data name="Import_SourceInsideTarget" xml:space="preserve"><value>The chosen source lies inside the project folder. Choose the original.</value></data>
+  <data name="Import_TargetNotEmpty" xml:space="preserve"><value>The storage location already contains files.</value></data>
+  <data name="Import_SourceAlreadyStored" xml:space="preserve"><value>This version already has a different stored installer. A changed installer needs a new version number.</value></data>
+  <data name="Import_InstallerOutsideSource" xml:space="preserve"><value>The installer is not inside the chosen folder.</value></data>
+  <data name="Import_InstallerNotFound" xml:space="preserve"><value>The installer was not found in the folder.</value></data>
+  <data name="Import_PathTooLong" xml:space="preserve"><value>A path would be too long for Windows ({0}). Move the source to a shorter path.</value></data>
+  <data name="Analysis_UnsupportedFileType" xml:space="preserve"><value>Only MSI and EXE files are supported.</value></data>
+  <data name="Analysis_FileMissing" xml:space="preserve"><value>The file does not exist: {0}</value></data>
+  <data name="Analysis_NotAnInstaller" xml:space="preserve"><value>This file is not a valid installer. Choose another file.</value></data>
+  <data name="Analysis_InstallerNotSelected" xml:space="preserve"><value>Choose the installer inside the folder.</value></data>
+  <data name="Analysis_InstallerOutsideFolder" xml:space="preserve"><value>The installer must be inside the folder.</value></data>
+  <data name="Analysis_Unreadable" xml:space="preserve"><value>The file could not be read. Details are in the program log.</value></data>
+  <data name="Note_MsiNeedsSourceFolder" xml:space="preserve"><value>This MSI needs files next to it. Switch to advanced mode and use the whole vendor folder.</value></data>
+  <data name="Note_MsiExternalCabinets" xml:space="preserve"><value>This MSI has cabinet files next to it. Use the whole vendor folder in advanced mode.</value></data>
+  <data name="Note_MsiPerUserDefault" xml:space="preserve"><value>This MSI does not set ALLUSERS, so it installs per user by default. Under the SYSTEM account that is rarely what you want. If the vendor allows it, add ALLUSERS=1 in advanced mode.</value></data>
+  <data name="Note_ExeNoVersionInfo" xml:space="preserve"><value>This EXE carries no version information. Enter name, manufacturer and version yourself.</value></data>
+  <data name="Note_ExeNeedsVendorInput" xml:space="preserve"><value>For an EXE the vendor's silent parameters, the uninstall program and the installed file for detection are required. Nothing is guessed.</value></data>
+  <data name="Form_Heading" xml:space="preserve"><value>Package details</value></data>
+  <data name="Form_Source" xml:space="preserve"><value>Source</value></data>
+  <data name="Form_SoftwareName" xml:space="preserve"><value>Software name</value></data>
+  <data name="Form_Manufacturer" xml:space="preserve"><value>Manufacturer</value></data>
+  <data name="Form_TargetVersion" xml:space="preserve"><value>Target version</value></data>
+  <data name="Form_TargetVersionHint" xml:space="preserve"><value>The version that must be installed afterwards. For an EXE, check that it matches the version of the file used for detection.</value></data>
+  <data name="Form_ProductCode" xml:space="preserve"><value>Product code (read from the MSI)</value></data>
+  <data name="Form_InstallArgumentsExe" xml:space="preserve"><value>Silent install parameters</value></data>
+  <data name="Form_InstallArgumentsMsi" xml:space="preserve"><value>Additional MSI properties</value></data>
+  <data name="Form_InstallArgumentsHint" xml:space="preserve"><value>Required for an EXE: use the parameters the vendor documents. Examples shown elsewhere are only examples.</value></data>
+  <data name="Form_UninstallProgram" xml:space="preserve"><value>Uninstall program (full path on the device)</value></data>
+  <data name="Form_UninstallArguments" xml:space="preserve"><value>Silent uninstall parameters</value></data>
+  <data name="Form_DetectionPath" xml:space="preserve"><value>Installed file for detection (full path on the device)</value></data>
+  <data name="Form_DetectionPathHint" xml:space="preserve"><value>A file with version information that exists only when the software is installed. Environment variables such as %ProgramFiles% are allowed.</value></data>
+  <data name="Form_DetectionMinimumVersion" xml:space="preserve"><value>Minimum version for detection</value></data>
+  <data name="Form_Create" xml:space="preserve"><value>Create package</value></data>
+  <data name="Form_AdvancedHeading" xml:space="preserve"><value>Advanced settings</value></data>
+  <data name="Form_ProjectId" xml:space="preserve"><value>Project ID (new projects only)</value></data>
+  <data name="Form_ProcessesToClose" xml:space="preserve"><value>Programs that must be closed first (one per line, for example app.exe)</value></data>
+  <data name="Form_Shortcuts" xml:space="preserve"><value>Shared shortcuts to remove after installing (one per line: PublicDesktop or CommonStartMenu, a bar, then the path of the .lnk file)</value></data>
+  <data name="Form_Timeout" xml:space="preserve"><value>Time limit (minutes)</value></data>
+  <data name="Form_SuccessCodes" xml:space="preserve"><value>Success codes (comma separated; 0 stays a success)</value></data>
+  <data name="Form_RebootCodes" xml:space="preserve"><value>Reboot codes (comma separated)</value></data>
+  <data name="Form_RetryCodes" xml:space="preserve"><value>Retry codes (comma separated)</value></data>
+  <data name="Form_InstallMessage" xml:space="preserve"><value>Text shown during installation</value></data>
+  <data name="Form_UninstallMessage" xml:space="preserve"><value>Text shown during uninstallation</value></data>
+  <data name="Form_DetailMessage" xml:space="preserve"><value>Detail note for users</value></data>
+  <data name="Form_ProblemsHeading" xml:space="preserve"><value>Please check these entries:</value></data>
+  <data name="Valid_Required" xml:space="preserve"><value>This value is required.</value></data>
+  <data name="Valid_InvalidVersion" xml:space="preserve"><value>Enter a numeric version with one to four parts, for example 1.2.3.</value></data>
+  <data name="Valid_InvalidProductCode" xml:space="preserve"><value>The product code must be a GUID in braces.</value></data>
+  <data name="Valid_UnsafePath" xml:space="preserve"><value>This path is not allowed.</value></data>
+  <data name="Valid_InvalidPath" xml:space="preserve"><value>Enter a full path such as C:\Program Files\App\app.exe (or start with an environment variable such as %ProgramFiles%).</value></data>
+  <data name="Valid_InvalidTimeout" xml:space="preserve"><value>The time limit must be between 1 and 1440 minutes.</value></data>
+  <data name="Valid_ConflictingExitCodes" xml:space="preserve"><value>A code is used for two different results.</value></data>
+  <data name="Valid_ForcedRestartCodeNotAllowed" xml:space="preserve"><value>1641 is not allowed here: it means the installer already restarted the device. Change the restart parameters of the installer and test it again.</value></data>
+  <data name="Valid_InvalidShortcut" xml:space="preserve"><value>Use PublicDesktop or CommonStartMenu, a bar and a relative path to one .lnk file.</value></data>
+  <data name="Valid_WrongDetectionMethod" xml:space="preserve"><value>The detection method does not fit the installer type.</value></data>
+  <data name="Valid_NotANumber" xml:space="preserve"><value>Enter a whole number.</value></data>
+  <data name="Valid_NotACodeList" xml:space="preserve"><value>Enter whole numbers separated by commas.</value></data>
+  <data name="Valid_ProjectId" xml:space="preserve"><value>This project ID is not valid (letters, digits and hyphens, no reserved names).</value></data>
+  <data name="Tool_Heading" xml:space="preserve"><value>The packaging tool is needed</value></data>
+  <data name="Tool_Text" xml:space="preserve"><value>The Microsoft Win32 Content Prep Tool (IntuneWinAppUtil.exe) creates the .intunewin file. Its license does not allow this program to include it. Download it from Microsoft, accept its license terms, and choose the file here.</value></data>
+  <data name="Tool_Link" xml:space="preserve"><value>Download page of the tool</value></data>
+  <data name="Tool_Choose" xml:space="preserve"><value>Choose IntuneWinAppUtil.exe…</value></data>
+  <data name="Tool_UnknownConfirm" xml:space="preserve"><value>This file is not a known version of the tool (SHA-256 {0}). Use it anyway?</value></data>
+  <data name="Tool_UnknownTitle" xml:space="preserve"><value>Unknown tool version</value></data>
+  <data name="Build_Heading" xml:space="preserve"><value>Building the package</value></data>
+  <data name="Build_Locked" xml:space="preserve"><value>The entries are locked while the package is built.</value></data>
+  <data name="Build_Elapsed" xml:space="preserve"><value>Elapsed time: {0}</value></data>
+  <data name="Phase_ValidateConfiguration" xml:space="preserve"><value>Checking the entries</value></data>
+  <data name="Phase_AcquireLock" xml:space="preserve"><value>Reserving the version</value></data>
+  <data name="Phase_VerifySource" xml:space="preserve"><value>Verifying the stored source</value></data>
+  <data name="Phase_PrepareWorkspace" xml:space="preserve"><value>Preparing the working folder</value></data>
+  <data name="Phase_StagePackage" xml:space="preserve"><value>Assembling the package content</value></data>
+  <data name="Phase_GenerateArtifacts" xml:space="preserve"><value>Creating the detection script and the guide</value></data>
+  <data name="Phase_PackContent" xml:space="preserve"><value>Packing with the Content Prep Tool</value></data>
+  <data name="Phase_VerifyPackage" xml:space="preserve"><value>Checking the package</value></data>
+  <data name="Phase_Publish" xml:space="preserve"><value>Publishing the result</value></data>
+  <data name="Phase_Cleanup" xml:space="preserve"><value>Cleaning up</value></data>
+  <data name="Build_RequestInvalid" xml:space="preserve"><value>The request is incomplete.</value></data>
+  <data name="Build_ConfigurationInvalid" xml:space="preserve"><value>The entries are incomplete or invalid.</value></data>
+  <data name="Build_VersionLocked" xml:space="preserve"><value>Another program or window is working on this version. Close it or try again later.</value></data>
+  <data name="Build_NotWritable" xml:space="preserve"><value>The project folder cannot be written. Check the permissions of the base folder.</value></data>
+  <data name="Build_NotEnoughSpace" xml:space="preserve"><value>There is not enough free disk space.</value></data>
+  <data name="Build_SourceMissing" xml:space="preserve"><value>The stored source is missing or incomplete.</value></data>
+  <data name="Build_SourceChanged" xml:space="preserve"><value>The stored source was changed after it was saved. Restore it or create a new version.</value></data>
+  <data name="Build_TemplateMissing" xml:space="preserve"><value>The program files for the client runtime are missing. Reinstall the program.</value></data>
+  <data name="Build_PathTooLong" xml:space="preserve"><value>A path in the package would be too long for Windows. Use a shorter base folder or source path.</value></data>
+  <data name="Build_PackagingFailed" xml:space="preserve"><value>The packaging tool failed.</value></data>
+  <data name="Build_PublishFailed" xml:space="preserve"><value>The result could not be saved into the project folder.</value></data>
+  <data name="Build_Cancelled" xml:space="preserve"><value>The build was cancelled.</value></data>
+  <data name="Build_Unexpected" xml:space="preserve"><value>An unexpected error occurred. Details are in the log.</value></data>
+  <data name="ContentPrep_ToolMissing" xml:space="preserve"><value>The packaging tool was not found.</value></data>
+  <data name="ContentPrep_ToolNotRecognized" xml:space="preserve"><value>The packaging tool is not a known version.</value></data>
+  <data name="ContentPrep_ToolNotStartable" xml:space="preserve"><value>The packaging tool could not be started.</value></data>
+  <data name="ContentPrep_ToolFailed" xml:space="preserve"><value>The packaging tool reported an error.</value></data>
+  <data name="ContentPrep_ToolTimedOut" xml:space="preserve"><value>The packaging tool did not finish in time and was stopped.</value></data>
+  <data name="ContentPrep_OutputMissing" xml:space="preserve"><value>The packaging tool did not create a package file.</value></data>
+  <data name="ContentPrep_OutputInvalid" xml:space="preserve"><value>The package file created by the tool is not valid.</value></data>
+  <data name="ContentPrep_InputMissing" xml:space="preserve"><value>A file for the packaging tool is missing.</value></data>
+  <data name="Workflow_InvalidProjectId" xml:space="preserve"><value>The project ID is not valid.</value></data>
+  <data name="Workflow_ToolNotConfigured" xml:space="preserve"><value>No packaging tool is configured.</value></data>
+  <data name="Workflow_SourceRejected" xml:space="preserve"><value>The source was refused.</value></data>
+  <data name="Workflow_SourceAlreadyStored" xml:space="preserve"><value>This version already has a different stored installer. A changed installer needs a new version number.</value></data>
+  <data name="Workflow_VersionLocked" xml:space="preserve"><value>Another program or window is working on this version. Close it or try again later.</value></data>
+  <data name="Workflow_StorageFailed" xml:space="preserve"><value>The project data could not be read or written.</value></data>
+  <data name="Workflow_ConfigurationInvalid" xml:space="preserve"><value>The entries are incomplete or invalid.</value></data>
+  <data name="Error_Heading" xml:space="preserve"><value>The package was not created</value></data>
+  <data name="Error_Detail" xml:space="preserve"><value>Detail: {0}</value></data>
+  <data name="Error_LogHint" xml:space="preserve"><value>Details are in the log: {0}</value></data>
+  <data name="Error_BaseFolder" xml:space="preserve"><value>The base folder cannot be used: {0}</value></data>
+  <data name="Result_Heading" xml:space="preserve"><value>Package created</value></data>
+  <data name="Result_Software" xml:space="preserve"><value>Software</value></data>
+  <data name="Result_Version" xml:space="preserve"><value>Target version</value></data>
+  <data name="Result_BuildId" xml:space="preserve"><value>Build ID</value></data>
+  <data name="Result_Output" xml:space="preserve"><value>Output folder</value></data>
+  <data name="Result_OpenFolder" xml:space="preserve"><value>Open package folder</value></data>
+  <data name="Result_OpenGuide" xml:space="preserve"><value>Open Intune guide</value></data>
+  <data name="Result_CopyValues" xml:space="preserve"><value>Copy Intune values</value></data>
+  <data name="Result_Copied" xml:space="preserve"><value>The Intune values of this build were copied.</value></data>
+  <data name="Result_InstallCommand" xml:space="preserve"><value>Install command</value></data>
+  <data name="Result_UninstallCommand" xml:space="preserve"><value>Uninstall command</value></data>
+  <data name="Result_InstallContext" xml:space="preserve"><value>Install behavior</value></data>
+  <data name="Result_Detection" xml:space="preserve"><value>Detection script</value></data>
+  <data name="Result_DetectionTarget" xml:space="preserve"><value>Detects</value></data>
+  <data name="Result_Status" xml:space="preserve"><value>Status</value></data>
+  <data name="Result_StatusDone" xml:space="preserve"><value>The build finished.</value></data>
+  <data name="Result_Log" xml:space="preserve"><value>Build log</value></data>
+  <data name="Result_NewPackage" xml:space="preserve"><value>Create another package</value></data>
+  <data name="Result_Note" xml:space="preserve"><value>This program did not upload or assign anything. Enter the values in Intune following the guide.</value></data>
+  <data name="Result_ProjectCreated" xml:space="preserve"><value>A new project was created.</value></data>
+</root>

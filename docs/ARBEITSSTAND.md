@@ -52,8 +52,8 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 - M4b ist gemergt (PR 16, CI-Lauf 37887554732 grün).
 - M4 ist abgeschlossen und gemergt (PR 15 bis 17).
 - M0 bis M5 sind abgeschlossen (M5 in PR 18, CI-Lauf 37888755850; Rest siehe Tabelle oben). Der Abschluss-Commit von M5 (Matrix, READMEs, Webseite) liegt ebenfalls in PR 18.
-- M6a (Branch `claude/great-feynman-hi1xfp`): Arbeitsablauf ohne WPF (`Build/Workflow`: `SourceAnalyzer`, `NewPackageWorkflow`, `BuildOutcome`) und Tests (`SourceAnalyzerTests`, `NewPackageWorkflowTests`), Doku `docs/BUILD.md`. **Unverifiziert bis zum CI-Lauf.**
-- M6b (Ressourcen, ViewModels, Fenster) ist noch nicht begonnen.
+- M6a ist gemergt (PR 19): Arbeitsablauf ohne WPF (`Build/Workflow`: `SourceAnalyzer`, `NewPackageWorkflow`, `BuildOutcome`), Tests und `docs/BUILD.md`.
+- M6b (Branch `claude/great-feynman-hi1xfp`): Ressourcen (`Resources/Strings.resx` und `Strings.de.resx`), Infrastruktur (`Loc`, `RelayCommand`), Dienste (`AppServices`, `IUserDialogs`, `IShell`) und ViewModels ohne WPF-Abhängigkeit (`MainViewModel`, `StartViewModel`, `FormViewModel`, `ResultViewModel`, `Texts`) mit dem neuen Testprojekt `tests/IntunePackageBuilder.App.Tests` (u. a. Test, dass jeder aus Codes gebildete Textschlüssel in beiden Sprachen existiert). **Unverifiziert bis zum CI-Lauf** (in der Cloud-Sitzung gibt es kein .NET SDK). Noch offen für M6c: XAML-Ansichten (Hauptfenster mit Seitenvorlagen, `LocExtension`, Drag-and-drop, Zeitgeber für die verstrichene Zeit), `DialogsImpl` und `ShellImpl`, Verdrahtung in `App.xaml.cs` (Sprache aus der Windows-UI-Sprache, `deploy/template` als Content ausliefern) und FlaUI-Tests.
 - Die Annahmen, die M3 und M5 aus den offenen Entscheidungen getroffen haben (Mindest-Windows-Version als Platzhalter, 64-Bit-Anforderung, Standard-`msiexec`-Aufruf ohne `ALLUSERS`, keine PSADT-Nutzung), stehen in `docs/GENERATOREN.md`, `docs/CLIENT.md` und `docs/PLANUNG.md` §8.
 
 ## Lehren (für künftige Sessions)
@@ -72,7 +72,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Nächste Schritte (in Reihenfolge)
 
-1. M6 (Oberfläche): Projektgerüst `IntunePackageBuilder.App` ist leer; zuerst Ressourcen (`.resx` de/en), Hauptfenster, dann Standardmodus (Quelle ablegen → Angaben → Bauen → Ergebnis). FlaUI-Tests gehören in einen Windows-CI-Job.
+1. M6c (Oberfläche, Ansichten): XAML-Ansichten auf den ViewModels aus M6b, App-Verdrahtung, FlaUI-Smoke- und UI-Tests in einem Windows-CI-Job (A01, A03/A04 UI, A05, A06, A08, A09 UI); danach M6 mit dem Skill `milestone` abschließen.
 2. M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
 
 ## Entscheidungen (Kurzfassung, Details in `docs/PLANUNG.md` §8)
