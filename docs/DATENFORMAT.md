@@ -2,7 +2,7 @@
 
 Beschreibt die Dateien, die der Core liest und schreibt (Spec §6, Liefergegenstand 4 in §13). Das Dokument wird zusammen mit dem Code gepflegt; beim Ändern eines Formats gehören Schema-Version, Migration, Tests und dieses Dokument in denselben PR.
 
-Stand: M3a (Projekt, Versionskonfiguration, Versionsordner, Sperre, Einstellungen des Autorentools, Quellenmanifest, Build-Snapshot). Build-Manifest folgt mit M4.
+Stand: M3d (Projekt, Versionskonfiguration, Versionsordner, Sperre, Einstellungen des Autorentools, Quellenmanifest, Build-Snapshot, Wrapper-Konfiguration). Build-Manifest folgt mit M4.
 
 ## Ablage
 
@@ -17,7 +17,7 @@ Stand: M3a (Projekt, Versionskonfiguration, Versionsordner, Sperre, Einstellunge
       builds/<build-id>/...       (M4)
 ```
 
-Alle JSON-Dateien: UTF-8 ohne BOM, eingerückt, Namen in camelCase, Enumerationen als Text. Zeitstempel sind UTC im ISO-8601-Format. Datumsähnliche Texte (zum Beispiel in Notizen) bleiben beim Lesen unverändert.
+Alle JSON-Dateien: UTF-8 ohne BOM, eingerückt, Namen in camelCase, Enumerationen als Text. Zeitstempel sind UTC im ISO-8601-Format. Datumsähnliche Texte (zum Beispiel in Notizen) bleiben beim Lesen unverändert. **Ausnahme:** `Deployment.config.json` (unten) ist UTF-8 **mit** BOM, weil Windows PowerShell 5.1 BOM-lose Dateien als ANSI liest.
 
 ## Gemeinsame Regeln
 
@@ -159,6 +159,24 @@ Liegt **nicht** im Grundordner, sondern unter `%LOCALAPPDATA%\Intune Package Bui
 
 **Ein bereits konfigurierter Grundordner wird nie unbemerkt durch einen anderen ersetzt**, auch wenn er nicht erreichbar ist: der Status wird gemeldet, der Pfad bleibt. Ein relativer Pfad wird nicht angenommen, weil er vom Arbeitsverzeichnis abhinge.
 
+## `Deployment.config.json` (Schema 1)
+
+Konfiguration der Client-Laufzeit. Liegt im **Wurzelordner des Pakets** neben `Install.cmd` (nicht im Projekt), wird je Build aus Snapshot und `IntuneSettings` erzeugt und vom Wrapper mit Windows PowerShell 5.1 gelesen (UTF-8 mit BOM). Sie ist keine Eingabe des Benutzers und wird nicht bearbeitet.
+
+| Feld | Bedeutung |
+|---|---|
+| `schemaVersion`, `buildId`, `language`, `projectId` | wie im Snapshot; `language` bestimmt die Sprache der Hinweise auf dem Gerät |
+| `softwareName`, `manufacturer`, `targetVersion` | Identität der Software |
+| `install` | `installerType` (`Msi`/`Exe`), `installerPath` relativ zur Paketwurzel (`Files\<relativer Installerpfad>`), `arguments` (nur was der Benutzer angegeben hat), `productCode`, `targetArchitecture` |
+| `uninstall` | `productCode` oder `executablePath` mit `arguments` |
+| `detection` | dieselbe Regel wie im Erkennungsskript (`method`, `productCode` oder `path`, `minimumVersion`); der Wrapper prüft damit den Zielzustand nach der Installation |
+| `timeoutMinutes`, `returnCodes` | identisch mit den Intune-Werten (`code`, `type`); 1641 steht immer als `HardReboot` |
+| `processesToClose`, `installMessage`, `uninstallMessage`, `detailMessage` | Benutzerinteraktion; leere Texte entfallen |
+| `sharedShortcutsToRemove` | Liste aus `root` (`PublicDesktop`/`CommonStartMenu`) und `relativePath` |
+| `logs` | `directory`, `deploymentLog`, `msiInstallLog`, `msiUninstallLog` |
+
+Felder ohne Wert fehlen. Der Wrapper (M5) liest nur diese Datei und erfindet keine Werte.
+
 ## Geplante Formate
 
-- `build-manifest.json` (M4), `Einstellungen.json` und `Einstellungen.csv` als Ausgabe (Format in `docs/GENERATOREN.md`).
+- `build-manifest.json` (M4). `Einstellungen.json` und `Einstellungen.csv` sind Ausgaben (Format in `docs/GENERATOREN.md`).

@@ -106,3 +106,15 @@ Jeder Wert aus Metadaten oder Konfiguration geht durch `HtmlText.Escape` (`& < >
 
 xUnit `GuideGeneratorTests`. Nicht geprüft: das Aussehen in einem Browser (kein Screenshot-Test) und das Drucken; beides bleibt manuell (M8).
 
+## Wrapper-Konfiguration und Gesamterzeugung (M3d)
+
+`WrapperConfigBuilder.From(snapshot, settings)` erzeugt die Konfiguration der Client-Laufzeit (`Deployment.config.json`, Format: `docs/DATENFORMAT.md`). Sie nimmt **dieselben** `IntuneSettings` wie Anleitung, JSON und CSV auf (Zeitlimit, Rückgabecodes, Erkennungsregel, Logpfade) und ergänzt, was nur der Wrapper braucht (Installerpfad `Files\...`, Argumente, Deinstallation, Benutzerhinweise, Nacharbeiten). Dadurch können Wrapper, Intune-Werte und Anleitung nicht auseinanderlaufen (Spec §8.4); ein Test vergleicht sie. Einstellungen eines anderen Builds als der Snapshot werden abgewiesen.
+
+`BuildArtifacts.Write(snapshot, options, intuneVerzeichnis, paketWurzel)` erzeugt alle Textdateien eines Builds aus **einem** Snapshot: `Detect-App.ps1`, `Einrichtung.html`, `Einstellungen.json`, `Einstellungen.csv` (Ordner `intune`) und `Deployment.config.json` (Paketwurzel). Eine ungültige Konfiguration erzeugt keine Datei. Derselbe Snapshot ergibt byteweise dieselben Dateien. Kodierung je Verbraucher: Skript, Wrapper-Konfiguration und CSV mit BOM, JSON und HTML ohne.
+
+Das Hineinlegen in das Paket, der Aufruf des Content Prep Tools und das Veröffentlichen im Build-Ordner gehören zur Build-Pipeline (M4).
+
+### Abnahme A17 über alle Formate
+
+`BuildArtifactsTests` erzeugt alle Dateien aus einer Konfiguration mit feindlichen Werten (Anführungszeichen, Komma, Zeilenumbruch, `=`-Formel am Anfang, `<script>`-ähnliche Markierung, Apostroph im Pfad) und prüft je Format, dass der Wert unverändert ankommt oder wirkungslos gemacht wird: JSON und Wrapper-Konfiguration lesen den Wert exakt zurück, die CSV wird mit einem eigenen RFC-4180-Leser gelesen (Formelschutz durch führenden Apostroph), das HTML enthält nur maskierte Zeichen, das Erkennungsskript hält den Pfad in seiner Zeichenkette. Der PowerShell-Teil wird zusätzlich in Pester gegen echte Prozesse geprüft (siehe M3b).
+

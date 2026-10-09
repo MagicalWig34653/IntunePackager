@@ -6,7 +6,7 @@ Stand: 2026-10-08
 
 ## Aktueller Meilenstein
 
-**M3 - Generatoren** (Erkennungsskript, `IntuneSettings`, HTML, JSON, CSV, Wrapper-Konfiguration). Abnahme: A15, A16, A17. M0 bis M2, M3a und M3b sind abgeschlossen.
+**M3 - Generatoren** (Erkennungsskript, `IntuneSettings`, HTML, JSON, CSV, Wrapper-Konfiguration). Abnahme: A15, A16, A17. M0 bis M2 sowie M3a bis M3c sind abgeschlossen.
 
 Alle Ausgaben entstehen aus einem **Snapshot** (Konfiguration, Build-ID, Sprache, Quellenmanifest), nie aus UI-Zustand. Die Befehle in Anleitung, JSON, CSV und Ergebnisseite stammen aus **einer** Quelle (`IntuneSettings`), damit sie nicht auseinanderlaufen. Sprache der Anleitung folgt der Programmsprache beim Build und wird im Snapshot festgehalten (`docs/PLANUNG.md` §8).
 
@@ -16,8 +16,8 @@ Aufteilung in einzeln mergbare Scheiben (Projekt `IntunePackageBuilder.Generatio
 |---|---|---|
 | M3a | `BuildSnapshot` (unveränderlicher Snapshot aus Konfiguration, Build-ID, Sprache, Quellen-Fingerabdruck), `IntuneSettings` (Installations- und Deinstallationsbefehl, Rückgabecodes mit Intune-Klassifizierung, Zeitlimit, Neustartverhalten, Erkennungsskript, Anforderungen), JSON- und CSV-Ausgabe mit korrekter Maskierung. Die ersten `.resx`-Ressourcen (neutral Englisch plus `.de.resx`) kommen mit der HTML-Anleitung in M3c, weil erst dort Beschriftungen entstehen | fertig, gemergt (PR 11), CI-Nachweis unten |
 | M3b | Erkennungsskript-Generator: eigenständiges Windows-PowerShell-5.1-Skript, UTF-8 mit BOM; MSI: ProductCode in beiden Registry-Ansichten und `DisplayVersion` mindestens Zielversion; EXE: Datei vorhanden und `FileVersion` mindestens Zielversion; Intune-Vertrag (erkannt: Exitcode 0 und nicht leere Standardausgabe; sonst keine Ausgabe); keine Dateien aus dem Intune-Cache; Pester-Tests A15 und A16 (Skript wird im Test über die gebaute `Generation.dll` erzeugt; der Pester-Job in `ci.yml` baut dafür vorher) | fertig, CI-Nachweis unten (PR 12) |
-| M3c | (in Arbeit, PR offen, CI-Nachweis steht aus) HTML-Anleitung (lokal lesbar, druckbar, Deutsch und Englisch) mit allen Abschnitten aus Spec §9 (App-Typ, Paketdatei, App-Informationen, Programm, Installationsverhalten, Anforderungen, Zeitlimit, Neustartverhalten, Rückgabecodes, Erkennung, Zuweisung, Abhängigkeiten, Fehleranalyse); Maskierung gegen aktive Inhalte (A17); Warnung vor dem Mischen von `.intunewin` und Erkennungsskript verschiedener Builds; behauptet nie eine erfolgreiche Zuweisung oder Installation | offen |
-| M3d | Wrapper-Konfiguration für die Client-Laufzeit (maschinenlesbar, aus demselben Snapshot) und Abnahme von A17 über alle Formate | offen |
+| M3c | HTML-Anleitung (lokal lesbar, druckbar, Deutsch und Englisch) mit allen Abschnitten aus Spec §9 (App-Typ, Paketdatei, App-Informationen, Programm, Installationsverhalten, Anforderungen, Zeitlimit, Neustartverhalten, Rückgabecodes, Erkennung, Zuweisung, Abhängigkeiten, Fehleranalyse); Maskierung gegen aktive Inhalte (A17); Warnung vor dem Mischen von `.intunewin` und Erkennungsskript verschiedener Builds; behauptet nie eine erfolgreiche Zuweisung oder Installation | offen |
+| M3d | Wrapper-Konfiguration für die Client-Laufzeit (maschinenlesbar, aus demselben Snapshot) und Abnahme von A17 über alle Formate | in Arbeit, PR offen, CI-Nachweis steht aus |
 
 Entscheidungen, die M3 braucht: `docs/PLANUNG.md` §8 listet Mindest-Windows-Build (Anforderungen in Intune), Zielarchitektur und die `ALLUSERS`-Frage (MSI-Standardparameter). Ohne Antwort gelten bis dahin diese Annahmen, die im PR zu nennen sind: Anforderung nur Architektur x64 und Windows 10 Version 1607 oder neuer (Mindestwert für Win32-Apps, nur als Platzhalter markiert), Standardinstallation mit `msiexec /i "<msi>" /qn /norestart /l*v "<log>"`.
 
@@ -37,6 +37,7 @@ Alle Läufe: Windows-CI mit `windows-latest`, `windows-2022` und Pester unter Wi
 | M2c: sicherer Import (Auswahl, Rekursion, echte Junctions, Pfadlänge, Aufräumen bei Fehler) | 37833609876 | 247 xUnit (Core) und 31 xUnit (Analysis), 10 Pester bestanden, im ersten Lauf ohne Fehler |
 | M3a: Snapshot, Intune-Werte, JSON/CSV (nach zwei Korrekturen aus der CI: `InternalsVisibleTo`, Datumsparser im Test) | 37835593601 | 273 xUnit (Core), 31 (Analysis), 33 (Generation), Pester-Job bestanden |
 | M3b: Erkennungsskript-Generator (Lauf 1 mit Build-Fehler durch rohe Zeilentrenner, behoben) | 37884553567 | 273 xUnit (Core), 31 (Analysis), 61 (Generation), 44 Pester (davon 34 neue Erkennungstests mit echter Registry und Dateien) bestanden |
+| M3c: HTML-Anleitung de/en (Lauf 1: ein Testfehler, Lauf 2: Pester scheiterte am Runner-Image vor jedem Test, Lauf 3 grün) | 37885403336 | alle drei Jobs bestanden (Generation: 79 xUnit; Core 273, Analysis 31, Pester 44) |
 
 Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups, Pages-Webseite (deployt), Claude-Code-Umgebung (`CLAUDE.md`, Agents, Skills, Hook). Neue Dateien und Formate: siehe `docs/DATENFORMAT.md`.
 
@@ -45,10 +46,12 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 - M2 ist abgeschlossen und gemergt (PR 10).
 - M3a ist gemergt (PR 11, CI-Lauf 37835593601 grün).
 - M3b ist in PR 12 abgeschlossen (CI-Lauf 37884553567 grün; vorher Lauf 37884460677 mit Build-Fehler, siehe Lehren).
-- M3c (Branch `claude/great-feynman-hi1xfp`): **unverifiziert bis zum CI-Lauf.**
-  - Neu in `Generation`: `Guide/{GuideText,HtmlText,GuideGenerator}.cs`, `Resources/GuideStrings.resx` und `GuideStrings.de.resx` (79 Schlüssel); `RequirementsSection.MinimumWindowsVersionIsPlaceholder` und `IntuneSettingsOptions.MinimumWindowsVersionConfirmed`.
-  - Neue Tests: `GuideGeneratorTests` (xUnit). CI-Lauf 1 (37885229469): 78 von 79 Generation-Tests bestanden, die deutsche Satelliten-Assembly entsteht also beim Bauen; der eine Fehlschlag war ein Testfehler (der Snapshot lehnt `fr` ab, der Test baut die Einstellungen jetzt direkt).
-  - Doku: `docs/GENERATOREN.md` Abschnitt „HTML-Anleitung (M3c)“.
+- M3c ist in PR 13 abgeschlossen (CI-Lauf 37885403336 grün).
+- M3d (Branch `claude/great-feynman-hi1xfp`): **unverifiziert bis zum CI-Lauf.**
+  - Neu in `Generation`: `Wrapper/{WrapperConfig,WrapperConfigBuilder}.cs`, `BuildArtifacts.cs`; `DeploymentInterface.WrapperConfigFile` und `PackageSourceFolder`.
+  - Neue Tests: `WrapperConfigTests`, `BuildArtifactsTests` (A17 über alle Formate, Determinismus, Kodierung).
+  - Doku: `docs/GENERATOREN.md` (M3d), `docs/DATENFORMAT.md` (`Deployment.config.json`), `docs/PLANUNG.md` §8 Nr. 6 (Paketschnittstelle).
+  - Wenn die CI grün ist: M3 abschließen (Matrix A17, READMEs, Webseite, `CLAUDE.md` per Skill `milestone`), dann M4.
 
 ## Lehren (für künftige Sessions)
 
@@ -64,7 +67,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Nächste Schritte (in Reihenfolge)
 
-1. M3c: CI auswerten, Nachweis eintragen, mergen. Danach M3d (siehe oben), jede Scheibe als eigener PR mit Doku im selben PR (`docs/GENERATOREN.md` erweitern: Erkennungsvertrag, Anleitung, Wrapper-Konfiguration).
+1. M3d: CI auswerten, M3 abschließen (Skill `milestone`), mergen (siehe oben), jede Scheibe als eigener PR mit Doku im selben PR (`docs/GENERATOREN.md` erweitern: Erkennungsvertrag, Anleitung, Wrapper-Konfiguration).
 3. Danach M4 (Build-Pipeline mit dem Content Prep Tool) und M5 (Client-Laufzeit); beide können nach M3 parallel laufen (siehe `docs/PLANUNG.md` §4). Das Content Prep Tool (`tools/`) braucht Herkunft und SHA-256 in `THIRD-PARTY.md`, bevor es verwendet wird.
 4. M6 (Oberfläche), M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
 
