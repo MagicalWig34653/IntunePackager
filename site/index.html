@@ -169,8 +169,8 @@
           <tr><td>M0</td><td data-i18n="m0"></td><td><span class="tag now" data-i18n="stateDone"></span></td></tr>
           <tr><td>M1</td><td data-i18n="m1"></td><td><span class="tag now" data-i18n="stateDone"></span></td></tr>
           <tr><td>M2</td><td data-i18n="m2"></td><td><span class="tag now" data-i18n="stateDone"></span></td></tr>
-          <tr><td>M3</td><td data-i18n="m3"></td><td><span class="tag" data-i18n="stateNext"></span></td></tr>
-          <tr><td>M4</td><td data-i18n="m4"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
+          <tr><td>M3</td><td data-i18n="m3"></td><td><span class="tag now" data-i18n="stateDone"></span></td></tr>
+          <tr><td>M4</td><td data-i18n="m4"></td><td><span class="tag" data-i18n="stateNext"></span></td></tr>
           <tr><td>M5</td><td data-i18n="m5"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
           <tr><td>M6</td><td data-i18n="m6"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
           <tr><td>M7</td><td data-i18n="m7"></td><td><span class="tag" data-i18n="statePlanned"></span></td></tr>
@@ -197,7 +197,7 @@
       heroTitle: "From installer to Intune package",
       heroLead: "Planned workflow: drop an MSI or EXE, check the details, build. The output will be a .intunewin file, a standalone detection script and a step-by-step Intune guide that matches that exact build.",
       ctaRepo: "View on GitHub", ctaSpec: "Read the specification",
-      status: "Project status: the project scaffold, the core (projects, versions, locks, settings) and the source analysis (MSI, EXE, manifest, safe import) are done and tested by CI. The application has no user interface and no usable features yet and there is no release; the screens below are design mockups, not screenshots of a working program.",
+      status: "Project status: the project scaffold, the core (projects, versions, locks, settings), the source analysis (MSI, EXE, manifest, safe import) and the generators (detection script, Intune guide, JSON/CSV, wrapper configuration) are done and tested by CI. The application has no user interface and no usable features yet and there is no release; the screens below are design mockups, not screenshots of a working program.",
       howTitle: "How it is planned to work", howIntro: "The planned common path has four steps. An MSI should need no technical input at all.",
       s1t: "Drop the installer", s1d: "MSI or EXE, or a whole vendor folder in advanced mode. Metadata is read without running anything.",
       s2t: "Check the details", s2d: "Only the fields your setup needs will be shown. Missing vendor parameters are asked for, never guessed.",
@@ -224,7 +224,7 @@
       m0: "Solution scaffold, Windows CI, logging foundation, Pester scaffold, format check",
       m1: "Core: project model, atomic saving, migration, locks, settings",
       m2: "Source analysis: MSI reader, EXE metadata, manifests, safe import",
-      m3: "Generators: detection script, Intune guide, JSON and CSV",
+      m3: "Generators: detection script, Intune guide, JSON, CSV and wrapper configuration",
       m4: "Build pipeline with the Content Prep Tool",
       m5: "Client runtime: wrapper, return codes, user interaction",
       m6: "Application UI: standard mode, drag and drop, results",
@@ -238,7 +238,7 @@
       heroTitle: "Vom Installer zum Intune-Paket",
       heroLead: "Geplanter Ablauf: MSI oder EXE ablegen, Angaben prüfen, bauen. Das Ergebnis soll eine .intunewin-Datei, ein eigenständiges Erkennungsskript und eine Intune-Anleitung sein, die genau zu diesem Build passt.",
       ctaRepo: "Auf GitHub ansehen", ctaSpec: "Spezifikation lesen",
-      status: "Projektstand: Das Projektgerüst, der Core (Projekte, Versionen, Sperren, Einstellungen) und die Quellenanalyse (MSI, EXE, Manifest, sicherer Import) stehen und sind per CI getestet. Die Anwendung hat noch keine Oberfläche und keine nutzbaren Funktionen und es gibt kein Release; die Ansichten unten sind Design-Mockups, keine Screenshots eines lauffähigen Programms.",
+      status: "Projektstand: Das Projektgerüst, der Core (Projekte, Versionen, Sperren, Einstellungen), die Quellenanalyse (MSI, EXE, Manifest, sicherer Import) und die Generatoren (Erkennungsskript, Intune-Anleitung, JSON/CSV, Wrapper-Konfiguration) stehen und sind per CI getestet. Die Anwendung hat noch keine Oberfläche und keine nutzbaren Funktionen und es gibt kein Release; die Ansichten unten sind Design-Mockups, keine Screenshots eines lauffähigen Programms.",
       howTitle: "So soll es funktionieren", howIntro: "Der geplante Ablauf hat vier Schritte. Eine MSI soll ohne technische Eingaben auskommen.",
       s1t: "Installer ablegen", s1d: "MSI oder EXE, im erweiterten Modus auch ein ganzer Herstellerordner. Metadaten werden gelesen, ohne etwas auszuführen.",
       s2t: "Angaben prüfen", s2d: "Es sollen nur die Felder erscheinen, die Ihr Setup braucht. Fehlende Herstellerparameter werden abgefragt, nie geraten.",
@@ -265,7 +265,7 @@
       m0: "Solution-Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung",
       m1: "Core: Projektmodell, atomares Speichern, Migration, Sperren, Einstellungen",
       m2: "Quellenanalyse: MSI-Reader, EXE-Metadaten, Manifeste, sicherer Import",
-      m3: "Generatoren: Erkennungsskript, Intune-Anleitung, JSON und CSV",
+      m3: "Generatoren: Erkennungsskript, Intune-Anleitung, JSON, CSV und Wrapper-Konfiguration",
       m4: "Build-Pipeline mit dem Content Prep Tool",
       m5: "Client-Laufzeit: Wrapper, Rückgabecodes, Benutzerinteraktion",
       m6: "Anwendungsoberfläche: Standardmodus, Drag-and-drop, Ergebnisse",

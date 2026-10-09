@@ -2,7 +2,7 @@
 
 Windows desktop tool (C# / WPF, .NET Framework 4.8) that turns an MSI, EXE or vendor folder into a Microsoft Intune Win32 package (`.intunewin`, standalone detection script, Intune guide). The product specification is `docs/SPEC.md` (German, normative). Architecture, milestones and test strategy are in `docs/PLANUNG.md`; acceptance checks A01-A18 are tracked in `docs/ABNAHME-MATRIX.md`.
 
-**Status:** M0 done (scaffold, Windows CI, logging, Pester, format check). M1 done (core: projects, versions, locks, settings). M2 done (source analysis: MSI, EXE, manifest, safe import). M3 (generators) is next; current slice and next steps are in `docs/ARBEITSSTAND.md`. Never describe planned behavior as existing.
+**Status:** M0 done (scaffold, Windows CI, logging, Pester, format check). M1 done (core: projects, versions, locks, settings). M2 done (source analysis: MSI, EXE, manifest, safe import). M3 done (generators: detection script, guide, JSON/CSV, wrapper configuration). M4 (build pipeline) is next; current slice and next steps are in `docs/ARBEITSSTAND.md`. Never describe planned behavior as existing.
 
 ## Sessions are disposable
 
@@ -29,7 +29,7 @@ A session can end at any moment (container reclaimed, context lost, user switche
 src/      IntunePackageBuilder.{App,Core,Analysis,Build,Generation}   (App -> Build -> Analysis/Generation -> Core)
 tests/    xUnit per module; Pester for PowerShell; FlaUI UI tests (later)
 deploy/   client runtime templates and pinned vendor libraries (target device, PowerShell 5.1)
-tools/    Win32 Content Prep Tool with provenance and checksum
+tools/    provenance and checksum notes for the Win32 Content Prep Tool (the binary is not redistributed)
 docs/     SPEC, PLANUNG, ABNAHME-MATRIX (German)
 assets/   app icon        design/  mockup sources        site/  GitHub Pages website
 .claude/  agents, skills, hooks, settings for this repository

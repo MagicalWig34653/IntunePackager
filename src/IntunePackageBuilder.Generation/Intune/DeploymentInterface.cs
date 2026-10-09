@@ -21,6 +21,12 @@ namespace IntunePackageBuilder.Generation.Intune
 
         public const string PackageExtension = ".intunewin";
 
+        /// <summary>Configuration file the client runtime reads; it lies next to <see cref="EntryScript"/> in the package root.</summary>
+        public const string WrapperConfigFile = "Deployment.config.json";
+
+        /// <summary>Folder in the package root that holds the stored source files (installer and vendor files).</summary>
+        public const string PackageSourceFolder = "Files";
+
         /// <summary>Names of the files generated into the <c>intune</c> folder of a build (SPEC section 6.1).</summary>
         public const string SettingsJsonFile = "Einstellungen.json";
         public const string SettingsCsvFile = "Einstellungen.csv";

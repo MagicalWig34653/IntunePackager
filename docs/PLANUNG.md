@@ -127,7 +127,9 @@ Entschieden:
 3. **Sprache der erzeugten Anleitung und Benutzerhinweise:** folgt der Programmsprache beim Build; die Sprache wird im Snapshot festgehalten.
 4. **Quellcode:** vollständig Englisch (Bezeichner, Kommentare, Logmeldungen, Konfiguration). Sichtbare Texte nur über Ressourcen.
 5. **JSON-Bibliothek:** Newtonsoft.Json (MIT). `System.Text.Json` zieht auf .NET Framework 4.8 viele Zusatzabhängigkeiten nach; Newtonsoft ist dort der robustere Weg. Das Format selbst ist in `docs/DATENFORMAT.md` beschrieben.
-6. **Sessions are disposable:** Stand, Entscheidungen und nächste Schritte stehen im Repository (`docs/ARBEITSSTAND.md`), jede Änderung dokumentiert sich im selben PR (Regel in `CLAUDE.md`).
+6. **Paketschnittstelle (M3d):** Das Paket enthält im Wurzelordner `Install.cmd`, `Deployment.config.json` und den Ordner `Files\` mit den gesicherten Quellen (Installer und Herstellerdateien, Pfade wie in `configuration.json`). Das Erkennungsskript `Detect-App.ps1` liegt **nicht** im Paket, sondern im Ordner `intune` des Builds. Die Namen stehen in `DeploymentInterface`; M4 und M5 richten sich danach.
+7. **Content Prep Tool nicht mitliefern (vorläufig, M4):** Die Lizenz des Tools ist keine Open-Source-Lizenz; Abschnitt 4e verbietet, die Software zu teilen oder zu veröffentlichen. Deshalb kommt `IntuneWinAppUtil.exe` weder ins Repository noch in die Distribution. Das Autorentool nimmt den Pfad zum Tool aus den Einstellungen, prüft Größe und SHA-256 gegen die in `THIRD-PARTY.md` festgehaltene Version (1.8.7) und baut nur mit einer bekannten Version (andere Versionen nur nach ausdrücklicher Bestätigung). Die CI lädt das Tool für ihre Tests selbst vom Microsoft-Repository und prüft dieselbe SHA-256. Der Benutzer liest die Lizenzbedingungen und beschafft das Tool selbst; die Oberfläche (M6) führt ihn dorthin. **Ob eine Mitlieferung erlaubt ist, klärt der Projekteigentümer mit Microsoft; bis dahin gilt diese Regelung.** Das weicht von der Skizze `tools/` in der Spec ab.
+8. **Sessions are disposable:** Stand, Entscheidungen und nächste Schritte stehen im Repository (`docs/ARBEITSSTAND.md`), jede Änderung dokumentiert sich im selben PR (Regel in `CLAUDE.md`).
 
 Offen (vor M5 bzw. M8 zu klären):
 
@@ -163,5 +165,7 @@ Quellen: Microsoft Learn (Permissions reference, win32LobApp, mobileAppContentFi
 
 Erledigt: M0 (Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung; CI grün, .NET-Tests 8/8, Pester 10/10), README, Icon, Entwurfs-Mockups, Pages-Seite und Claude-Code-Umgebung.
 
-1. M1 beginnen (Core: Modelle, Schema, atomares Speichern, Migration, Projekt-IDs, Sperren, Grundordner) mit Tests für A03 (Modell), A05, A06, A14.
-2. Danach M2 (Quellenanalyse).
+Erledigt: M1 (Core), M2 (Quellenanalyse) und M3 (Generatoren), jeweils mit CI-Nachweis in `docs/ARBEITSSTAND.md`.
+
+1. M4 (Build-Pipeline mit dem Content Prep Tool) und M5 (Client-Laufzeit) können nun parallel laufen; in dieser Reihenfolge begonnen wird mit M4. Das Content Prep Tool braucht vorher Herkunft und SHA-256 in `THIRD-PARTY.md`.
+2. Danach M6 bis M8 (Oberfläche, erweiterter Modus, Distribution und Prüfprotokoll).
