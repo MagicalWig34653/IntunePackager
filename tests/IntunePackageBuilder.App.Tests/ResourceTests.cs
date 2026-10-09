@@ -79,7 +79,8 @@ namespace IntunePackageBuilder.App.Tests
         public void TheGermanTextsDifferFromTheEnglishOnes()
         {
             Loc.Use(new CultureInfo("en"));
-            var english = KeysBuiltFromCodes().ToDictionary(k => k, Loc.Get);
+            // "BaseFolder_Ok" is only the path and the same in both languages.
+            var english = KeysBuiltFromCodes().Where(k => k != "BaseFolder_Ok").ToDictionary(k => k, Loc.Get);
             Loc.Use(new CultureInfo("de"));
             var same = english.Where(pair => Loc.Get(pair.Key) == pair.Value).Select(pair => pair.Key).ToList();
 
