@@ -2,6 +2,8 @@ using System.ComponentModel;
 using IntunePackageBuilder.App.Infrastructure;
 using IntunePackageBuilder.App.Services;
 using IntunePackageBuilder.Build.Workflow;
+using IntunePackageBuilder.Core.Logging;
+using IntunePackageBuilder.Core.Projects;
 
 namespace IntunePackageBuilder.App.ViewModels
 {
@@ -57,6 +59,30 @@ namespace IntunePackageBuilder.App.ViewModels
             {
                 var form = _current as FormViewModel;
                 return form == null || !form.IsBusy;
+            }
+        }
+
+        /// <summary>
+        /// Called when the window is about to close: unsaved project notes are saved first (SPEC 6.2). Returns false when
+        /// saving failed; the error stays visible in the project view and the window stays open.
+        /// </summary>
+        public bool PrepareClose()
+        {
+            var project = _current as ProjectViewModel;
+            return project == null || project.SaveNotes();
+        }
+
+        public void ShowProject(string projectId)
+        {
+            Current = new ProjectViewModel(this, Services, projectId);
+            try
+            {
+                Services.Settings.MarkOpened(projectId, Services.Clock());
+                Services.SaveSettings();
+            }
+            catch (InvalidProjectIdException exception)
+            {
+                Services.Logger.Log(LogLevel.Warning, "The project could not be added to the recent list", exception);
             }
         }
 

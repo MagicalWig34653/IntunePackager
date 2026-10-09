@@ -43,7 +43,8 @@
         </StackPanel>
 
         <Grid Grid.Row="4">
-            <ListBox ItemsSource="{Binding VisibleProjects}" AutomationProperties.AutomationId="Projects">
+            <ListBox ItemsSource="{Binding VisibleProjects}" SelectedItem="{Binding SelectedProject}" AutomationProperties.AutomationId="Projects"
+                     MouseDoubleClick="OnProjectDoubleClick">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
@@ -60,8 +61,14 @@
         </Grid>
 
         <DockPanel Grid.Row="5" Margin="0,12,0,0">
-            <Button DockPanel.Dock="Right" Margin="12,0,0,0" Content="{infra:Loc Start_ChangeFolder}"
-                    Command="{Binding ChangeBaseFolderCommand}" AutomationProperties.AutomationId="ChangeBaseFolder" />
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <Button Margin="12,0,0,0" Content="{infra:Loc Start_OpenProject}"
+                        Command="{Binding OpenSelectedCommand}" AutomationProperties.AutomationId="OpenProject" />
+                <Button Margin="12,0,0,0" Content="{infra:Loc Start_OpenProjectFolder}"
+                        Command="{Binding OpenProjectFolderCommand}" AutomationProperties.AutomationId="OpenProjectFolder" />
+                <Button Margin="12,0,0,0" Content="{infra:Loc Start_ChangeFolder}"
+                        Command="{Binding ChangeBaseFolderCommand}" AutomationProperties.AutomationId="ChangeBaseFolder" />
+            </StackPanel>
             <StackPanel>
                 <TextBlock Style="{StaticResource Label}" Margin="0" Text="{infra:Loc Start_BaseFolder}" />
                 <TextBlock TextWrapping="Wrap" Text="{Binding BaseFolderText}" AutomationProperties.AutomationId="BaseFolderText" />

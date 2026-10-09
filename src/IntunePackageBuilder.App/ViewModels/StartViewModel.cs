@@ -11,6 +11,7 @@ using IntunePackageBuilder.Core.Logging;
 using IntunePackageBuilder.Core.Projects;
 using IntunePackageBuilder.Core.Settings;
 using IntunePackageBuilder.Core.Sources;
+using IntunePackageBuilder.Core.Storage;
 
 namespace IntunePackageBuilder.App.ViewModels
 {
@@ -29,6 +30,7 @@ namespace IntunePackageBuilder.App.ViewModels
         private string _message;
         private string _baseFolderText;
         private BaseFolderStatus _baseFolderStatus;
+        private ProjectItem _selectedProject;
 
         public StartViewModel(MainViewModel main, AppServices services)
         {
@@ -37,6 +39,8 @@ namespace IntunePackageBuilder.App.ViewModels
             VisibleProjects = new ObservableCollection<ProjectItem>();
             ChooseInstallerCommand = new RelayCommand(ChooseInstaller);
             ChangeBaseFolderCommand = new RelayCommand(ChangeBaseFolder);
+            OpenSelectedCommand = new RelayCommand(OpenSelected, () => _selectedProject != null && !_selectedProject.IsBroken);
+            OpenProjectFolderCommand = new RelayCommand(OpenProjectFolder);
             Refresh();
         }
 
@@ -45,6 +49,23 @@ namespace IntunePackageBuilder.App.ViewModels
         public ICommand ChooseInstallerCommand { get; private set; }
 
         public ICommand ChangeBaseFolderCommand { get; private set; }
+
+        public ICommand OpenSelectedCommand { get; private set; }
+
+        public ICommand OpenProjectFolderCommand { get; private set; }
+
+        /// <summary>The project selected in the list; opening it shows the project view.</summary>
+        public ProjectItem SelectedProject
+        {
+            get { return _selectedProject; }
+            set
+            {
+                if (Set(ref _selectedProject, value))
+                {
+                    ((RelayCommand)OpenSelectedCommand).RaiseCanExecuteChanged();
+                }
+            }
+        }
 
         public string SearchText
         {
@@ -225,6 +246,64 @@ namespace IntunePackageBuilder.App.ViewModels
             }
 
             return full.Substring(root.Length);
+        }
+
+        private void OpenSelected()
+        {
+            if (_selectedProject != null && !_selectedProject.IsBroken)
+            {
+                _main.ShowProject(_selectedProject.ProjectId);
+            }
+        }
+
+        /// <summary>
+        /// Opens an existing project folder (SPEC 5.1). The folder must hold a readable <c>project.json</c> whose ID is the
+        /// folder name. A folder outside the base folder is only opened after the user agrees to use its parent as the base folder.
+        /// </summary>
+        private void OpenProjectFolder()
+        {
+            Message = null;
+            var chosen = _services.Dialogs.PickFolder(Loc.Get("Start_OpenProjectFolder"), _services.BaseFolder.Path);
+            if (chosen == null)
+            {
+                return;
+            }
+
+            var full = Path.GetFullPath(chosen).TrimEnd(Path.DirectorySeparatorChar);
+            var id = Path.GetFileName(full);
+            var parent = Path.GetDirectoryName(full);
+            try
+            {
+                if (parent == null || ProjectId.Check(id) != ProjectIdProblem.None)
+                {
+                    throw new InvalidProjectIdException(id, ProjectIdProblem.InvalidCharacters);
+                }
+
+                new ProjectStore(parent).Load(id);
+            }
+            catch (Exception exception) when (exception is InvalidProjectIdException || exception is ProjectNotFoundException || exception is StorageFormatException || exception is UnsupportedSchemaException || exception is IOException || exception is UnauthorizedAccessException)
+            {
+                _services.Logger.Log(LogLevel.Warning, "The chosen folder is not a project", exception);
+                Message = Loc.Format("Start_ProjectFolderInvalid", full);
+                return;
+            }
+
+            var current = _services.BaseFolder;
+            var same = current.Status == BaseFolderStatus.Ok
+                && string.Equals(Path.GetFullPath(current.Path).TrimEnd(Path.DirectorySeparatorChar), parent.TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase);
+            if (!same)
+            {
+                if (!_services.Dialogs.Confirm(Loc.Get("Start_ProjectFolderBaseTitle"), Loc.Format("Start_ProjectFolderBaseText", id, parent)))
+                {
+                    return;
+                }
+
+                _services.Settings.BaseFolder = parent;
+                _services.SaveSettings();
+                Refresh();
+            }
+
+            _main.ShowProject(id);
         }
 
         private void ChooseInstaller()
