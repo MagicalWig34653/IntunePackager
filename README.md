@@ -16,7 +16,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/Lizenz-AGPL--3.0-green" alt="Lizenz AGPL-3.0"></a>
 </p>
 
-> **Projektstand:** Projektgerüst, Core (Projekte, Versionen, Sperren, Einstellungen), Quellenanalyse (MSI, EXE, Manifest, sicherer Import) sowie die Generatoren (Erkennungsskript, Intune-Anleitung, JSON/CSV, Wrapper-Konfiguration) stehen und sind per Windows-CI getestet (M0 bis M7 fertig). Der Paketbau mit dem Content Prep Tool steht, das Werkzeug muss der Benutzer aber selbst beschaffen (Lizenz). Die Client-Laufzeit (Wrapper, Rückgabecodes, Hinweis zum Schließen von Programmen) ist per Pester getestet, ein Fortschrittsfenster und Gerätetests fehlen noch. Die Oberfläche für den Standardablauf (Installer ablegen, Angaben prüfen, Paket bauen, Ergebnis) steht und wird per UI-Test in der CI gesteuert; erweiterter Modus, Projektansicht mit Notizen und Update-Ablauf (M7) stehen ebenfalls; es fehlen Distribution (M8) und Gerätetests, und es gibt kein Release. Die Unterstützung von Windows Server 2019 ist festgelegt, aber noch nicht auf einem Gerät geprüft. Die Bilder unten sind **Design-Mockups**, keine Screenshots eines lauffähigen Programms.
+> **Projektstand:** Projektgerüst, Core (Projekte, Versionen, Sperren, Einstellungen), Quellenanalyse (MSI, EXE, Manifest, sicherer Import) sowie die Generatoren (Erkennungsskript, Intune-Anleitung, JSON/CSV, Wrapper-Konfiguration) stehen und sind per Windows-CI getestet (M0 bis M7 fertig, M8 bis auf die Gerätetests). Der Paketbau mit dem Content Prep Tool steht, das Werkzeug muss der Benutzer aber selbst beschaffen (Lizenz). Die Client-Laufzeit (Wrapper, Rückgabecodes, Hinweis zum Schließen von Programmen) ist per Pester getestet, ein Fortschrittsfenster und Gerätetests fehlen noch. Die Oberfläche für den Standardablauf (Installer ablegen, Angaben prüfen, Paket bauen, Ergebnis) steht und wird per UI-Test in der CI gesteuert; erweiterter Modus, Projektansicht mit Notizen und Update-Ablauf (M7) stehen ebenfalls; die Distribution (portable ZIP mit Prüfsummen, ungeprüft auf Geräten, unsigniert) und die Bedienungsanleitung stehen (M8); es fehlen die Geräte- und Bedienungstests (`docs/PRUEFPROTOKOLL.md`), und es gibt kein Release. Die Unterstützung von Windows Server 2019 ist festgelegt, aber noch nicht auf einem Gerät geprüft. Die Bilder unten sind **Design-Mockups**, keine Screenshots eines lauffähigen Programms.
 
 Der Intune Package Builder ist eine Windows-Desktopanwendung, die aus einer MSI, einer EXE oder einem Herstellerordner ein vollständiges Microsoft-Intune-Win32-Paket erstellt:
 
@@ -59,7 +59,7 @@ Nicht Teil von Version 1: direkter Upload nach Intune, Graph-Anmeldung, Gruppenz
 | M5 | Client-Laufzeit: Wrapper, Rückgabecodes, Benutzerinteraktion | fertig, ohne Fortschrittsfenster |
 | M6 | Oberfläche: Standardmodus, Drag-and-drop, Ergebnisse | fertig, Erscheinungsbild noch nicht begutachtet |
 | M7 | Erweiterter Modus, Projektansicht, Update-Ablauf | fertig |
-| M8 | Distribution, Dokumentation, Geräte-Prüfprotokoll | als Nächstes |
+| M8 | Distribution, Dokumentation, Geräte-Prüfprotokoll | Distribution und Dokumentation fertig, Gerätetests offen |
 | M9 | Optional: Intune-Upload per Microsoft Graph (nicht Teil von Version 1) | vorgemerkt |
 
 Die zugehörigen Abnahmeprüfungen A01–A18 stehen in der [Abnahme-Matrix](docs/ABNAHME-MATRIX.md).

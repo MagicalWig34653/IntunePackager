@@ -16,7 +16,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-green" alt="License AGPL-3.0"></a>
 </p>
 
-> **Project status:** the project scaffold, the core (projects, versions, locks, settings), the source analysis (MSI, EXE, manifest, safe import) and the generators (detection script, Intune guide, JSON/CSV, wrapper configuration) are in place and tested by Windows CI (M0 to M7 done). The package build with the Content Prep Tool works, but users have to obtain the tool themselves (license). The client runtime (wrapper, return codes, prompt to close programs) is tested with Pester; a progress window and device tests are still missing. The user interface for the standard flow (drop an installer, check the entries, build the package, result) is in place and driven by a UI test in CI; advanced mode, the project view with notes and the update flow (M7) are in place as well; distribution (M8) and device tests are missing, and there is no release. Windows Server 2019 support is a requirement but has not been tested on a device yet. The images below are **design mockups**, not screenshots of a working program.
+> **Project status:** the project scaffold, the core (projects, versions, locks, settings), the source analysis (MSI, EXE, manifest, safe import) and the generators (detection script, Intune guide, JSON/CSV, wrapper configuration) are in place and tested by Windows CI (M0 to M7 done, M8 except the device tests). The package build with the Content Prep Tool works, but users have to obtain the tool themselves (license). The client runtime (wrapper, return codes, prompt to close programs) is tested with Pester; a progress window and device tests are still missing. The user interface for the standard flow (drop an installer, check the entries, build the package, result) is in place and driven by a UI test in CI; advanced mode, the project view with notes and the update flow (M7) are in place as well; the distribution (portable ZIP with checksums, not tested on devices, unsigned) and the user manual are in place (M8); the device and usability tests (`docs/PRUEFPROTOKOLL.md`) are missing, and there is no release. Windows Server 2019 support is a requirement but has not been tested on a device yet. The images below are **design mockups**, not screenshots of a working program.
 
 Intune Package Builder is a Windows desktop application that turns an MSI, an EXE or a vendor folder into a complete Microsoft Intune Win32 package:
 
@@ -59,7 +59,7 @@ Out of scope for version 1: direct Intune upload, Graph sign-in, group assignmen
 | M5 | Client runtime: wrapper, return codes, user interaction | done, without progress window |
 | M6 | UI: standard mode, drag and drop, results | done, appearance not reviewed yet |
 | M7 | Advanced mode, project view, update flow | done |
-| M8 | Distribution, documentation, device test protocol | next |
+| M8 | Distribution, documentation, device test protocol | distribution and documentation done, device tests open |
 | M9 | Optional: Intune upload via Microsoft Graph (not part of version 1) | noted |
 
 The matching acceptance checks A01–A18 are listed in the [acceptance matrix](docs/ABNAHME-MATRIX.md) (German).
