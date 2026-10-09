@@ -4,6 +4,13 @@
     <AssemblyName>IntunePackageBuilder.Build</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="IntunePackageBuilder.Build.Tests" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\IntunePackageBuilder.Core\IntunePackageBuilder.Core.csproj" />
     <ProjectReference Include="..\IntunePackageBuilder.Analysis\IntunePackageBuilder.Analysis.csproj" />
     <ProjectReference Include="..\IntunePackageBuilder.Generation\IntunePackageBuilder.Generation.csproj" />
