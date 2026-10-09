@@ -47,7 +47,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 - M3b ist in PR 12 abgeschlossen (CI-Lauf 37884553567 grün; vorher Lauf 37884460677 mit Build-Fehler, siehe Lehren).
 - M3c (Branch `claude/great-feynman-hi1xfp`): **unverifiziert bis zum CI-Lauf.**
   - Neu in `Generation`: `Guide/{GuideText,HtmlText,GuideGenerator}.cs`, `Resources/GuideStrings.resx` und `GuideStrings.de.resx` (79 Schlüssel); `RequirementsSection.MinimumWindowsVersionIsPlaceholder` und `IntuneSettingsOptions.MinimumWindowsVersionConfirmed`.
-  - Neue Tests: `GuideGeneratorTests` (xUnit). Risiko, das die CI klärt: Die deutsche Satelliten-Assembly muss beim Bauen mit `dotnet build` entstehen.
+  - Neue Tests: `GuideGeneratorTests` (xUnit). CI-Lauf 1 (37885229469): 78 von 79 Generation-Tests bestanden, die deutsche Satelliten-Assembly entsteht also beim Bauen; der eine Fehlschlag war ein Testfehler (der Snapshot lehnt `fr` ab, der Test baut die Einstellungen jetzt direkt).
   - Doku: `docs/GENERATOREN.md` Abschnitt „HTML-Anleitung (M3c)“.
 
 ## Lehren (für künftige Sessions)

@@ -72,7 +72,11 @@ namespace IntunePackageBuilder.Generation.Tests
         [Fact]
         public void AnUnknownLanguageFallsBackToEnglish()
         {
-            Assert.Contains("<html lang=\"en\">", MsiGuide("fr"));
+            // A snapshot only accepts de and en; settings from another source may still carry any value.
+            var settings = IntuneSettingsBuilder.From(Samples.Snapshot(Samples.Msi()));
+            settings.Language = "fr";
+
+            Assert.Contains("<html lang=\"en\">", GuideGenerator.Generate(settings));
         }
 
         [Fact]
