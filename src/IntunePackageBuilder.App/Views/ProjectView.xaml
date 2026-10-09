@@ -30,6 +30,18 @@
                 </ListBox>
                 <TextBlock Style="{StaticResource Note}" Text="{infra:Loc Project_NoVersions}"
                            Visibility="{Binding HasVersions, Converter={StaticResource VisibleWhenFalse}}" />
+                <WrapPanel Margin="0,8,0,0">
+                    <Button Margin="0,0,8,6" Content="{infra:Loc Project_Update}" Command="{Binding UpdateCommand}" FontWeight="SemiBold"
+                            AutomationProperties.AutomationId="Update" />
+                    <Button Margin="0,0,8,6" Content="{infra:Loc Project_LoadVersion}" Command="{Binding LoadVersionCommand}"
+                            AutomationProperties.AutomationId="LoadVersion" />
+                    <Button Margin="0,0,8,6" Content="{infra:Loc Project_NewVersion}" Command="{Binding NewVersionCommand}"
+                            AutomationProperties.AutomationId="NewVersion" />
+                    <Button Margin="0,0,8,6" Content="{infra:Loc Project_UpdateFolder}" Command="{Binding UpdateFolderCommand}"
+                            Visibility="{Binding IsAdvanced, Converter={StaticResource Visible}}" AutomationProperties.AutomationId="UpdateFolder" />
+                    <Button Margin="0,0,8,6" Content="{infra:Loc Project_NewVersionFolder}" Command="{Binding NewVersionFolderCommand}"
+                            Visibility="{Binding IsAdvanced, Converter={StaticResource Visible}}" AutomationProperties.AutomationId="NewVersionFolder" />
+                </WrapPanel>
 
                 <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Project_Notes}" />
                 <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="120"

@@ -19,7 +19,12 @@
         </StackPanel>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel MaxWidth="760" HorizontalAlignment="Left">
-                <TextBlock Style="{StaticResource Heading}" Text="{infra:Loc Form_Heading}" />
+                <TextBlock Style="{StaticResource Heading}" Text="{Binding HeadingText}" AutomationProperties.AutomationId="FormHeading" />
+                <StackPanel Margin="0,0,0,8" Visibility="{Binding ShowAdoptedHint, Converter={StaticResource Visible}}">
+                    <TextBlock Style="{StaticResource ErrorText}" Text="{Binding AdoptedHintText}" AutomationProperties.AutomationId="AdoptedHint" />
+                    <Button HorizontalAlignment="Left" Margin="0,6,0,0" Content="{infra:Loc Form_AdoptedCheck}" Command="{Binding ShowAdvancedCommand}"
+                            AutomationProperties.AutomationId="ShowAdvanced" />
+                </StackPanel>
                 <TextBlock Style="{StaticResource Label}" Margin="0" Text="{infra:Loc Form_Source}" />
                 <TextBlock TextWrapping="Wrap" Text="{Binding SourceText}" AutomationProperties.AutomationId="SourceText" />
 

@@ -212,4 +212,19 @@
   <data name="Project_BuildsMany" xml:space="preserve"><value>{0} Builds, letzter: {1}</value></data>
   <data name="Project_NoBuild" xml:space="preserve"><value>Noch kein Build</value></data>
   <data name="Project_LoadFailed" xml:space="preserve"><value>Das Projekt konnte nicht geöffnet werden: {0}</value></data>
+  <data name="Project_Update" xml:space="preserve"><value>Update erstellen</value></data>
+  <data name="Project_UpdateFolder" xml:space="preserve"><value>Update aus Herstellerordner…</value></data>
+  <data name="Project_LoadVersion" xml:space="preserve"><value>Version laden</value></data>
+  <data name="Project_NewVersion" xml:space="preserve"><value>Neue Version ohne Vorlage</value></data>
+  <data name="Project_NewVersionFolder" xml:space="preserve"><value>Neue Version aus Herstellerordner…</value></data>
+  <data name="Project_ChooseSource" xml:space="preserve"><value>Neuen Installer wählen</value></data>
+  <data name="Project_SelectVersion" xml:space="preserve"><value>Wählen Sie zuerst eine Version.</value></data>
+  <data name="Project_UpdateInstallerTypeChanged" xml:space="preserve"><value>Der neue Installer hat einen anderen Typ (MSI oder EXE) als Version {0}, deshalb können deren Einstellungen nicht übernommen werden. Verwenden Sie stattdessen "Neue Version ohne Vorlage".</value></data>
+  <data name="Project_SourceMissing" xml:space="preserve"><value>Die gespeicherte Quelle der Version {0} fehlt: {1}</value></data>
+  <data name="Form_UpdateHeading" xml:space="preserve"><value>Update von Version {0}</value></data>
+  <data name="Form_RebuildHeading" xml:space="preserve"><value>Version {0} erneut bauen</value></data>
+  <data name="Form_NewVersionHeading" xml:space="preserve"><value>Neue Version ohne Vorlage</value></data>
+  <data name="Form_AdoptedHint" xml:space="preserve"><value>Erweiterte Einstellungen wurden aus Version {0} übernommen. Prüfen Sie sie vor dem Bau.</value></data>
+  <data name="Form_AdoptedCheck" xml:space="preserve"><value>Erweiterte Einstellungen anzeigen</value></data>
+  <data name="Form_VersionExists" xml:space="preserve"><value>Diese Version gibt es im Projekt schon. Geben Sie eine neue Version ein oder laden Sie die Version, um sie erneut zu bauen.</value></data>
 </root>
