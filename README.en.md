@@ -52,7 +52,7 @@ Out of scope for version 1: direct Intune upload, Graph sign-in, group assignmen
 | M0 | Solution scaffold, Windows CI, logging foundation, Pester scaffold, format check | done |
 | M1 | Core: project model, atomic saving, migration, locks, settings | done |
 | M2 | Source analysis: MSI reader, EXE metadata, manifests, safe import | done |
-| M3 | Generators: detection script, Intune guide, JSON/CSV | done |
+| M3 | Generators: detection script, Intune guide, JSON/CSV, wrapper configuration | done |
 | M4 | Build pipeline with the Content Prep Tool | next |
 | M5 | Client runtime: wrapper, return codes, user interaction | planned |
 | M6 | UI: standard mode, drag and drop, results | planned |
@@ -67,8 +67,8 @@ The matching acceptance checks A01–A18 are listed in the [acceptance matrix](d
 ```text
 src/      Authoring tool (C# / WPF, .NET Framework 4.8) in separate modules
 deploy/   Client runtime: wrapper templates and pinned third-party library (planned, M5)
-tools/    Win32 Content Prep Tool with provenance and checksum manifest (planned, M4)
-tests/    xUnit exists; Pester and UI tests planned
+tools/    provenance and checksum notes for the Win32 Content Prep Tool (the program itself is not redistributed, M4)
+tests/    xUnit and Pester exist; UI tests planned
 docs/     Specification, planning, acceptance matrix, data format, work status (German)
 assets/   App icon (SVG, PNG, ICO)
 design/   Sources of the design mockups

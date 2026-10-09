@@ -29,7 +29,7 @@ A session can end at any moment (container reclaimed, context lost, user switche
 src/      IntunePackageBuilder.{App,Core,Analysis,Build,Generation}   (App -> Build -> Analysis/Generation -> Core)
 tests/    xUnit per module; Pester for PowerShell; FlaUI UI tests (later)
 deploy/   client runtime templates and pinned vendor libraries (target device, PowerShell 5.1)
-tools/    Win32 Content Prep Tool with provenance and checksum
+tools/    provenance and checksum notes for the Win32 Content Prep Tool (the binary is not redistributed)
 docs/     SPEC, PLANUNG, ABNAHME-MATRIX (German)
 assets/   app icon        design/  mockup sources        site/  GitHub Pages website
 .claude/  agents, skills, hooks, settings for this repository

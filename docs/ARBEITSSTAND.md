@@ -16,12 +16,12 @@ Aufteilung in einzeln mergbare Scheiben (Projekt `IntunePackageBuilder.Generatio
 |---|---|---|
 | M3a | `BuildSnapshot` (unveränderlicher Snapshot aus Konfiguration, Build-ID, Sprache, Quellen-Fingerabdruck), `IntuneSettings` (Installations- und Deinstallationsbefehl, Rückgabecodes mit Intune-Klassifizierung, Zeitlimit, Neustartverhalten, Erkennungsskript, Anforderungen), JSON- und CSV-Ausgabe mit korrekter Maskierung. Die ersten `.resx`-Ressourcen (neutral Englisch plus `.de.resx`) kommen mit der HTML-Anleitung in M3c, weil erst dort Beschriftungen entstehen | fertig, gemergt (PR 11), CI-Nachweis unten |
 | M3b | Erkennungsskript-Generator: eigenständiges Windows-PowerShell-5.1-Skript, UTF-8 mit BOM; MSI: ProductCode in beiden Registry-Ansichten und `DisplayVersion` mindestens Zielversion; EXE: Datei vorhanden und `FileVersion` mindestens Zielversion; Intune-Vertrag (erkannt: Exitcode 0 und nicht leere Standardausgabe; sonst keine Ausgabe); keine Dateien aus dem Intune-Cache; Pester-Tests A15 und A16 (Skript wird im Test über die gebaute `Generation.dll` erzeugt; der Pester-Job in `ci.yml` baut dafür vorher) | fertig, CI-Nachweis unten (PR 12) |
-| M3c | HTML-Anleitung (lokal lesbar, druckbar, Deutsch und Englisch) mit allen Abschnitten aus Spec §9 (App-Typ, Paketdatei, App-Informationen, Programm, Installationsverhalten, Anforderungen, Zeitlimit, Neustartverhalten, Rückgabecodes, Erkennung, Zuweisung, Abhängigkeiten, Fehleranalyse); Maskierung gegen aktive Inhalte (A17); Warnung vor dem Mischen von `.intunewin` und Erkennungsskript verschiedener Builds; behauptet nie eine erfolgreiche Zuweisung oder Installation | offen |
+| M3c | HTML-Anleitung (lokal lesbar, druckbar, Deutsch und Englisch) mit allen Abschnitten aus Spec §9 (App-Typ, Paketdatei, App-Informationen, Programm, Installationsverhalten, Anforderungen, Zeitlimit, Neustartverhalten, Rückgabecodes, Erkennung, Zuweisung, Abhängigkeiten, Fehleranalyse); Maskierung gegen aktive Inhalte (A17); Warnung vor dem Mischen von `.intunewin` und Erkennungsskript verschiedener Builds; behauptet nie eine erfolgreiche Zuweisung oder Installation | fertig, CI-Nachweis unten (PR 13) |
 | M3d | Wrapper-Konfiguration für die Client-Laufzeit (maschinenlesbar, aus demselben Snapshot) und Abnahme von A17 über alle Formate | fertig, CI-Nachweis unten (PR 14) |
 
 Entscheidungen, die M3 braucht: `docs/PLANUNG.md` §8 listet Mindest-Windows-Build (Anforderungen in Intune), Zielarchitektur und die `ALLUSERS`-Frage (MSI-Standardparameter). Ohne Antwort gelten bis dahin diese Annahmen, die im PR zu nennen sind: Anforderung nur Architektur x64 und Windows 10 Version 1607 oder neuer (Mindestwert für Win32-Apps, nur als Platzhalter markiert), Standardinstallation mit `msiexec /i "<msi>" /qn /norestart /l*v "<log>"`.
 
-Abgeschlossen: M1 (Core) und M2 (Quellenanalyse: M2a MSI-Reader, M2b EXE-Reader und Quellenmanifest, M2c sicherer Import).
+Abgeschlossen: M1 (Core), M2 (Quellenanalyse: M2a MSI-Reader, M2b EXE-Reader und Quellenmanifest, M2c sicherer Import) und M3 (Generatoren: M3a bis M3d).
 
 ## Erledigt und verifiziert (CI-Nachweis)
 
@@ -44,11 +44,8 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## In Arbeit
 
-- M2 ist abgeschlossen und gemergt (PR 10).
-- M3a ist gemergt (PR 11, CI-Lauf 37835593601 grün).
-- M3b ist in PR 12 abgeschlossen (CI-Lauf 37884553567 grün; vorher Lauf 37884460677 mit Build-Fehler, siehe Lehren).
-- M3c ist in PR 13 abgeschlossen (CI-Lauf 37885403336 grün).
-- M3 ist abgeschlossen (A15, A16, A17 mit CI-Nachweis in der Matrix). Branch `claude/great-feynman-hi1xfp`, M4 noch nicht begonnen.
+- Nichts ist in Arbeit, M4 ist noch nicht begonnen. Die Scheiben M2 bis M3d sind gemergt (PR 10 bis 13) beziehungsweise liegen in PR 14 (M3d und Abschluss von M3, CI-Nachweis in der Tabelle oben).
+- Die Annahmen, die M3 aus den offenen Entscheidungen getroffen hat (Mindest-Windows-Version als Platzhalter, 64-Bit-Anforderung, Standard-`msiexec`-Aufruf), stehen in `docs/GENERATOREN.md` und in `docs/PLANUNG.md` §8.
 
 ## Lehren (für künftige Sessions)
 
@@ -76,7 +73,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Offene Fragen
 
-- PSADT-Version, Mindest-Windows-Build, Signierung, Zielarchitektur, Test-Infrastruktur (siehe `docs/PLANUNG.md` §8). Keine davon blockiert M1 oder M2.
+- PSADT-Version, Mindest-Windows-Build, Signierung, Zielarchitektur, Test-Infrastruktur (siehe `docs/PLANUNG.md` §8). Keine davon blockiert M1 bis M4; vor M5 bzw. M8 sind sie zu klären.
 - Pages-Seite ist deployt; ihr Abruf aus der Cloud-Sitzung ist durch die Netzwerkrichtlinie gesperrt, daher nicht von hier verifizierbar.
 
 ## Wiederaufnahme

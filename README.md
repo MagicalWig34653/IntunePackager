@@ -52,7 +52,7 @@ Nicht Teil von Version 1: direkter Upload nach Intune, Graph-Anmeldung, Gruppenz
 | M0 | Solution-Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung | fertig |
 | M1 | Core: Projektmodell, atomares Speichern, Migration, Sperren, Einstellungen | fertig |
 | M2 | Quellenanalyse: MSI-Reader, EXE-Metadaten, Manifeste, sicherer Import | fertig |
-| M3 | Generatoren: Erkennungsskript, Intune-Anleitung, JSON/CSV | fertig |
+| M3 | Generatoren: Erkennungsskript, Intune-Anleitung, JSON/CSV, Wrapper-Konfiguration | fertig |
 | M4 | Build-Pipeline mit dem Content Prep Tool | als Nächstes |
 | M5 | Client-Laufzeit: Wrapper, Rückgabecodes, Benutzerinteraktion | geplant |
 | M6 | Oberfläche: Standardmodus, Drag-and-drop, Ergebnisse | geplant |
@@ -67,8 +67,8 @@ Die zugehörigen Abnahmeprüfungen A01–A18 stehen in der [Abnahme-Matrix](docs
 ```text
 src/      Autorentool (C# / WPF, .NET Framework 4.8) in getrennten Modulen
 deploy/   Client-Laufzeit: Wrapper-Vorlagen und gepinnte Drittanbieter-Bibliothek (geplant, M5)
-tools/    Win32 Content Prep Tool samt Herkunfts- und Prüfsummenmanifest (geplant, M4)
-tests/    xUnit vorhanden; Pester und UI-Tests geplant
+tools/    Herkunfts- und Prüfsummenangaben zum Win32 Content Prep Tool (das Programm selbst wird nicht mitgeliefert, M4)
+tests/    xUnit und Pester vorhanden; UI-Tests geplant
 docs/     Spezifikation, Planung, Abnahme-Matrix, Datenformat, Arbeitsstand
 assets/   App-Icon (SVG, PNG, ICO)
 design/   Quellen der Design-Mockups
