@@ -87,7 +87,7 @@
   <data name="Form_ProductCode" xml:space="preserve"><value>Product code (read from the MSI)</value></data>
   <data name="Form_InstallArgumentsExe" xml:space="preserve"><value>Silent install parameters</value></data>
   <data name="Form_InstallArgumentsMsi" xml:space="preserve"><value>Additional MSI properties</value></data>
-  <data name="Form_InstallArgumentsHint" xml:space="preserve"><value>Required for an EXE: use the parameters the vendor documents. Examples shown elsewhere are only examples.</value></data>
+  <data name="Form_InstallArgumentsHint" xml:space="preserve"><value>Required for an EXE: use the parameters the vendor documents. Examples shown elsewhere are only examples. Do not enter license keys or passwords: parameters are stored in plain text and written to the logs and to the guide.</value></data>
   <data name="Form_UninstallProgram" xml:space="preserve"><value>Uninstall program (full path on the device)</value></data>
   <data name="Form_UninstallArguments" xml:space="preserve"><value>Silent uninstall parameters</value></data>
   <data name="Form_DetectionPath" xml:space="preserve"><value>Installed file for detection (full path on the device)</value></data>
@@ -102,8 +102,8 @@
   <data name="Form_SuccessCodes" xml:space="preserve"><value>Success codes (comma separated; 0 stays a success)</value></data>
   <data name="Form_RebootCodes" xml:space="preserve"><value>Reboot codes (comma separated)</value></data>
   <data name="Form_RetryCodes" xml:space="preserve"><value>Retry codes (comma separated)</value></data>
-  <data name="Form_InstallMessage" xml:space="preserve"><value>Text shown during installation</value></data>
-  <data name="Form_UninstallMessage" xml:space="preserve"><value>Text shown during uninstallation</value></data>
+  <data name="Form_InstallMessage" xml:space="preserve"><value>Text shown during installation (stored, but shown only once a progress window exists; not available yet)</value></data>
+  <data name="Form_UninstallMessage" xml:space="preserve"><value>Text shown during uninstallation (stored, but shown only once a progress window exists; not available yet)</value></data>
   <data name="Form_DetailMessage" xml:space="preserve"><value>Detail note for users</value></data>
   <data name="Form_ProblemsHeading" xml:space="preserve"><value>Please check these entries:</value></data>
   <data name="Valid_Required" xml:space="preserve"><value>This value is required.</value></data>
@@ -250,4 +250,6 @@
   <data name="Source_Result" xml:space="preserve"><value>{0} file(s), {1} bytes in total. Fingerprint: {2}</value></data>
   <data name="Source_Unsafe" xml:space="preserve"><value>The source contains a link or reparse point and cannot be stored safely.</value></data>
   <data name="Source_Failed" xml:space="preserve"><value>The source could not be read: {0}</value></data>
+  <data name="Dialog_UnexpectedError" xml:space="preserve"><value>The program ran into an unexpected problem and could not finish what you asked. Details are in the log folder: {0}. Entries that were not saved may be lost.</value></data>
+  <data name="Dialog_UnexpectedErrorTitle" xml:space="preserve"><value>Unexpected problem</value></data>
 </root>

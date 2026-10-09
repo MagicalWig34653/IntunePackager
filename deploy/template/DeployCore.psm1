@@ -524,6 +524,14 @@ function Request-CloseProcesses {
 # ---------------------------------------------------------------- the deployment
 
 # Runs the installation or uninstallation and returns the exit code for Intune.
+function Get-ProcessTimeLimit {
+    # Minutes left for the installer: the whole time limit minus a safety margin minus what the wrapper has already used
+    # (for example waiting for the user to close programs), so that Intune's limit is never exceeded by the sum of both.
+    param([double]$TimeoutMinutes, [datetime]$StartedUtc, [double]$MarginMinutes = 2)
+    $used = ([datetime]::UtcNow - $StartedUtc).TotalMinutes
+    return [Math]::Max(1, $TimeoutMinutes - $MarginMinutes - $used)
+}
+
 function Invoke-Deployment {
     [CmdletBinding()]
     param(
@@ -547,13 +555,14 @@ function Invoke-Deployment {
         Write-DeployLog -Level 'INFO' -Message ("{0} of '{1}' {2}, build {3}, user {4}, PowerShell {5}, 64-bit process {6}" -f $DeploymentType, (Get-ConfigValue -Object $config -Name 'softwareName' -Default ''), (Get-ConfigValue -Object $config -Name 'targetVersion' -Default ''), (Get-ConfigValue -Object $config -Name 'buildId' -Default ''), $identity, $PSVersionTable.PSVersion, [Environment]::Is64BitProcess)
 
         $timeout = [int](Get-ConfigValue -Object $config -Name 'timeoutMinutes' -Default 60)
-        $limit = [Math]::Max(1, $timeout - 2)
+        $started = [datetime]::UtcNow
 
         $ready = Request-CloseProcesses -Config $config -Action $DeploymentType -MaxWaitMinutes ([Math]::Max(1, [Math]::Min(30, [int]($timeout / 3))))
         if ($ready -ne 'Ready') {
             return [int]$script:ExitCodes.Retry
         }
 
+        $limit = [Math]::Round((Get-ProcessTimeLimit -TimeoutMinutes $timeout -StartedUtc $started), 1)
         $command = New-ProcessCommand -Config $config -Action $DeploymentType -PackageRoot $PackageRoot -LogDirectory $directory
         Write-DeployLog -Level 'INFO' -Message ("Starting {0} {1}" -f $command.FilePath, $command.Arguments)
         $result = Invoke-DeployProcess -FilePath $command.FilePath -Arguments $command.Arguments -WorkingDirectory $command.WorkingDirectory -TimeoutMinutes $limit

@@ -87,7 +87,7 @@
   <data name="Form_ProductCode" xml:space="preserve"><value>ProductCode (aus der MSI gelesen)</value></data>
   <data name="Form_InstallArgumentsExe" xml:space="preserve"><value>Stille Installationsparameter</value></data>
   <data name="Form_InstallArgumentsMsi" xml:space="preserve"><value>Zusätzliche MSI-Eigenschaften</value></data>
-  <data name="Form_InstallArgumentsHint" xml:space="preserve"><value>Bei einer EXE erforderlich: verwenden Sie die Parameter aus der Herstellerdokumentation. Beispiele sind nur Beispiele.</value></data>
+  <data name="Form_InstallArgumentsHint" xml:space="preserve"><value>Bei einer EXE erforderlich: verwenden Sie die Parameter aus der Herstellerdokumentation. Beispiele sind nur Beispiele. Geben Sie keine Lizenzschlüssel oder Kennwörter ein: Parameter werden im Klartext gespeichert und in Logs und Anleitung geschrieben.</value></data>
   <data name="Form_UninstallProgram" xml:space="preserve"><value>Deinstallationsprogramm (vollständiger Pfad auf dem Gerät)</value></data>
   <data name="Form_UninstallArguments" xml:space="preserve"><value>Stille Deinstallationsparameter</value></data>
   <data name="Form_DetectionPath" xml:space="preserve"><value>Installierte Erkennungsdatei (vollständiger Pfad auf dem Gerät)</value></data>
@@ -102,8 +102,8 @@
   <data name="Form_SuccessCodes" xml:space="preserve"><value>Erfolgscodes (durch Komma getrennt; 0 bleibt ein Erfolg)</value></data>
   <data name="Form_RebootCodes" xml:space="preserve"><value>Neustartcodes (durch Komma getrennt)</value></data>
   <data name="Form_RetryCodes" xml:space="preserve"><value>Wiederholungscodes (durch Komma getrennt)</value></data>
-  <data name="Form_InstallMessage" xml:space="preserve"><value>Text während der Installation</value></data>
-  <data name="Form_UninstallMessage" xml:space="preserve"><value>Text während der Deinstallation</value></data>
+  <data name="Form_InstallMessage" xml:space="preserve"><value>Text während der Installation (wird gespeichert, aber erst angezeigt, wenn es ein Fortschrittsfenster gibt; noch nicht verfügbar)</value></data>
+  <data name="Form_UninstallMessage" xml:space="preserve"><value>Text während der Deinstallation (wird gespeichert, aber erst angezeigt, wenn es ein Fortschrittsfenster gibt; noch nicht verfügbar)</value></data>
   <data name="Form_DetailMessage" xml:space="preserve"><value>Detailhinweis für Benutzer</value></data>
   <data name="Form_ProblemsHeading" xml:space="preserve"><value>Bitte prüfen Sie diese Angaben:</value></data>
   <data name="Valid_Required" xml:space="preserve"><value>Dieser Wert ist erforderlich.</value></data>
@@ -250,4 +250,6 @@
   <data name="Source_Result" xml:space="preserve"><value>{0} Datei(en), insgesamt {1} Bytes. Fingerabdruck: {2}</value></data>
   <data name="Source_Unsafe" xml:space="preserve"><value>Die Quelle enthält einen Link oder Reparse-Punkt und kann nicht sicher gespeichert werden.</value></data>
   <data name="Source_Failed" xml:space="preserve"><value>Die Quelle konnte nicht gelesen werden: {0}</value></data>
+  <data name="Dialog_UnexpectedError" xml:space="preserve"><value>Das Programm ist auf ein unerwartetes Problem gestoßen und konnte nicht beenden, was Sie angefordert haben. Einzelheiten stehen im Log-Ordner: {0}. Nicht gespeicherte Eingaben können verloren sein.</value></data>
+  <data name="Dialog_UnexpectedErrorTitle" xml:space="preserve"><value>Unerwartetes Problem</value></data>
 </root>

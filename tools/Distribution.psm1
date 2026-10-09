@@ -17,6 +17,15 @@ $script:AllowedFile = @(
     '^(SHA256SUMS\.txt|distribution-manifest\.json)$'
 )
 
+# Files that must be part of every distribution; a ZIP that lacks one of them is incomplete, not "clean".
+$script:RequiredFile = @(
+    'IntunePackageBuilder.exe', 'IntunePackageBuilder.exe.config',
+    'IntunePackageBuilder.Core.dll', 'IntunePackageBuilder.Analysis.dll', 'IntunePackageBuilder.Build.dll', 'IntunePackageBuilder.Generation.dll',
+    'Newtonsoft.Json.dll',
+    'template/Install.cmd', 'template/Deploy-Wrapper.ps1', 'template/DeployCore.psm1', 'template/Messages.de.psd1', 'template/Messages.en.psd1',
+    'LICENSE', 'THIRD-PARTY.md'
+)
+
 # Things that must never be shipped, with the reason shown to the person who reads the report.
 $script:DeniedFile = @(
     @{ Regex = '\.(msi|msp|msix)$'; Reason = 'vendor installer' },
@@ -98,6 +107,10 @@ function Get-DistributionProblem {
 
     $byName = @{}
     foreach ($file in $files) { $byName[$file.Relative.ToLowerInvariant()] = $file }
+
+    foreach ($required in $script:RequiredFile) {
+        if (-not $byName.ContainsKey($required.ToLowerInvariant())) { $problems.Add("Required file is missing: '$required'") }
+    }
 
     # The checksums must cover every file except the checksum file itself, and every line must match the real file.
     $sumsFile = $byName['sha256sums.txt']

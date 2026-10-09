@@ -74,8 +74,22 @@ namespace IntunePackageBuilder.App
 
         private static void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
         {
-            // Only log here; the exception stays unhandled so the failure is never hidden.
+            // The failure is logged and shown in plain words instead of the operating system's crash dialog (SPEC 10).
             Log.Log(LogLevel.Error, "Unhandled UI exception", args.Exception);
+            try
+            {
+                MessageBox.Show(
+                    Loc.Format("Dialog_UnexpectedError", FileLogger.DefaultDirectory()),
+                    Loc.Get("Dialog_UnexpectedErrorTitle"),
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                args.Handled = true;
+            }
+            catch (InvalidOperationException)
+            {
+                // No dialog could be shown (for example during shutdown); the exception then stays unhandled.
+                Log.Log(LogLevel.Warning, "The error dialog could not be shown");
+            }
         }
     }
 }
