@@ -46,7 +46,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 ## In Arbeit
 
 - M4a ist gemergt (PR 15, CI-Lauf 37886853214 grün; Lauf 1 hatte den Prozessbaum-Fund, siehe Lehren).
-- M4b (Branch `claude/great-feynman-hi1xfp`): **unverifiziert bis zum CI-Lauf.**
+- M4b (Branch `claude/great-feynman-hi1xfp`): **unverifiziert bis zum CI-Lauf** (Lauf 1, 37887469531: Build-Fehler xUnit1031 in zwei Tests, behoben).
   - Neu in `Build/Pipeline`: `BuildPipeline`, `BuildWorkspace` (mit `MarkedFolder`), `BuildLog`, `BuildTypes` (Phasen, Fehlercodes, Anfrage, Ergebnis); neu in `Core/Builds`: `BuildManifest` mit `BuildManifestStore`.
   - Neue Tests: `BuildPipelineTests` (A09-Logik, A10, A11, A13, Aufräumen, Abbruch, ein Test mit dem echten Werkzeug), `PipelineFixture`.
   - Doku: `docs/BUILD.md` Abschnitt „Pipeline (M4b)“, `docs/DATENFORMAT.md` (`build-manifest.json`).
@@ -60,6 +60,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 - **Der Edit/Write-Hook greift nicht bei Dateien, die per Bash-Heredoc entstehen.** Danach immer `python3 -I .claude/skills/check-i18n/check_i18n.py .` laufen lassen. Umlaute im C#-Code als `\u00e4`-Escapes schreiben; mein Schreibwerkzeug löst Escapes manchmal schon beim Schreiben zu echten Zeichen auf.
 - **Zeilentrenner (U+2028/U+2029) und Steuerzeichen im C#-Quelltext bauen den Compiler aus** (CS1010 in M3b-CI-Lauf 1): Das Schreibwerkzeug löst `\u2028`-Escapes zu echten Zeichen auf. `check_i18n.py` meldet solche Zeichen jetzt; nach dem Schreiben immer ausführen.
 - **Der Pester-Job kann am Runner-Image scheitern, bevor ein Test läuft** (`Set-PSRepository : No repository with the name 'PSGallery' was found`, PR 13, Lauf 37885323164). Der Installationsschritt in `ci.yml` registriert PSGallery jetzt bei Bedarf und wiederholt die Installation bis zu dreimal.
+- **xUnit1031 verbietet `Task.Wait()` in Tests** (Warnung wird zum Fehler): asynchrone Tests schreiben (`async Task`) und mit `await Task.WhenAny(task, Task.Delay(...))` ein Zeitlimit setzen. `ManualResetEventSlim.Wait` ist erlaubt.
 - **`Process.Kill` beendet keine Kindprozesse.** Wer ein Programm mit umgeleiteter Ausgabe nach einem Zeitlimit beenden will, muss den Baum beenden (`taskkill /PID <id> /T /F`) und das Warten auf die Ausgabe begrenzen, sonst hängt der Aufrufer, bis das Kind endet.
 - **`Assert.True(false, ...)` löst xUnit2020 aus** und bricht den Build (Warnungen sind Fehler); `Assert.Fail(...)` verwenden.
 - **`JObject.Parse` formatiert datumsähnliche Texte um**; deshalb `JsonFormat.ParseObject` benutzen (Notizen bleiben unverändert).

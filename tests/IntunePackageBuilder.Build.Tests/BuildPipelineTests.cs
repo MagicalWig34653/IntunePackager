@@ -249,7 +249,7 @@ namespace IntunePackageBuilder.Build.Tests
         }
 
         [Fact]
-        public void ARunningBuildBlocksASecondBuildOfTheSameVersionAndDoesNotBlockTheCaller()
+        public async Task ARunningBuildBlocksASecondBuildOfTheSameVersionAndDoesNotBlockTheCaller()
         {
             using (var fixture = new PipelineFixture())
             using (var entered = new ManualResetEventSlim(false))
@@ -272,13 +272,15 @@ namespace IntunePackageBuilder.Build.Tests
                 Assert.Equal(BuildProblem.VersionLocked, second.Problem);
 
                 release.Set();
-                Assert.True(running.Wait(TimeSpan.FromSeconds(60)));
+                await Task.WhenAny(running, Task.Delay(TimeSpan.FromSeconds(60)));
+                Assert.True(running.IsCompleted, "the build did not finish");
+                await running;
                 Assert.Single(fixture.PublishedBuilds());
             }
         }
 
         [Fact]
-        public void ABuildOfAnotherVersionIsNotBlocked()
+        public async Task ABuildOfAnotherVersionIsNotBlocked()
         {
             using (var one = new PipelineFixture())
             using (var two = new PipelineFixture())
@@ -293,7 +295,9 @@ namespace IntunePackageBuilder.Build.Tests
 
                 Assert.True(Directory.Exists(other.BuildDirectory));
                 release.Set();
-                Assert.True(running.Wait(TimeSpan.FromSeconds(60)));
+                await Task.WhenAny(running, Task.Delay(TimeSpan.FromSeconds(60)));
+                Assert.True(running.IsCompleted, "the build did not finish");
+                await running;
             }
         }
 
