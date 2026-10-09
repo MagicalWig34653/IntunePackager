@@ -20,7 +20,7 @@ Zuordnung der verbindlichen automatisierten Prüfungen aus [SPEC.md](SPEC.md) §
 | A14 | Zweiter Prozess, gleiche Version | M1 | xUnit (Mehrprozess) | Sperre auf Speicherebene bestanden mit echtem Zweitprozess (CI 37827032442); Verhalten in der UI offen |
 | A15 | Erkennung älter / passend / neuer / fremd | M3, M5 | Pester | Erzeugtes Skript gegen echte Registry-Schlüssel und Dateien bestanden (CI 37884553567); Verhalten im Wrapper (M5) und unter LocalSystem (M8) offen |
 | A16 | Erkennung ohne Paketcache | M3, M5 | Pester | Skript allein in leerem Ordner, anderer Arbeitsordner, ohne Bezug zu Paket oder Cache bestanden (CI 37884553567) |
-| A17 | Sonderzeichen in HTML/JSON/CSV/PowerShell | M3 | xUnit, Pester | offen |
+| A17 | Sonderzeichen in HTML/JSON/CSV/PowerShell | M3 | xUnit, Pester | JSON/CSV (CI 37835593601) und PowerShell (CI 37884553567) bestanden; HTML geschrieben, CI-Nachweis steht aus; Gesamtabnahme über alle Formate in M3d |
 | A18 | Distributionsinhalt und Prüfsummen | M8 | Skript in CI | offen |
 
 Geräte- und Bedienungstests (§12.2) laufen manuell in M8 und werden im Prüfprotokoll (`docs/PRUEFPROTOKOLL.md`, entsteht in M8) festgehalten.

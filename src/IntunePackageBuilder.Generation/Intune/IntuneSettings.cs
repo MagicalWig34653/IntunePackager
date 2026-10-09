@@ -60,6 +60,9 @@ namespace IntunePackageBuilder.Generation.Intune
         public string Architecture { get; set; }
 
         public string MinimumWindowsVersion { get; set; }
+
+        /// <summary>True while the minimum Windows version is the unconfirmed default (open decision). The guide says so.</summary>
+        public bool MinimumWindowsVersionIsPlaceholder { get; set; }
     }
 
     public sealed class DetectionRuleSection

@@ -27,6 +27,9 @@ namespace IntunePackageBuilder.Generation.Intune
         /// </summary>
         public string MinimumWindowsVersion { get; set; }
 
+        /// <summary>Set to true once the minimum Windows version has been decided; until then the guide marks it as a placeholder.</summary>
+        public bool MinimumWindowsVersionConfirmed { get; set; }
+
         public IntuneSettingsOptions()
         {
             MinimumWindowsVersion = "Windows 10 1607";
@@ -89,7 +92,8 @@ namespace IntunePackageBuilder.Generation.Intune
                 Requirements = new RequirementsSection
                 {
                     Architecture = "x64",
-                    MinimumWindowsVersion = options.MinimumWindowsVersion
+                    MinimumWindowsVersion = options.MinimumWindowsVersion,
+                    MinimumWindowsVersionIsPlaceholder = !options.MinimumWindowsVersionConfirmed
                 },
                 ReturnCodes = BuildReturnCodes(config.Runtime),
                 Detection = new DetectionSection

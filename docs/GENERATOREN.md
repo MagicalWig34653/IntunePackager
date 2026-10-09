@@ -23,7 +23,7 @@ Eine Konfiguration, die der Validator beanstandet (zum Beispiel eine EXE ohne He
 |---|---|---|
 | `app` | `type` = `Win32`, `packageFileName` = `<projekt-id>.intunewin`, `name`, `publisher`, `version`, `description` | Konfiguration (Name, Hersteller, Zielversion); die Beschreibung ist `<Name> <Version>`, bis es ein eigenes Feld gibt |
 | `program` | `installCommand` = `Install.cmd`, `uninstallCommand` = `Install.cmd -DeploymentType Uninstall`, `installContext` = `System`, `timeoutMinutes`, `restartBehavior` | feste Schnittstelle (`DeploymentInterface`), Zeitlimit aus der Konfiguration |
-| `requirements` | `architecture` = `x64`, `minimumWindowsVersion` | siehe „Annahmen“ |
+| `requirements` | `architecture` = `x64`, `minimumWindowsVersion`, `minimumWindowsVersionIsPlaceholder` (`true`, solange der Wert nicht über `IntuneSettingsOptions.MinimumWindowsVersionConfirmed` bestätigt ist) | siehe „Annahmen“ |
 | `returnCodes` | Liste aus `code` und `type` (`Success`, `SoftReboot`, `HardReboot`, `Retry`), aufsteigend nach Code | Konfiguration, siehe unten |
 | `detection` | `scriptFileName` = `Detect-App.ps1`, `runAs32Bit` = `false`, `enforceSignatureCheck` = `false`, `signatureStatus` = `Unsigned`, `rule` (Methode, ProductCode oder Pfad, Mindestversion) | Konfiguration; der Signaturstatus ist der **tatsächliche**: das Skript ist nicht signiert, solange es keinen Signierschritt gibt |
 | `logs` | Zielgeräte-Ordner `C:\Windows\Logs\Intune\PackageDeploy\<projekt-id>`, `Deployment.log`, bei MSI `MsiInstall.log` und `MsiUninstall.log`, Intune-Logordner | feste Schnittstelle |
@@ -83,4 +83,26 @@ Der Vergleich ist numerisch über bis zu vier Teile, fehlende Teile zählen als 
 - xUnit (`DetectionScriptGeneratorTests`): Inhalt je Verfahren, Intune-Vertrag, Eigenständigkeit, BOM, Maskierung aller Anführungszeichen, abgelehnte Eingaben, Kommentar-Einschleusung.
 - Pester (`tests/pester/DetectionScript.Tests.ps1`, Windows PowerShell 5.1): erzeugt das Skript über die gebaute `Generation.dll` und führt es in einem Kindprozess gegen **echte Registry-Schlüssel** (zufälliger ProductCode, beide Ansichten, Aufräumen nach dem Test) und **echte Dateien** (`kernel32.dll` als Referenz) aus: älter, passend, neuer, fremd installiert, nicht installiert, Verzeichnis, fehlende Datei, Einschleusungsversuch (A15); Skript allein in einem leeren Ordner, aus anderem Arbeitsordner, ohne Bezug zu Paket oder Intune-Cache (A16). Der Pester-Job in `ci.yml` baut dafür vorher `Generation`.
 - **Nicht abgedeckt:** das Verhalten unter dem Konto `LocalSystem` und innerhalb der Intune Management Extension; das belegt erst der Gerätetest in M8.
+
+## HTML-Anleitung (M3c)
+
+`GuideGenerator.Generate(IntuneSettings)` rendert die Anleitung eines Builds als **eigenständige HTML-Seite** (`Einrichtung.html` im Ordner `intune` des Builds). Sie ist offline lesbar und druckbar (`@media print`), enthält **kein Skript**, keine Bilder und keine externen Ressourcen und setzt eine Content-Security-Policy (`default-src 'none'; style-src 'unsafe-inline'`). Alle Werte stammen aus denselben `IntuneSettings` wie JSON und CSV.
+
+### Aufbau
+
+Kopf mit Software, Zielversion und Build-ID, danach eine hervorgehobene **Warnung vor dem Mischen von Builds** (nennt die Paketdatei, das Erkennungsskript und die Build-ID dieses Builds), dann die zehn Abschnitte aus Spec §9: App-Typ, Paketdatei, App-Informationen, Programm (Befehle, Installationsverhalten `System`, Zeitlimit, Neustartverhalten, zu schließende Programme), Anforderungen, Rückgabecodes (jeder Code mit Intune-Klassifizierung; Hinweis zu 1641), Erkennung (Skriptdatei, 32-Bit-Einstellung, Signaturprüfung, **tatsächlicher** Signaturstatus, Beschreibung der Prüfung, Intune-Vertrag), Zuweisungen (Pilot zuerst, Required und Available erklärt, keine automatische Zuweisung), Abhängigkeiten und Ersetzungen (nur „keine definiert“, nichts erfunden) und Fehleranalyse (Logpfade, Prüfschritte; MSI-Logs nur bei MSI). Die Mindest-Windows-Version trägt einen Platzhalter-Hinweis, solange die Entscheidung offen ist.
+
+Die Anleitung **behauptet nie** einen Upload, eine Zuweisung oder eine Installation; der Einleitungstext sagt das ausdrücklich.
+
+### Sprache und Texte
+
+Die Sprache kommt aus dem Snapshot (`de` oder `en`, sonst Englisch), nicht aus der Sprache des Rechners, auf dem gerendert wird. Alle Texte stehen in `src/IntunePackageBuilder.Generation/Resources/GuideStrings.resx` (Englisch) und `GuideStrings.de.resx` (Deutsch) mit identischen Schlüsseln; ein Test prüft Schlüsselgleichheit und gleiche Platzhalter. Eine Satelliten-Assembly liefert das Deutsche.
+
+### Maskierung (A17, HTML-Teil)
+
+Jeder Wert aus Metadaten oder Konfiguration geht durch `HtmlText.Escape` (`& < > " '`; Steuerzeichen außer Zeilenumbruch und Tabulator werden ersetzt). Tests schleusen `<script>`, `<img onerror>` und Attribut-Ausbrüche über Name, Hersteller, Pfad und Programmliste ein und prüfen, dass keine aktive Markierung entsteht.
+
+### Tests und Lücken
+
+xUnit `GuideGeneratorTests`. Nicht geprüft: das Aussehen in einem Browser (kein Screenshot-Test) und das Drucken; beides bleibt manuell (M8).
 
