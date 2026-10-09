@@ -190,4 +190,8 @@
   <data name="Result_NewPackage" xml:space="preserve"><value>Weiteres Paket erstellen</value></data>
   <data name="Result_Note" xml:space="preserve"><value>Dieses Programm hat nichts hochgeladen oder zugewiesen. Tragen Sie die Werte anhand der Anleitung in Intune ein.</value></data>
   <data name="Result_ProjectCreated" xml:space="preserve"><value>Ein neues Projekt wurde angelegt.</value></data>
+  <data name="Dialog_CloseTitle" xml:space="preserve"><value>Ein Paket wird erstellt</value></data>
+  <data name="Dialog_CloseText" xml:space="preserve"><value>Das Paket wird noch erstellt. Wenn Sie das Programm jetzt schließen, wird dieser Build abgebrochen und nichts veröffentlicht. Trotzdem schließen?</value></data>
+  <data name="Dialog_Error" xml:space="preserve"><value>Das Programm konnte nicht starten: {0}</value></data>
+  <data name="Start_DropActive" xml:space="preserve"><value>Zum Analysieren loslassen</value></data>
 </root>

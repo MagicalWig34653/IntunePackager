@@ -1,0 +1,70 @@
+<UserControl x:Class="IntunePackageBuilder.App.Views.StartView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:infra="clr-namespace:IntunePackageBuilder.App.Infrastructure">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Style="{StaticResource Heading}" Text="{infra:Loc Start_Heading}" />
+
+        <Border Grid.Row="1" x:Name="DropArea" AllowDrop="True" MinHeight="130" Padding="16"
+                BorderThickness="2" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+                AutomationProperties.AutomationId="DropArea"
+                DragOver="OnDragOver" DragLeave="OnDragLeave" Drop="OnDrop">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock x:Name="DropTitle" FontSize="18" HorizontalAlignment="Center" Text="{infra:Loc Start_DropTitle}" />
+                <TextBlock Style="{StaticResource Note}" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding DropHint}" />
+                <Button Margin="0,12,0,0" HorizontalAlignment="Center" Content="{infra:Loc Start_ChooseFile}"
+                        Command="{Binding ChooseInstallerCommand}" AutomationProperties.AutomationId="ChooseInstaller" />
+            </StackPanel>
+        </Border>
+
+        <TextBlock Grid.Row="2" Style="{StaticResource ErrorText}" Text="{Binding Message}"
+                   Visibility="{Binding HasMessage, Converter={StaticResource Visible}}"
+                   AutomationProperties.AutomationId="StartMessage" />
+
+        <StackPanel Grid.Row="3" Margin="0,16,0,6">
+            <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Start_RecentHeading}" />
+            <DockPanel Margin="0,4,0,0">
+                <CheckBox DockPanel.Dock="Right" Margin="12,0,0,0" VerticalAlignment="Center" IsChecked="{Binding ShowAll}"
+                          Content="{infra:Loc Start_AllProjects}" AutomationProperties.AutomationId="ShowAll" />
+                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.AutomationId="Search"
+                         AutomationProperties.Name="{infra:Loc Start_Search}" />
+            </DockPanel>
+        </StackPanel>
+
+        <Grid Grid.Row="4">
+            <ListBox ItemsSource="{Binding VisibleProjects}" AutomationProperties.AutomationId="Projects">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Right" Margin="12,0,0,0" Text="{Binding Date, StringFormat={}{0:d}}" />
+                            <TextBlock Text="{Binding DisplayName}" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <TextBlock Style="{StaticResource Note}" Margin="8" TextWrapping="Wrap" Text="{infra:Loc Start_EmptyState}"
+                       Visibility="{Binding IsEmptyState, Converter={StaticResource Visible}}" />
+            <TextBlock Style="{StaticResource Note}" Margin="8" Text="{infra:Loc Start_NoMatches}"
+                       Visibility="{Binding HasNoMatches, Converter={StaticResource Visible}}" />
+        </Grid>
+
+        <DockPanel Grid.Row="5" Margin="0,12,0,0">
+            <Button DockPanel.Dock="Right" Margin="12,0,0,0" Content="{infra:Loc Start_ChangeFolder}"
+                    Command="{Binding ChangeBaseFolderCommand}" AutomationProperties.AutomationId="ChangeBaseFolder" />
+            <StackPanel>
+                <TextBlock Style="{StaticResource Label}" Margin="0" Text="{infra:Loc Start_BaseFolder}" />
+                <TextBlock TextWrapping="Wrap" Text="{Binding BaseFolderText}" AutomationProperties.AutomationId="BaseFolderText" />
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</UserControl>

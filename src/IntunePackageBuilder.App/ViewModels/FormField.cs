@@ -19,6 +19,20 @@ namespace IntunePackageBuilder.App.ViewModels
         /// <summary>Name of the field; the view uses it to move the focus to the field with a problem.</summary>
         public string Key { get; private set; }
 
+        /// <summary>The label above the entry, from the resources.</summary>
+        public string Label { get; set; }
+
+        /// <summary>A short note under the entry; null or empty when there is none.</summary>
+        public string Hint { get; set; }
+
+        public bool HasHint
+        {
+            get { return !string.IsNullOrEmpty(Hint); }
+        }
+
+        /// <summary>Several lines (lists and texts); the other entries are one line.</summary>
+        public bool IsMultiline { get; set; }
+
         public string Value
         {
             get { return _value; }

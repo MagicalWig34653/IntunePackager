@@ -2,6 +2,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>IntunePackageBuilder.App</RootNamespace>
     <AssemblyName>IntunePackageBuilder</AssemblyName>
   </PropertyGroup>
@@ -9,5 +10,11 @@
     <ProjectReference Include="..\IntunePackageBuilder.Core\IntunePackageBuilder.Core.csproj" />
     <ProjectReference Include="..\IntunePackageBuilder.Build\IntunePackageBuilder.Build.csproj" />
     <ProjectReference Include="..\IntunePackageBuilder.Generation\IntunePackageBuilder.Generation.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The client runtime templates travel with the program; the build copies them into every package. -->
+    <Content Include="..\..\deploy\template\**\*" Link="template\%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

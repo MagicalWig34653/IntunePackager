@@ -190,4 +190,8 @@
   <data name="Result_NewPackage" xml:space="preserve"><value>Create another package</value></data>
   <data name="Result_Note" xml:space="preserve"><value>This program did not upload or assign anything. Enter the values in Intune following the guide.</value></data>
   <data name="Result_ProjectCreated" xml:space="preserve"><value>A new project was created.</value></data>
+  <data name="Dialog_CloseTitle" xml:space="preserve"><value>A package is being created</value></data>
+  <data name="Dialog_CloseText" xml:space="preserve"><value>The package is still being created. If you close the program now, this build is cancelled and nothing is published. Close anyway?</value></data>
+  <data name="Dialog_Error" xml:space="preserve"><value>The program could not start: {0}</value></data>
+  <data name="Start_DropActive" xml:space="preserve"><value>Release to analyze the installer</value></data>
 </root>
