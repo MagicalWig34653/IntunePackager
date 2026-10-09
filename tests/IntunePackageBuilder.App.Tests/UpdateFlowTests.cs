@@ -55,8 +55,14 @@ namespace IntunePackageBuilder.App.Tests
 
         private string SecondInstaller()
         {
+            // A real executable, so the analysis can read it; the appended bytes make the content differ. It is never started.
             var path = Path.Combine(Path.GetDirectoryName(_fixture.InstallerPath), "setup-new.exe");
-            File.WriteAllBytes(path, new byte[] { 0x4D, 0x5A, 9, 9, 9, 9 });
+            File.Copy(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "notepad.exe"), path);
+            using (var stream = new FileStream(path, FileMode.Append, FileAccess.Write))
+            {
+                stream.Write(new byte[] { 9, 9, 9, 9 }, 0, 4);
+            }
+
             return path;
         }
 
