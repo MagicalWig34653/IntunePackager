@@ -23,7 +23,7 @@ Eine Konfiguration, die der Validator beanstandet (zum Beispiel eine EXE ohne He
 |---|---|---|
 | `app` | `type` = `Win32`, `packageFileName` = `<projekt-id>.intunewin`, `name`, `publisher`, `version`, `description` | Konfiguration (Name, Hersteller, Zielversion); die Beschreibung ist `<Name> <Version>`, bis es ein eigenes Feld gibt |
 | `program` | `installCommand` = `Install.cmd`, `uninstallCommand` = `Install.cmd -DeploymentType Uninstall`, `installContext` = `System`, `timeoutMinutes`, `restartBehavior` | feste Schnittstelle (`DeploymentInterface`), Zeitlimit aus der Konfiguration |
-| `requirements` | `architecture` = `x64`, `minimumWindowsVersion`, `minimumWindowsVersionIsPlaceholder` (`true`, solange der Wert nicht über `IntuneSettingsOptions.MinimumWindowsVersionConfirmed` bestätigt ist) | siehe „Annahmen“ |
+| `requirements` | `architecture` = `x64`, `minimumWindowsVersion`, `minimumWindowsVersionIsPlaceholder` (`false` im Normalfall; `true` nur, wenn `IntuneSettingsOptions.MinimumWindowsVersionConfirmed` auf `false` gesetzt wird) | siehe „Annahmen“ |
 | `returnCodes` | Liste aus `code` und `type` (`Success`, `SoftReboot`, `HardReboot`, `Retry`), aufsteigend nach Code | Konfiguration, siehe unten |
 | `detection` | `scriptFileName` = `Detect-App.ps1`, `runAs32Bit` = `false`, `enforceSignatureCheck` = `false`, `signatureStatus` = `Unsigned`, `rule` (Methode, ProductCode oder Pfad, Mindestversion) | Konfiguration; der Signaturstatus ist der **tatsächliche**: das Skript ist nicht signiert, solange es keinen Signierschritt gibt |
 | `logs` | Zielgeräte-Ordner `C:\Windows\Logs\Intune\PackageDeploy\<projekt-id>`, `Deployment.log`, bei MSI `MsiInstall.log` und `MsiUninstall.log`, Intune-Logordner | feste Schnittstelle |
@@ -39,7 +39,7 @@ Werte, die zu einem Pfad gehören, stehen genau einmal in `DeploymentInterface` 
 
 ### Annahmen (offene Entscheidungen, siehe `docs/PLANUNG.md` §8)
 
-- **Mindest-Windows-Version:** Platzhalter `Windows 10 1607`. Die Anleitung kennzeichnet ihn ausdrücklich als Platzhalter, bis die Entscheidung gefallen ist; `IntuneSettingsOptions.MinimumWindowsVersion` überschreibt ihn.
+- **Mindest-Windows-Version:** `Windows 10 1809` (Build 17763, Basis von Windows Server 2019; unterstützt werden Windows 11 und Server 2019 und neuer, `docs/PLANUNG.md` §8 Nr. 11). Kein Platzhalter mehr; `IntuneSettingsOptions.MinimumWindowsVersion` überschreibt den Wert, und `MinimumWindowsVersionConfirmed = false` lässt die Anleitung ihn wieder als Platzhalter kennzeichnen.
 - **Architektur:** Die Anforderung ist ein 64-Bit-Windows, weil der Wrapper im nativen 64-Bit-Prozess läuft. Ein x86-Herstellerprogramm läuft darauf weiterhin; die Architektur des Programms (`install.targetArchitecture`) ist davon getrennt.
 
 ## JSON und CSV

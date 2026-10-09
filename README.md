@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml"><img src="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Status-Laufzeit%20fertig%2C%20noch%20keine%20Oberfl%C3%A4che-orange" alt="Status: Laufzeit fertig, noch keine Oberfläche">
-  <img src="https://img.shields.io/badge/Plattform-Windows%2011%20%7C%20Server%202022-blue" alt="Plattform">
+  <img src="https://img.shields.io/badge/Plattform-Windows%2011%20%7C%20Server%202019%2B-blue" alt="Plattform">
   <a href="LICENSE"><img src="https://img.shields.io/badge/Lizenz-AGPL--3.0-green" alt="Lizenz AGPL-3.0"></a>
 </p>
 

@@ -22,17 +22,19 @@ namespace IntunePackageBuilder.Generation.Intune
     public sealed class IntuneSettingsOptions
     {
         /// <summary>
-        /// Minimum Windows version entered as Intune requirement. Open decision (docs/PLANUNG.md section 8):
-        /// the default is a placeholder, and the guide says so.
+        /// Minimum Windows version entered as Intune requirement. The supported systems are Windows 11 and Windows
+        /// Server 2019 or newer (docs/PLANUNG.md section 8, decision 11); Server 2019 is build 17763, which is
+        /// Windows 10 1809, so that is the default.
         /// </summary>
         public string MinimumWindowsVersion { get; set; }
 
-        /// <summary>Set to true once the minimum Windows version has been decided; until then the guide marks it as a placeholder.</summary>
+        /// <summary>True when the minimum Windows version is decided (the default). Set to false to make the guide mark it as a placeholder.</summary>
         public bool MinimumWindowsVersionConfirmed { get; set; }
 
         public IntuneSettingsOptions()
         {
-            MinimumWindowsVersion = "Windows 10 1607";
+            MinimumWindowsVersion = "Windows 10 1809";
+            MinimumWindowsVersionConfirmed = true;
         }
     }
 

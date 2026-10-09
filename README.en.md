@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml"><img src="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Status-Runtime%20done%2C%20no%20UI%20yet-orange" alt="Status: runtime done, no UI yet">
-  <img src="https://img.shields.io/badge/Platform-Windows%2011%20%7C%20Server%202022-blue" alt="Platform">
+  <img src="https://img.shields.io/badge/Platform-Windows%2011%20%7C%20Server%202019%2B-blue" alt="Platform">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-green" alt="License AGPL-3.0"></a>
 </p>
 

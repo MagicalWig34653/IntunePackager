@@ -6,13 +6,13 @@ Grundlage: [SPEC.md](SPEC.md) (Version 1.0). Dieses Dokument übersetzt die Spez
 
 | Thema | Entscheidung (Vorschlag) | Begründung |
 |---|---|---|
-| Autorentool | C# / WPF auf .NET Framework 4.8 | Referenzarchitektur der Spec; auf Windows 11 und Server 2022 vorinstalliert, kein Runtime-Setup, kein WinUI 3 |
+| Autorentool | C# / WPF auf .NET Framework 4.8 | Referenzarchitektur der Spec; auf Windows 11 und Server 2022 vorinstalliert; auf Server 2019 ist 4.7.2 vorinstalliert und 4.8 muss einmalig nachinstalliert werden (Voraussetzung, siehe Entscheidung 11); kein WinUI 3 |
 | UI-Muster | MVVM, ohne schweres Framework (nur `INotifyPropertyChanged`, eigene `RelayCommand`) | Wenige Abhängigkeiten, Spec §11 verlangt strikte Trennung UI / Fachmodell |
 | MSI lesen | P/Invoke auf `msi.dll` (`MsiOpenDatabase` im Read-only-Modus, Tabelle `Property`) | Liest nur die Datenbank, führt keine Custom Actions aus (A02) |
 | EXE-Metadaten | `FileVersionInfo` | Reine Dateiinformation (§7.1) |
 | Pakettool | Microsoft Win32 Content Prep Tool (`IntuneWinAppUtil.exe`, MIT) | Pflicht laut §3; Version und SHA-256 im Abhängigkeitsmanifest |
 | Client-Wrapper | Windows PowerShell 5.1, 64-Bit, UTF-8 mit BOM | §4; Vorlagen liegen als Dateien in `deploy/` |
-| Benutzerinteraktion | PSAppDeployToolkit, feste Version, unverändert (Vendor-Ordner) | §4/§8.2; Version wird in M5 anhand Server 2022 / Win 11 festgelegt |
+| Benutzerinteraktion | PSAppDeployToolkit, feste Version, unverändert (Vendor-Ordner) | §4/§8.2; Version wird in M5 anhand Server 2019 und neuer / Win 11 festgelegt |
 | Konfiguration | JSON mit `schemaVersion`; atomares Schreiben (Temp-Datei + `File.Replace`) | §6.3, kein halbgeschriebenes `project.json` |
 | Code language | English only: identifiers, comments, log messages, commit messages, config and workflow files | Project decision; documentation under `docs/` stays German |
 | UI language | German and English via .resx resources, follows the program language (default: Windows UI language, switchable in settings) | Project decision; no user-visible string is hard-coded in code |
@@ -132,16 +132,17 @@ Entschieden:
 8. **Benutzerinteraktion in M5 ohne PSAppDeployToolkit (vorläufig):** Die Planung sah PSADT vor. Für M5 ist stattdessen eine kleine eigene Sitzungsvermittlung über `WTSSendMessage` umgesetzt, weil sich PSADT (Version, Vendor-Prüfsumme, Oberfläche aus SYSTEM) in der Cloud-Sitzung nicht prüfen lässt und ein unverifizierter Fremdcode im Paket schwerer wiegt als ein kleiner, getesteter Eigenbau. Folge: Es gibt Hinweisfenster zum Schließen von Programmen, aber **noch kein Fortschrittsfenster**. Die Schnittstelle (`Send-UserMessage`, `Request-CloseProcesses`) ist austauschbar. Entscheidung PSADT-Version (offen, Nr. 1) bleibt bestehen, falls das Fortschrittsfenster mit PSADT gelöst werden soll. Siehe `docs/CLIENT.md`.
 9. **MSI und `ALLUSERS` (Annahme für M5):** Der Wrapper ergänzt `ALLUSERS` nicht; die Installationsparameter der Konfiguration können es enthalten. Die Entscheidung (offen, Nr. 5) bleibt bestehen.
 10. **Sessions are disposable:** Stand, Entscheidungen und nächste Schritte stehen im Repository (`docs/ARBEITSSTAND.md`), jede Änderung dokumentiert sich im selben PR (Regel in `CLAUDE.md`).
+11. **Unterstützte Systeme (Vorgabe des Auftraggebers, 2026-10-09):** Windows 11 und **Windows Server 2019 und neuer** (2019, 2022, 2025, jeweils mit Desktop Experience für das Autorentool). Folgen: (a) Die Intune-Anforderung „Mindestens erforderliches Betriebssystem“ ist `Windows 10 1809` (Build 17763, die Basis von Server 2019) und kein Platzhalter mehr. (b) Auf Server 2019 muss .NET Framework 4.8 für das Autorentool nachinstalliert werden (vorinstalliert ist 4.7.2); die Auslieferungsdokumentation nennt das als Voraussetzung. (c) Die Client-Laufzeit braucht nur Windows PowerShell 5.1, die auf allen genannten Systemen vorhanden ist. (d) Die Windows-CI läuft auf `windows-latest` und `windows-2022`; ein Runner für Server 2019 steht bei GitHub nicht mehr zur Verfügung, deshalb ist Server 2019 nur durch Gerätetests (Spec §12.2) zu belegen und bleibt bis dahin **ungeprüft**. (e) Server als Zielgerät ist nicht automatisch durch Intune verwaltbar (Spec §4).
 
 Offen (vor M5 bzw. M8 zu klären):
 
-1. **PSADT-Version:** 4.x (aktuell, PS-5.1-kompatibel) oder 3.x – Festlegung nach Test auf Server 2022 und Win 11.
-2. **Zielgeräte-Betriebssystem in der Intune-Anforderung:** Mindest-Windows-Build – die Spec verlangt „für das konkrete Paket festgelegte OS-Anforderungen“.
+1. **PSADT-Version:** 4.x (aktuell, PS-5.1-kompatibel) oder 3.x – Festlegung nach Test auf Server 2019 und neuer sowie Win 11.
+2. ~~Zielgeräte-Betriebssystem in der Intune-Anforderung~~ – entschieden, siehe Nr. 11 unter „Entschieden“.
 3. **Signierung:** Gibt es ein Code-Signing-Zertifikat für Autorentool und/oder Skripte? Sonst bleibt der Status „nicht signiert“.
 4. **Zielarchitektur:** Nur x64-Zielgeräte, oder auch x86-Intune-Geräte?
 5. **MSI-Standardparameter und `ALLUSERS` (vor M5):** Unter LocalSystem installiert eine MSI ohne `ALLUSERS` pro Benutzer des SYSTEM-Kontos. Entscheiden, ob der Wrapper `ALLUSERS=1` mitgibt oder die Oberfläche warnt (siehe `docs/QUELLENANALYSE.md`).
-6. **Mindest-Windows-Version und Architektur der Intune-Anforderung (vor M8):** Bis zur Entscheidung gelten ein Platzhalter `Windows 10 1607` (in der Anleitung als Platzhalter gekennzeichnet) und die Anforderung 64-Bit-Windows (siehe `docs/GENERATOREN.md`).
-7. **Test-Infrastruktur:** Stehen Windows-11- und Server-2022-VMs sowie ein Intune-Pilot-Tenant für M8 zur Verfügung?
+6. **Mindest-Windows-Version und Architektur der Intune-Anforderung (vor M8):** Die Mindest-Windows-Version ist mit Nr. 11 entschieden; offen bleibt nur, ob auch x86-Geräte unterstützt werden (bis dahin gilt die Anforderung 64-Bit-Windows, siehe `docs/GENERATOREN.md`).
+7. **Test-Infrastruktur:** Stehen Windows-11-, Server-2019- und Server-2022-VMs sowie ein Intune-Pilot-Tenant für M8 zur Verfügung?
 
 ## 9. Vorgemerkt: optionales Intune-Upload-Modul (M9)
 
