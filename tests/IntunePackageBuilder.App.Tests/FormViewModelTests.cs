@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using IntunePackageBuilder.Analysis.Exe;
+using IntunePackageBuilder.Analysis.Msi;
 using IntunePackageBuilder.App.ViewModels;
 using IntunePackageBuilder.Build.Packaging;
 using IntunePackageBuilder.Build.Workflow;
@@ -347,6 +349,76 @@ namespace IntunePackageBuilder.App.Tests
 
             Assert.Single(form.Notes);
             Assert.DoesNotContain("!Note_", form.Notes[0]);
+        }
+
+        [Fact]
+        public void TheAdvancedViewListsTheReadMsiMetadata()
+        {
+            var main = new MainViewModel(_fixture.Services);
+            var analysis = _fixture.MsiAnalysis();
+            analysis.Msi = new MsiMetadata(
+                new Dictionary<string, string>
+                {
+                    { "ProductName", "Contoso Reader" },
+                    { "ProductCode", "{8F2C41A7-5B3E-4D19-A7C0-3E6D21B94F05}" },
+                    { "ProductVersion", "4.2.1" }
+                },
+                new[] { "data1.cab" },
+                true);
+
+            var form = new FormViewModel(main, _fixture.Services, analysis);
+
+            Assert.Contains("{8F2C41A7-5B3E-4D19-A7C0-3E6D21B94F05}", form.MetadataText);
+            Assert.Contains("data1.cab", form.MetadataText);
+            Assert.Contains("ALLUSERS: (not set)", form.MetadataText);
+            Assert.DoesNotContain("!Meta_", form.MetadataText);
+        }
+
+        [Fact]
+        public void TheAdvancedViewListsTheReadExeMetadataAndSaysWhenThereAreNone()
+        {
+            var main = new MainViewModel(_fixture.Services);
+            var analysis = _fixture.ExeAnalysis();
+            analysis.Exe = new ExeMetadata("Fabrikam Editor", "Fabrikam", "Editor setup", "setup.exe", "12.0.3", "12.0.3.1");
+
+            var withMetadata = new FormViewModel(main, _fixture.Services, analysis);
+            var without = new FormViewModel(main, _fixture.Services, _fixture.ExeAnalysis());
+
+            Assert.Contains("Fabrikam", withMetadata.MetadataText);
+            Assert.Contains("12.0.3.1", withMetadata.MetadataText);
+            Assert.DoesNotContain("Fabrikam", without.MetadataText);
+            Assert.DoesNotContain("!Meta_", without.MetadataText);
+        }
+
+        [Fact]
+        public async Task TheSourceCheckReportsFileCountSizeAndFingerprint()
+        {
+            var main = new MainViewModel(_fixture.Services);
+            var form = new FormViewModel(main, _fixture.Services, _fixture.ExeAnalysis());
+            Assert.Null(form.SourceCheckText);
+
+            await form.CheckSourceAsync();
+
+            Assert.Contains("1 file(s)", form.SourceCheckText);
+            Assert.Contains("5 bytes", form.SourceCheckText);
+        }
+
+        [Fact]
+        public async Task TheSourceCheckOfAFolderCountsAllFiles()
+        {
+            var main = new MainViewModel(_fixture.Services);
+            var folder = Path.Combine(Path.GetDirectoryName(_fixture.InstallerPath), "vendor");
+            Directory.CreateDirectory(Path.Combine(folder, "sub"));
+            File.WriteAllText(Path.Combine(folder, "setup.exe"), "abc");
+            File.WriteAllText(Path.Combine(folder, "sub", "data.bin"), "defg");
+            var analysis = _fixture.ExeAnalysis();
+            analysis.Item = new IntunePackageBuilder.Core.Sources.DroppedItem(IntunePackageBuilder.Core.Sources.DroppedKind.Folder, folder);
+            var form = new FormViewModel(main, _fixture.Services, analysis);
+
+            await form.CheckSourceAsync();
+
+            Assert.Contains("2 file(s)", form.SourceCheckText);
+            Assert.Contains("7 bytes", form.SourceCheckText);
         }
     }
 }

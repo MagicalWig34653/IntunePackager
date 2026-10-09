@@ -14,6 +14,7 @@ using IntunePackageBuilder.Build.Workflow;
 using IntunePackageBuilder.Core.Logging;
 using IntunePackageBuilder.Core.Projects;
 using IntunePackageBuilder.Core.Settings;
+using IntunePackageBuilder.Core.Sources;
 using IntunePackageBuilder.Core.Versions;
 
 namespace IntunePackageBuilder.App.ViewModels
@@ -58,6 +59,7 @@ namespace IntunePackageBuilder.App.ViewModels
         private string _phaseText;
         private string _elapsedText;
         private string _errorText;
+        private string _sourceCheckText;
         private DateTime _started;
 
         public FormViewModel(MainViewModel main, AppServices services, SourceAnalysis analysis, FormTemplate template = null)
@@ -149,6 +151,7 @@ namespace IntunePackageBuilder.App.ViewModels
             ChooseToolCommand = new RelayCommand(() => { var ignored = ChooseToolAsync(); });
             OpenToolDownloadCommand = new RelayCommand(() => _services.Shell.OpenUrl(ToolDownloadUrl));
             ShowAdvancedCommand = new RelayCommand(() => _main.AdvancedMode = true);
+            CheckSourceCommand = new RelayCommand(() => { var ignored = CheckSourceAsync(); });
 
             _main.PropertyChanged += (sender, args) =>
             {
@@ -238,6 +241,21 @@ namespace IntunePackageBuilder.App.ViewModels
         }
 
         public ICommand ShowAdvancedCommand { get; private set; }
+
+        public ICommand CheckSourceCommand { get; private set; }
+
+        /// <summary>The metadata read from the installer, one "label: value" line each (advanced view, SPEC 5.3); empty when none were read.</summary>
+        public string MetadataText
+        {
+            get { return DescribeMetadata(); }
+        }
+
+        /// <summary>The result of the source check (file count, size, fingerprint); null until the check ran.</summary>
+        public string SourceCheckText
+        {
+            get { return _sourceCheckText; }
+            private set { Set(ref _sourceCheckText, value); }
+        }
 
         public MainViewModel Main
         {
@@ -634,6 +652,74 @@ namespace IntunePackageBuilder.App.ViewModels
                 {
                     handler(this, ordered[0].Key);
                 }
+            }
+        }
+
+        private string DescribeMetadata()
+        {
+            var lines = new List<string>();
+            if (_analysis.Msi != null)
+            {
+                var msi = _analysis.Msi;
+                lines.Add(Line("Meta_ProductName", msi.ProductName));
+                lines.Add(Line("Meta_Manufacturer", msi.Manufacturer));
+                lines.Add(Line("Meta_ProductVersion", msi.ProductVersion));
+                lines.Add(Line("Meta_ProductCode", msi.ProductCode));
+                lines.Add(Line("Meta_UpgradeCode", msi.UpgradeCode));
+                lines.Add(Line("Meta_AllUsers", msi.AllUsers));
+                lines.Add(Loc.Get("Meta_Cabinets") + ": " + (msi.ExternalCabinets.Count == 0 ? Loc.Get("Meta_None") : string.Join(", ", msi.ExternalCabinets)));
+                lines.Add(Loc.Get("Meta_NeedsSourceFolder") + ": " + Loc.Get(msi.RequiresSourceFolder ? "Meta_Yes" : "Meta_No"));
+            }
+            else if (_analysis.Exe != null)
+            {
+                var exe = _analysis.Exe;
+                lines.Add(Line("Meta_ProductName", exe.ProductName));
+                lines.Add(Line("Meta_CompanyName", exe.CompanyName));
+                lines.Add(Line("Meta_FileDescription", exe.FileDescription));
+                lines.Add(Line("Meta_OriginalFilename", exe.OriginalFilename));
+                lines.Add(Line("Meta_ProductVersion", exe.ProductVersion));
+                lines.Add(Line("Meta_FileVersion", exe.FileVersion));
+            }
+            else
+            {
+                return Loc.Get("Meta_NoMetadata");
+            }
+
+            return string.Join(Environment.NewLine, lines);
+        }
+
+        private static string Line(string labelKey, string value)
+        {
+            return Loc.Get(labelKey) + ": " + (string.IsNullOrWhiteSpace(value) ? Loc.Get("Meta_NotSet") : value);
+        }
+
+        /// <summary>Reads the source the way the build will store it: file count, size and a fingerprint of the content. Nothing is started or changed.</summary>
+        public async Task CheckSourceAsync()
+        {
+            var item = _analysis.Item;
+            try
+            {
+                var result = await Task.Run(() =>
+                {
+                    if (item.Kind != DroppedKind.Folder)
+                    {
+                        return Loc.Format("Source_Result", 1, new FileInfo(item.Path).Length, ContentPrepTool.ComputeSha256(item.Path));
+                    }
+
+                    var manifest = SourceManifestBuilder.Build(item.Path);
+                    return Loc.Format("Source_Result", manifest.Files.Count, manifest.Files.Sum(f => f.Size), manifest.ComputeFingerprint());
+                });
+                SourceCheckText = result;
+            }
+            catch (UnsafeSourceException exception)
+            {
+                _services.Logger.Log(LogLevel.Warning, "The source contains a link", exception);
+                SourceCheckText = Loc.Get("Source_Unsafe");
+            }
+            catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException)
+            {
+                _services.Logger.Log(LogLevel.Warning, "The source could not be read", exception);
+                SourceCheckText = Loc.Format("Source_Failed", exception.Message);
             }
         }
 

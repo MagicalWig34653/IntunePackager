@@ -227,4 +227,27 @@
   <data name="Form_AdoptedHint" xml:space="preserve"><value>Erweiterte Einstellungen wurden aus Version {0} übernommen. Prüfen Sie sie vor dem Bau.</value></data>
   <data name="Form_AdoptedCheck" xml:space="preserve"><value>Erweiterte Einstellungen anzeigen</value></data>
   <data name="Form_VersionExists" xml:space="preserve"><value>Diese Version gibt es im Projekt schon. Geben Sie eine neue Version ein oder laden Sie die Version, um sie erneut zu bauen.</value></data>
+  <data name="Form_MetadataHeading" xml:space="preserve"><value>Ausgelesene Metadaten</value></data>
+  <data name="Form_SourceCheckHeading" xml:space="preserve"><value>Quellenprüfung</value></data>
+  <data name="Form_SourceCheck" xml:space="preserve"><value>Quelle prüfen</value></data>
+  <data name="Meta_ProductName" xml:space="preserve"><value>Produktname</value></data>
+  <data name="Meta_Manufacturer" xml:space="preserve"><value>Hersteller</value></data>
+  <data name="Meta_ProductVersion" xml:space="preserve"><value>Produktversion</value></data>
+  <data name="Meta_ProductCode" xml:space="preserve"><value>ProductCode</value></data>
+  <data name="Meta_UpgradeCode" xml:space="preserve"><value>UpgradeCode</value></data>
+  <data name="Meta_AllUsers" xml:space="preserve"><value>ALLUSERS</value></data>
+  <data name="Meta_Cabinets" xml:space="preserve"><value>Externe Cabinet-Dateien</value></data>
+  <data name="Meta_NeedsSourceFolder" xml:space="preserve"><value>Braucht seinen Quellordner</value></data>
+  <data name="Meta_CompanyName" xml:space="preserve"><value>Firmenname</value></data>
+  <data name="Meta_FileDescription" xml:space="preserve"><value>Dateibeschreibung</value></data>
+  <data name="Meta_OriginalFilename" xml:space="preserve"><value>Ursprünglicher Dateiname</value></data>
+  <data name="Meta_FileVersion" xml:space="preserve"><value>Dateiversion</value></data>
+  <data name="Meta_NotSet" xml:space="preserve"><value>(nicht gesetzt)</value></data>
+  <data name="Meta_None" xml:space="preserve"><value>(keine)</value></data>
+  <data name="Meta_Yes" xml:space="preserve"><value>ja</value></data>
+  <data name="Meta_No" xml:space="preserve"><value>nein</value></data>
+  <data name="Meta_NoMetadata" xml:space="preserve"><value>Aus der gespeicherten Quelle dieser Version wurden keine Metadaten gelesen.</value></data>
+  <data name="Source_Result" xml:space="preserve"><value>{0} Datei(en), insgesamt {1} Bytes. Fingerabdruck: {2}</value></data>
+  <data name="Source_Unsafe" xml:space="preserve"><value>Die Quelle enthält einen Link oder Reparse-Punkt und kann nicht sicher gespeichert werden.</value></data>
+  <data name="Source_Failed" xml:space="preserve"><value>Die Quelle konnte nicht gelesen werden: {0}</value></data>
 </root>
