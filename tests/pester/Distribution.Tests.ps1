@@ -48,6 +48,23 @@ BeforeAll {
 
     $script:goodRepository = New-FakeRepository -Name 'repo-good'
     $script:powershell = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+
+    function Invoke-ChildScript {
+        # Runs a script in a child Windows PowerShell 5.1 process; its error output is captured and never raised here.
+        param([string]$Script, [string[]]$Argument)
+        $quoted = @($Argument | ForEach-Object { '"' + $_ + '"' })
+        $info = New-Object System.Diagnostics.ProcessStartInfo
+        $info.FileName = $script:powershell
+        $info.Arguments = '-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "' + $Script + '" ' + ($quoted -join ' ')
+        $info.UseShellExecute = $false
+        $info.RedirectStandardOutput = $true
+        $info.RedirectStandardError = $true
+        $process = [System.Diagnostics.Process]::Start($info)
+        $errorTask = $process.StandardError.ReadToEndAsync()
+        $output = $process.StandardOutput.ReadToEnd()
+        $process.WaitForExit()
+        [pscustomobject]@{ ExitCode = $process.ExitCode; Output = $output; Error = $errorTask.Result }
+    }
 }
 
 AfterAll {
@@ -128,22 +145,30 @@ Describe 'A18 - distribution content' {
 }
 
 Describe 'A18 - the scripts' {
+    BeforeAll {
+        $script:newScript = Join-Path $script:repoRoot 'tools\New-Distribution.ps1'
+        $script:testScript = Join-Path $script:repoRoot 'tools\Test-Distribution.ps1'
+        function Invoke-NewDistribution {
+            param([string]$Output)
+            Invoke-ChildScript -Script $script:newScript -Argument @(
+                '-BuildOutput', $script:buildOutput, '-OutputDirectory', $Output, '-RepositoryRoot', $script:goodRepository, '-Version', '0.0.1')
+        }
+    }
+
     It 'builds a ZIP and the check accepts it' {
         $output = Join-Path $script:work 'zip-ok'
-        $log = & $script:powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File (Join-Path $script:repoRoot 'tools\New-Distribution.ps1') `
-            -BuildOutput $script:buildOutput -OutputDirectory $output -RepositoryRoot $script:goodRepository -Version '0.0.1' 2>&1
-        $LASTEXITCODE | Should -Be 0 -Because ($log -join "`n")
+        $result = Invoke-NewDistribution -Output $output
+        $result.ExitCode | Should -Be 0 -Because ($result.Output + $result.Error)
         $zip = Join-Path $output 'IntunePackageBuilder-0.0.1.zip'
         Test-Path -LiteralPath $zip | Should -BeTrue
 
-        & $script:powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File (Join-Path $script:repoRoot 'tools\Test-Distribution.ps1') -Path $zip | Out-Null
-        $LASTEXITCODE | Should -Be 0
+        $check = Invoke-ChildScript -Script $script:testScript -Argument @('-Path', $zip)
+        $check.ExitCode | Should -Be 0 -Because ($check.Output + $check.Error)
     }
 
     It 'fails the check for a ZIP that contains a vendor installer' {
         $output = Join-Path $script:work 'zip-bad'
-        & $script:powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File (Join-Path $script:repoRoot 'tools\New-Distribution.ps1') `
-            -BuildOutput $script:buildOutput -OutputDirectory $output -RepositoryRoot $script:goodRepository -Version '0.0.1' 2>&1 | Out-Null
+        (Invoke-NewDistribution -Output $output).ExitCode | Should -Be 0
         $zip = Join-Path $output 'IntunePackageBuilder-0.0.1.zip'
         Add-Type -AssemblyName System.IO.Compression
         Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -158,17 +183,16 @@ Describe 'A18 - the scripts' {
             $archive.Dispose()
         }
 
-        & $script:powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File (Join-Path $script:repoRoot 'tools\Test-Distribution.ps1') -Path $zip 2>&1 | Out-Null
-        $LASTEXITCODE | Should -Be 1
+        $check = Invoke-ChildScript -Script $script:testScript -Argument @('-Path', $zip)
+        $check.ExitCode | Should -Be 1
+        ($check.Output + $check.Error) | Should -Match 'Forbidden file'
     }
 
     It 'refuses to overwrite an existing ZIP' {
         $output = Join-Path $script:work 'zip-twice'
-        $args1 = @('-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $script:repoRoot 'tools\New-Distribution.ps1'),
-            '-BuildOutput', $script:buildOutput, '-OutputDirectory', $output, '-RepositoryRoot', $script:goodRepository, '-Version', '0.0.1')
-        & $script:powershell @args1 2>&1 | Out-Null
-        $LASTEXITCODE | Should -Be 0
-        & $script:powershell @args1 2>&1 | Out-Null
-        $LASTEXITCODE | Should -Not -Be 0
+        (Invoke-NewDistribution -Output $output).ExitCode | Should -Be 0
+        $second = Invoke-NewDistribution -Output $output
+        $second.ExitCode | Should -Not -Be 0
+        ($second.Output + $second.Error) | Should -Match 'already exists'
     }
 }
