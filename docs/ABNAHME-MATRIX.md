@@ -18,8 +18,8 @@ Zuordnung der verbindlichen automatisierten Prüfungen aus [SPEC.md](SPEC.md) §
 | A12 | Rekursiver Ordner / Junction abgelehnt | M2 | xUnit | bestanden (CI 37833609876), mit echten Junctions |
 | A13 | Rechte-/Platz-/Packwerkzeugfehler | M4 | xUnit | offen |
 | A14 | Zweiter Prozess, gleiche Version | M1 | xUnit (Mehrprozess) | Sperre auf Speicherebene bestanden mit echtem Zweitprozess (CI 37827032442); Verhalten in der UI offen |
-| A15 | Erkennung älter / passend / neuer / fremd | M3, M5 | Pester | Skript-Generator und Pester-Tests (echte Registry und Dateien) geschrieben, CI-Nachweis steht aus; Verhalten im Wrapper (M5) offen |
-| A16 | Erkennung ohne Paketcache | M3, M5 | Pester | Skript aus leerem Ordner, ohne Bezug zum Paket, geschrieben, CI-Nachweis steht aus |
+| A15 | Erkennung älter / passend / neuer / fremd | M3, M5 | Pester | Erzeugtes Skript gegen echte Registry-Schlüssel und Dateien bestanden (CI 37884553567); Verhalten im Wrapper (M5) und unter LocalSystem (M8) offen |
+| A16 | Erkennung ohne Paketcache | M3, M5 | Pester | Skript allein in leerem Ordner, anderer Arbeitsordner, ohne Bezug zu Paket oder Cache bestanden (CI 37884553567) |
 | A17 | Sonderzeichen in HTML/JSON/CSV/PowerShell | M3 | xUnit, Pester | offen |
 | A18 | Distributionsinhalt und Prüfsummen | M8 | Skript in CI | offen |
 
