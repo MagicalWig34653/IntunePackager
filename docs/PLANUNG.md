@@ -167,7 +167,7 @@ Quellen: Microsoft Learn (Permissions reference, win32LobApp, mobileAppContentFi
 
 Erledigt: M0 (Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung; CI grün, .NET-Tests 8/8, Pester 10/10), README, Icon, Entwurfs-Mockups, Pages-Seite und Claude-Code-Umgebung.
 
-Erledigt: M1 (Core), M2 (Quellenanalyse), M3 (Generatoren) und M4 (Build-Pipeline), jeweils mit CI-Nachweis in `docs/ARBEITSSTAND.md`.
+Erledigt: M1 (Core), M2 (Quellenanalyse), M3 (Generatoren) M4 (Build-Pipeline) und M5 (Client-Laufzeit, ohne Fortschrittsfenster), jeweils mit CI-Nachweis in `docs/ARBEITSSTAND.md`.
 
-1. M5 (Client-Laufzeit: `Install.cmd`, Wrapper, Rückgabecodes, Benutzerinteraktion). Vorher die offenen Entscheidungen PSADT-Version und `ALLUSERS` (§8) mit Annahme dokumentieren.
-2. Danach M6 bis M8 (Oberfläche, erweiterter Modus, Distribution und Prüfprotokoll).
+1. M6 (Oberfläche: Standardmodus, Drag-and-drop, Ergebnisse) gegen die fertigen Module; Fortschrittsfenster der Client-Laufzeit als offenen Punkt führen (`docs/CLIENT.md`).
+2. Danach M7 und M8 (Oberfläche, erweiterter Modus, Distribution und Prüfprotokoll).

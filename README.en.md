@@ -11,12 +11,12 @@
 
 <p align="center">
   <a href="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml"><img src="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/Status-Package%20build%20done%2C%20no%20UI%20yet-orange" alt="Status: package build done, no UI yet">
+  <img src="https://img.shields.io/badge/Status-Runtime%20done%2C%20no%20UI%20yet-orange" alt="Status: runtime done, no UI yet">
   <img src="https://img.shields.io/badge/Platform-Windows%2011%20%7C%20Server%202022-blue" alt="Platform">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-green" alt="License AGPL-3.0"></a>
 </p>
 
-> **Project status:** the project scaffold, the core (projects, versions, locks, settings), the source analysis (MSI, EXE, manifest, safe import) and the generators (detection script, Intune guide, JSON/CSV, wrapper configuration) are in place and tested by Windows CI (M0 to M4 done). The package build with the Content Prep Tool works, but users have to obtain the tool themselves (license). There is no client runtime and no user interface yet, so no usable features, and there is no release. The images below are **design mockups**, not screenshots of a working program.
+> **Project status:** the project scaffold, the core (projects, versions, locks, settings), the source analysis (MSI, EXE, manifest, safe import) and the generators (detection script, Intune guide, JSON/CSV, wrapper configuration) are in place and tested by Windows CI (M0 to M5 done). The package build with the Content Prep Tool works, but users have to obtain the tool themselves (license). The client runtime (wrapper, return codes, prompt to close programs) is tested with Pester; a progress window and device tests are still missing. There is no user interface yet, so no usable features, and there is no release. The images below are **design mockups**, not screenshots of a working program.
 
 Intune Package Builder is a Windows desktop application that turns an MSI, an EXE or a vendor folder into a complete Microsoft Intune Win32 package:
 
@@ -54,8 +54,8 @@ Out of scope for version 1: direct Intune upload, Graph sign-in, group assignmen
 | M2 | Source analysis: MSI reader, EXE metadata, manifests, safe import | done |
 | M3 | Generators: detection script, Intune guide, JSON/CSV, wrapper configuration | done |
 | M4 | Build pipeline with the Content Prep Tool | done |
-| M5 | Client runtime: wrapper, return codes, user interaction | next |
-| M6 | UI: standard mode, drag and drop, results | planned |
+| M5 | Client runtime: wrapper, return codes, user interaction | done, without progress window |
+| M6 | UI: standard mode, drag and drop, results | next |
 | M7 | Advanced mode, project view, update flow | planned |
 | M8 | Distribution, documentation, device test protocol | planned |
 | M9 | Optional: Intune upload via Microsoft Graph (not part of version 1) | noted |
@@ -66,7 +66,7 @@ The matching acceptance checks A01–A18 are listed in the [acceptance matrix](d
 
 ```text
 src/      Authoring tool (C# / WPF, .NET Framework 4.8) in separate modules
-deploy/   Client runtime: wrapper templates and pinned third-party library (planned, M5)
+deploy/   Client runtime: wrapper templates (`deploy/template`)
 tools/    provenance and checksum notes for the Win32 Content Prep Tool (the program itself is not redistributed, M4)
 tests/    xUnit and Pester exist; UI tests planned
 docs/     Specification, planning, acceptance matrix, data format, work status (German)
