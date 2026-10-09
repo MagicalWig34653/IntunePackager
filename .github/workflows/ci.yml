@@ -46,8 +46,21 @@ jobs:
       - name: Install Pester 5
         shell: powershell
         run: |
+          # The runner image sometimes starts without a registered PSGallery; register it and retry the install.
+          if (-not (Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) {
+              Register-PSRepository -Default
+          }
           Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-          Install-Module -Name Pester -MinimumVersion 5.5.0 -Force -SkipPublisherCheck -Scope CurrentUser
+          for ($attempt = 1; $attempt -le 3; $attempt++) {
+              try {
+                  Install-Module -Name Pester -MinimumVersion 5.5.0 -Force -SkipPublisherCheck -Scope CurrentUser -ErrorAction Stop
+                  break
+              }
+              catch {
+                  if ($attempt -eq 3) { throw }
+                  Start-Sleep -Seconds (5 * $attempt)
+              }
+          }
       - name: Run Pester
         shell: powershell
         run: |
