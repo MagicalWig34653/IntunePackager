@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntunePackageBuilder.Analys
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntunePackageBuilder.Generation.Tests", "tests\IntunePackageBuilder.Generation.Tests\IntunePackageBuilder.Generation.Tests.csproj", "{F59CA9D1-EECD-5AF6-87E7-83AE632B615B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntunePackageBuilder.Build.Tests", "tests\IntunePackageBuilder.Build.Tests\IntunePackageBuilder.Build.Tests.csproj", "{AC2BC6E8-85F3-5C77-BEF9-17F50B727241}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{F59CA9D1-EECD-5AF6-87E7-83AE632B615B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F59CA9D1-EECD-5AF6-87E7-83AE632B615B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F59CA9D1-EECD-5AF6-87E7-83AE632B615B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC2BC6E8-85F3-5C77-BEF9-17F50B727241}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC2BC6E8-85F3-5C77-BEF9-17F50B727241}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC2BC6E8-85F3-5C77-BEF9-17F50B727241}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC2BC6E8-85F3-5C77-BEF9-17F50B727241}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

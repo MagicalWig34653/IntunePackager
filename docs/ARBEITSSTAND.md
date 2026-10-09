@@ -6,7 +6,7 @@ Stand: 2026-10-08
 
 ## Aktueller Meilenstein
 
-**M4 - Build-Pipeline** (Quelle sichern, Paketordner zusammenstellen, Content Prep Tool aufrufen, Ergebnis prüfen und veröffentlichen, Fehlerpfade). Abnahme: A09 (Logik), A10, A11, A13. M0 bis M3 sind abgeschlossen (M3: Generatoren, siehe `docs/GENERATOREN.md`).
+**M4 - Build-Pipeline** (Aufteilung: M4a Packwerkzeug und Prozessstart, M4b Arbeitsverzeichnis und Pipeline, M4c Veröffentlichung, Fehlerpfade, Abnahme; Quelle sichern, Paketordner zusammenstellen, Content Prep Tool aufrufen, Ergebnis prüfen und veröffentlichen, Fehlerpfade). Abnahme: A09 (Logik), A10, A11, A13. M0 bis M3 sind abgeschlossen (M3: Generatoren, siehe `docs/GENERATOREN.md`).
 
 Alle Ausgaben entstehen aus einem **Snapshot** (Konfiguration, Build-ID, Sprache, Quellenmanifest), nie aus UI-Zustand. Die Befehle in Anleitung, JSON, CSV und Ergebnisseite stammen aus **einer** Quelle (`IntuneSettings`), damit sie nicht auseinanderlaufen. Sprache der Anleitung folgt der Programmsprache beim Build und wird im Snapshot festgehalten (`docs/PLANUNG.md` §8).
 
@@ -44,7 +44,12 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## In Arbeit
 
-- Nichts ist in Arbeit, M4 ist noch nicht begonnen. Die Scheiben M2 bis M3d sind gemergt (PR 10 bis 13) beziehungsweise liegen in PR 14 (M3d und Abschluss von M3, CI-Nachweis in der Tabelle oben).
+- M4a (Branch `claude/great-feynman-hi1xfp`): **unverifiziert bis zum CI-Lauf.**
+  - Neu in `Build`: `Processes/{ArgumentQuoter,ProcessRunner}.cs`, `Packaging/{ContentPrepTool,ContentPrepExceptions,IntunewinVerifier}.cs`; neues Testprojekt `tests/IntunePackageBuilder.Build.Tests` (in der Solution).
+  - `ci.yml`: die Build-Jobs laden das Content Prep Tool (fester Commit, SHA-256 geprüft) und setzen `IPB_CONTENT_PREP_TOOL` für die Integrationstests.
+  - Doku: neue Datei `docs/BUILD.md`, `THIRD-PARTY.md`, `docs/PLANUNG.md` §8 Nr. 7.
+  - Risiken, die die CI klärt: Start von `.cmd`-Dateien als Fake-Werkzeug; Kurzpfad/Langpfad im Arbeitsverzeichnis-Test; ob das echte Werkzeug auf den Runnern headless läuft.
+- M2 bis M3 sind gemergt (PR 10 bis 14).
 - Die Annahmen, die M3 aus den offenen Entscheidungen getroffen hat (Mindest-Windows-Version als Platzhalter, 64-Bit-Anforderung, Standard-`msiexec`-Aufruf), stehen in `docs/GENERATOREN.md` und in `docs/PLANUNG.md` §8.
 
 ## Lehren (für künftige Sessions)
@@ -61,7 +66,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Nächste Schritte (in Reihenfolge)
 
-1. M4: Content Prep Tool nach `tools/` mit Herkunft und SHA-256 in `THIRD-PARTY.md` (zuerst), dann Build-Pipeline und Tests. Danach M5 (Client-Laufzeit); beide können nach M3 parallel laufen (siehe `docs/PLANUNG.md` §4). Das Content Prep Tool (`tools/`) braucht Herkunft und SHA-256 in `THIRD-PARTY.md`, bevor es verwendet wird.
+1. M4a: CI auswerten, Nachweis eintragen, mergen. Dann M4b (Arbeitsverzeichnis mit Markerdatei, Pipeline mit Phasen, Quellprüfung gegen das Manifest) und M4c (Veröffentlichung im Build-Ordner, `build-manifest.json`, Fehlerpfade A13, A09, A10, A11). Danach M5 (Client-Laufzeit); beide können nach M3 parallel laufen (siehe `docs/PLANUNG.md` §4). Das Content Prep Tool (`tools/`) braucht Herkunft und SHA-256 in `THIRD-PARTY.md`, bevor es verwendet wird.
 2. M6 (Oberfläche), M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
 
 ## Entscheidungen (Kurzfassung, Details in `docs/PLANUNG.md` §8)
