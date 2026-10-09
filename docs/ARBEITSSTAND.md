@@ -6,7 +6,7 @@ Stand: 2026-10-08
 
 ## Aktueller Meilenstein
 
-**M3 - Generatoren** (Erkennungsskript, `IntuneSettings`, HTML, JSON, CSV, Wrapper-Konfiguration). Abnahme: A15, A16, A17. M0 bis M2 sind abgeschlossen.
+**M3 - Generatoren** (Erkennungsskript, `IntuneSettings`, HTML, JSON, CSV, Wrapper-Konfiguration). Abnahme: A15, A16, A17. M0 bis M2 und M3a sind abgeschlossen.
 
 Alle Ausgaben entstehen aus einem **Snapshot** (Konfiguration, Build-ID, Sprache, Quellenmanifest), nie aus UI-Zustand. Die Befehle in Anleitung, JSON, CSV und Ergebnisseite stammen aus **einer** Quelle (`IntuneSettings`), damit sie nicht auseinanderlaufen. Sprache der Anleitung folgt der Programmsprache beim Build und wird im Snapshot festgehalten (`docs/PLANUNG.md` §8).
 
@@ -14,8 +14,8 @@ Aufteilung in einzeln mergbare Scheiben (Projekt `IntunePackageBuilder.Generatio
 
 | Scheibe | Inhalt | Stand |
 |---|---|---|
-| M3a | `BuildSnapshot` (unveränderlicher Snapshot aus Konfiguration, Build-ID, Sprache, Quellen-Fingerabdruck), `IntuneSettings` (Installations- und Deinstallationsbefehl, Rückgabecodes mit Intune-Klassifizierung, Zeitlimit, Neustartverhalten, Erkennungsskript, Anforderungen), JSON- und CSV-Ausgabe mit korrekter Maskierung. Die ersten `.resx`-Ressourcen (neutral Englisch plus `.de.resx`) kommen mit der HTML-Anleitung in M3c, weil erst dort Beschriftungen entstehen | Code und Tests geschrieben, PR offen, CI-Nachweis steht aus |
-| M3b | Erkennungsskript-Generator: eigenständiges Windows-PowerShell-5.1-Skript, UTF-8 mit BOM; MSI: ProductCode in beiden Registry-Ansichten und `DisplayVersion` mindestens Zielversion; EXE: Datei vorhanden und `FileVersion` mindestens Zielversion; Intune-Vertrag (erkannt: Exitcode 0 und nicht leere Standardausgabe; sonst keine Ausgabe); keine Dateien aus dem Intune-Cache; Pester-Tests A15 und A16 (Skript wird im Test über die gebaute `Generation.dll` erzeugt; der Pester-Job in `ci.yml` muss dafür vorher bauen) | offen |
+| M3a | `BuildSnapshot` (unveränderlicher Snapshot aus Konfiguration, Build-ID, Sprache, Quellen-Fingerabdruck), `IntuneSettings` (Installations- und Deinstallationsbefehl, Rückgabecodes mit Intune-Klassifizierung, Zeitlimit, Neustartverhalten, Erkennungsskript, Anforderungen), JSON- und CSV-Ausgabe mit korrekter Maskierung. Die ersten `.resx`-Ressourcen (neutral Englisch plus `.de.resx`) kommen mit der HTML-Anleitung in M3c, weil erst dort Beschriftungen entstehen | fertig, gemergt (PR 11), CI-Nachweis unten |
+| M3b | (in Arbeit, PR offen) Erkennungsskript-Generator: eigenständiges Windows-PowerShell-5.1-Skript, UTF-8 mit BOM; MSI: ProductCode in beiden Registry-Ansichten und `DisplayVersion` mindestens Zielversion; EXE: Datei vorhanden und `FileVersion` mindestens Zielversion; Intune-Vertrag (erkannt: Exitcode 0 und nicht leere Standardausgabe; sonst keine Ausgabe); keine Dateien aus dem Intune-Cache; Pester-Tests A15 und A16 (Skript wird im Test über die gebaute `Generation.dll` erzeugt; der Pester-Job in `ci.yml` baut dafür vorher) | Code, xUnit- und Pester-Tests geschrieben, **CI-Nachweis steht aus** |
 | M3c | HTML-Anleitung (lokal lesbar, druckbar, Deutsch und Englisch) mit allen Abschnitten aus Spec §9 (App-Typ, Paketdatei, App-Informationen, Programm, Installationsverhalten, Anforderungen, Zeitlimit, Neustartverhalten, Rückgabecodes, Erkennung, Zuweisung, Abhängigkeiten, Fehleranalyse); Maskierung gegen aktive Inhalte (A17); Warnung vor dem Mischen von `.intunewin` und Erkennungsskript verschiedener Builds; behauptet nie eine erfolgreiche Zuweisung oder Installation | offen |
 | M3d | Wrapper-Konfiguration für die Client-Laufzeit (maschinenlesbar, aus demselben Snapshot) und Abnahme von A17 über alle Formate | offen |
 
@@ -35,19 +35,18 @@ Alle Läufe: Windows-CI mit `windows-latest`, `windows-2022` und Pester unter Wi
 | M1c: Einstellungen, Grundordner, zuletzt geöffnete Projekte | 37828209771 | 187 xUnit, 10 Pester bestanden |
 | M2a: MSI-Reader (echte `msi.dll`, kontrollierte Test-MSIs); M2b: EXE-Reader, Quellenmanifest mit Änderungserkennung (echte Junction) | 37832133738 | 203 xUnit (Core) und 31 xUnit (Analysis), 10 Pester bestanden |
 | M2c: sicherer Import (Auswahl, Rekursion, echte Junctions, Pfadlänge, Aufräumen bei Fehler) | 37833609876 | 247 xUnit (Core) und 31 xUnit (Analysis), 10 Pester bestanden, im ersten Lauf ohne Fehler |
+| M3a: Snapshot, Intune-Werte, JSON/CSV (nach zwei Korrekturen aus der CI: `InternalsVisibleTo`, Datumsparser im Test) | 37835593601 | 273 xUnit (Core), 31 (Analysis), 33 (Generation), Pester-Job bestanden |
 
 Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups, Pages-Webseite (deployt), Claude-Code-Umgebung (`CLAUDE.md`, Agents, Skills, Hook). Neue Dateien und Formate: siehe `docs/DATENFORMAT.md`.
 
 ## In Arbeit
 
 - M2 ist abgeschlossen und gemergt (PR 10).
-- M3a (Branch `claude/great-feynman-hi1xfp`): Code unverifiziert bis zum CI-Lauf.
-  - Neu in `Core`: `Builds/{BuildId,BuildSnapshot}.cs` (inkl. `BuildSnapshotStore`), `SourceManifest.ComputeFingerprint`, `AtomicFile.WriteAllText` mit Kodierung; der Validator lehnt `1641` jetzt in allen drei Codelisten ab.
-  - Neu in `Generation`: `Intune/{DeploymentInterface,IntuneSettings,IntuneSettingsBuilder,SettingsWriter}.cs`.
-  - Neues Testprojekt `tests/IntunePackageBuilder.Generation.Tests` (in der Solution): `IntuneSettingsTests`, `SettingsWriterTests`; Ergänzungen in `Core.Tests` (`BuildSnapshotTests`, `RestartCodeAndEncodingTests`).
-  - Doku: neue Datei `docs/GENERATOREN.md`, `docs/DATENFORMAT.md` (`configuration.snapshot.json`), Annahmen in `docs/PLANUNG.md` §8.
-  - CI-Lauf 1 von PR 11: Build-Fehler im Testprojekt (`CsvCell` ist `internal`, `InternalsVisibleTo` fehlte im Generation-Projekt). Behoben; alle anderen Projekte haben gebaut.
-  - CI-Lauf 2 von PR 11: Build grün, 32 von 33 Generation-Tests. Der Fehlschlag war ein Testfehler: Der Test las das JSON mit dem Standard-`JObject.Parse`, der datumsähnlichen Text in ein Datum verwandelt. Tests benutzen jetzt `JsonFormat.ParseObject`. Lehre: in Tests, die JSON-Texte prüfen, nie `JObject.Parse` verwenden.
+- M3a ist gemergt (PR 11, CI-Lauf 37835593601 grün).
+- M3b (Branch `claude/great-feynman-hi1xfp`): **unverifiziert bis zum CI-Lauf.**
+  - Neu in `Generation`: `Scripts/{PowerShellLiteral,DetectionScriptGenerator}.cs`.
+  - Neue Tests: `DetectionScriptGeneratorTests` (xUnit) und `tests/pester/DetectionScript.Tests.ps1` (Pester, echte Registry und Dateien); `ci.yml`: der Pester-Job baut vorher `Generation`.
+  - Doku: `docs/GENERATOREN.md` Abschnitt „Erkennungsskript (M3b)“.
 
 ## Lehren (für künftige Sessions)
 
@@ -61,8 +60,8 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Nächste Schritte (in Reihenfolge)
 
-1. M3a mergen (CI grün).
-2. M3b bis M3d der Reihe nach (siehe oben), jede Scheibe als eigener PR mit Doku im selben PR (`docs/GENERATOREN.md` erweitern: Erkennungsvertrag, Anleitung, Wrapper-Konfiguration).
+1. M3b: CI auswerten, Nachweis eintragen (Tabelle oben, Matrix A15/A16), mergen.
+2. M3c und M3d der Reihe nach (siehe oben), jede Scheibe als eigener PR mit Doku im selben PR (`docs/GENERATOREN.md` erweitern: Erkennungsvertrag, Anleitung, Wrapper-Konfiguration).
 3. Danach M4 (Build-Pipeline mit dem Content Prep Tool) und M5 (Client-Laufzeit); beide können nach M3 parallel laufen (siehe `docs/PLANUNG.md` §4). Das Content Prep Tool (`tools/`) braucht Herkunft und SHA-256 in `THIRD-PARTY.md`, bevor es verwendet wird.
 4. M6 (Oberfläche), M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
 
