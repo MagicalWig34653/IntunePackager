@@ -11,6 +11,9 @@ Verbindliches Abhängigkeitsmanifest (SPEC §4, §11). Jede Komponente mit Versi
 | Microsoft.NET.Test.Sdk | 17.11.1 | NuGet | MIT | n/a (NuGet-Paket) | Nur Tests, nicht in der Distribution | aktiv |
 | xunit.runner.visualstudio | 2.8.2 | NuGet | Apache-2.0 | n/a (NuGet-Paket) | Nur Tests, nicht in der Distribution | aktiv |
 | Pester | mindestens 5.5.0 (PowerShell Gallery, bei jedem CI-Lauf neu installiert) | powershellgallery.com/packages/Pester | Apache-2.0 | n/a (Modul aus der PowerShell Gallery) | Nur Tests der CI, nicht in der Distribution | aktiv |
+| FlaUI.UIA3 | 4.0.0 | NuGet (www.nuget.org/packages/FlaUI.UIA3) | MIT | Paket `161310f8b018bb5d41efc1aca070aca13eba77f6aff46decf19fcfe52f355905` | Oberflächentests im Windows-CI (`tests/IntunePackageBuilder.UiTests`), nicht in der Distribution | aktiv |
+| FlaUI.Core | 4.0.0 (Abhängigkeit von FlaUI.UIA3) | NuGet (www.nuget.org/packages/FlaUI.Core) | MIT | Paket `5ce1496eebe099cb0751a61b82694351b694efe5be6eb888c41a25aa7b8827fa` | wie FlaUI.UIA3 | aktiv |
+| Interop.UIAutomationClient | 10.19041.0 (Abhängigkeit von FlaUI.UIA3) | NuGet (www.nuget.org/packages/Interop.UIAutomationClient) | MIT | Paket `0d2ed17db2cb13a262f0580ab992db87577651c25a9899053df4114b4d9ff3b1` | wie FlaUI.UIA3 | aktiv |
 
 Reine Test-NuGet-Pakete werden beim Restore von NuGet geladen (Paket-Hash und Signatur prüft NuGet) und nie ausgeliefert; daher keine eigene Prüfsumme. Für ausgelieferte Komponenten ist die SHA-256 Pflicht.
 

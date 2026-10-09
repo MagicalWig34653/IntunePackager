@@ -29,9 +29,10 @@ namespace IntunePackageBuilder.App
 
             string language = null;
             string settingsDirectory = null;
+            string openPath = null;
             for (var i = 0; i + 1 < e.Args.Length; i++)
             {
-                // Only for tests and support: --language de|en and --settings-dir <folder>.
+                // Only for tests and support: --language de|en, --settings-dir <folder> and --open <installer> (the same check as a drop).
                 if (e.Args[i] == "--language")
                 {
                     language = e.Args[i + 1];
@@ -39,6 +40,10 @@ namespace IntunePackageBuilder.App
                 else if (e.Args[i] == "--settings-dir")
                 {
                     settingsDirectory = e.Args[i + 1];
+                }
+                else if (e.Args[i] == "--open")
+                {
+                    openPath = e.Args[i + 1];
                 }
             }
 
@@ -52,9 +57,14 @@ namespace IntunePackageBuilder.App
                 new ContentPrepTool(),
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "template"));
             services.Logger = Log;
-            var window = new MainWindow(new MainViewModel(services));
+            var model = new MainViewModel(services);
+            var window = new MainWindow(model);
             MainWindow = window;
             window.Show();
+            if (openPath != null)
+            {
+                model.Start.HandleDrop(new[] { openPath });
+            }
         }
 
         private static void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs args)

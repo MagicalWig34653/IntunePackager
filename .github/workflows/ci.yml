@@ -45,6 +45,38 @@ jobs:
           name: testresults-${{ matrix.os }}
           path: "**/TestResults/*.trx"
 
+  ui-tests:
+    name: UI tests (FlaUI)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Build the program and the UI tests
+        run: |
+          dotnet build src/IntunePackageBuilder.App/IntunePackageBuilder.App.csproj --configuration Release
+          dotnet build tests/IntunePackageBuilder.UiTests/IntunePackageBuilder.UiTests.csproj --configuration Release
+      - name: Download the Win32 Content Prep Tool for the build test
+        run: |
+          # Same pinned download as in the build job (license: Microsoft terms, no redistribution; see THIRD-PARTY.md).
+          $commit = '1d6cfcbdf8c28edc596337031f74df951f38f718'
+          $expected = 'c1ba45b5cb939e84af064bb7ff4b38fb3dfe33c8dc1078fd9b157672eae671f6'
+          $directory = Join-Path $env:RUNNER_TEMP 'content-prep'
+          New-Item -ItemType Directory -Path $directory | Out-Null
+          $exe = Join-Path $directory 'IntuneWinAppUtil.exe'
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/microsoft/Microsoft-Win32-Content-Prep-Tool/$commit/IntuneWinAppUtil.exe" -OutFile $exe
+          $actual = (Get-FileHash -Algorithm SHA256 -Path $exe).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw "Unexpected SHA-256 of IntuneWinAppUtil.exe: $actual" }
+          "IPB_CONTENT_PREP_TOOL=$exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Run the UI tests
+        run: dotnet test tests/IntunePackageBuilder.UiTests/IntunePackageBuilder.UiTests.csproj --configuration Release --no-build --logger "trx;LogFileName=results.trx"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: testresults-ui
+          path: "**/TestResults/*.trx"
+
   pester:
     name: Pester (Windows PowerShell 5.1)
     runs-on: windows-latest
