@@ -32,6 +32,12 @@ namespace IntunePackageBuilder.Core.Settings
         /// <summary>The configured base folder, or null when the user has not chosen one yet.</summary>
         public string BaseFolder { get; set; }
 
+        /// <summary>
+        /// Path to the Win32 Content Prep Tool (<c>IntuneWinAppUtil.exe</c>), or null when it is not configured. The tool
+        /// is not shipped with the program (its license forbids redistribution); the user supplies it.
+        /// </summary>
+        public string ContentPrepToolPath { get; set; }
+
         /// <summary>Most recently opened projects, newest first.</summary>
         public List<RecentProject> RecentProjects { get; set; }
 

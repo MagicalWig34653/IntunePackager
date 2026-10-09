@@ -6,7 +6,9 @@ Stand: 2026-10-08
 
 ## Aktueller Meilenstein
 
-**M4 - Build-Pipeline** (Aufteilung: M4a Packwerkzeug und Prozessstart, M4b Pipeline mit Veröffentlichung und Fehlerpfaden (A09, A10, A11, A13), M4c Einstellungen und Abschluss; Quelle sichern, Paketordner zusammenstellen, Content Prep Tool aufrufen, Ergebnis prüfen und veröffentlichen, Fehlerpfade). Abnahme: A09 (Logik), A10, A11, A13. M0 bis M3 sind abgeschlossen (M3: Generatoren, siehe `docs/GENERATOREN.md`).
+**M5 - Client-Laufzeit** (`Install.cmd`, Wrapper in Windows PowerShell 5.1, Rückgabecodes, Benutzerinteraktion, Nacharbeiten). Abnahme: A15 und A16 gegen den Wrapper, Pester-Tests; Gerätetests erst in M8. M0 bis M4 sind abgeschlossen (M3: Generatoren, `docs/GENERATOREN.md`; M4: Build-Pipeline, `docs/BUILD.md`).
+
+Ausgangslage: `DeploymentInterface` legt die Dateinamen fest (`Install.cmd`, `Deployment.config.json`, `Files\`, Logordner); `Deployment.config.json` enthält alles, was der Wrapper braucht (`docs/DATENFORMAT.md`). Die Vorlagen kommen nach `deploy/template/`, die Pipeline kopiert sie in die Paketwurzel (`BuildRequest.RuntimeTemplateDirectory`).
 
 Alle Ausgaben entstehen aus einem **Snapshot** (Konfiguration, Build-ID, Sprache, Quellenmanifest), nie aus UI-Zustand. Die Befehle in Anleitung, JSON, CSV und Ergebnisseite stammen aus **einer** Quelle (`IntuneSettings`), damit sie nicht auseinanderlaufen. Sprache der Anleitung folgt der Programmsprache beim Build und wird im Snapshot festgehalten (`docs/PLANUNG.md` §8).
 
@@ -40,18 +42,16 @@ Alle Läufe: Windows-CI mit `windows-latest`, `windows-2022` und Pester unter Wi
 | M3c: HTML-Anleitung de/en (Lauf 1: ein Testfehler, Lauf 2: Pester scheiterte am Runner-Image vor jedem Test, Lauf 3 grün) | 37885403336 | alle drei Jobs bestanden (Generation: 79 xUnit; Core 273, Analysis 31, Pester 44) |
 | M3d: Wrapper-Konfiguration, Gesamterzeugung, A17 über alle Formate (erster Lauf grün) | 37885815101 | 273 xUnit (Core), 31 (Analysis), 97 (Generation), 44 Pester bestanden |
 | M4a: Prozessstart, Content Prep Tool (Fake und echtes Werkzeug 1.8.7), `.intunewin`-Prüfung (Lauf 1: Prozessbaum-Fund, Lauf 2 grün) | 37886853214 | alle drei Jobs bestanden (Build.Tests: 49, davon 3 gegen das echte Werkzeug; Core 273, Analysis 31, Generation 97, Pester 44) |
+| M4b: Pipeline mit Veröffentlichung, A09-Logik, A10, A11, A13 (Lauf 1: xUnit1031-Buildfehler, Lauf 2 grün) | 37887554732 | alle drei Jobs bestanden (Build.Tests mit Pipeline-Tests und dem Test gegen das echte Werkzeug; Core 273, Analysis 31, Generation 97, Pester 44) |
 
 Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups, Pages-Webseite (deployt), Claude-Code-Umgebung (`CLAUDE.md`, Agents, Skills, Hook). Neue Dateien und Formate: siehe `docs/DATENFORMAT.md`.
 
 ## In Arbeit
 
 - M4a ist gemergt (PR 15, CI-Lauf 37886853214 grün; Lauf 1 hatte den Prozessbaum-Fund, siehe Lehren).
-- M4b (Branch `claude/great-feynman-hi1xfp`): **unverifiziert bis zum CI-Lauf** (Lauf 1, 37887469531: Build-Fehler xUnit1031 in zwei Tests, behoben).
-  - Neu in `Build/Pipeline`: `BuildPipeline`, `BuildWorkspace` (mit `MarkedFolder`), `BuildLog`, `BuildTypes` (Phasen, Fehlercodes, Anfrage, Ergebnis); neu in `Core/Builds`: `BuildManifest` mit `BuildManifestStore`.
-  - Neue Tests: `BuildPipelineTests` (A09-Logik, A10, A11, A13, Aufräumen, Abbruch, ein Test mit dem echten Werkzeug), `PipelineFixture`.
-  - Doku: `docs/BUILD.md` Abschnitt „Pipeline (M4b)“, `docs/DATENFORMAT.md` (`build-manifest.json`).
-  - Offen für M4c/M5: Standardordner der Laufzeitvorlagen (`deploy/`), Einstellung für den Pfad des Content Prep Tools in `settings.json`, Auflistung der Builds einer Version (M7).
-- M2 bis M3 sind gemergt (PR 10 bis 14).
+- M4b ist gemergt (PR 16, CI-Lauf 37887554732 grün).
+- M4c (Branch `claude/great-feynman-hi1xfp`): Einstellung `contentPrepToolPath` in `settings.json` (`AppSettings`, zwei neue Tests) und Abschluss von M4 (Matrix A09, A10, A11, A13, READMEs, Webseite, `CLAUDE.md`). **Unverifiziert bis zum CI-Lauf.**
+- M2 bis M4b sind gemergt (PR 10 bis 16).
 - Die Annahmen, die M3 aus den offenen Entscheidungen getroffen hat (Mindest-Windows-Version als Platzhalter, 64-Bit-Anforderung, Standard-`msiexec`-Aufruf), stehen in `docs/GENERATOREN.md` und in `docs/PLANUNG.md` §8.
 
 ## Lehren (für künftige Sessions)
@@ -70,7 +70,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Nächste Schritte (in Reihenfolge)
 
-1. M4b: CI auswerten, Nachweis eintragen (Matrix A09, A10, A11, A13), mergen. Dann M4c (Pfad des Content Prep Tools in den Einstellungen, M4 abschließen per Skill `milestone`). Danach M5 (Client-Laufzeit); beide können nach M3 parallel laufen (siehe `docs/PLANUNG.md` §4). Das Content Prep Tool (`tools/`) braucht Herkunft und SHA-256 in `THIRD-PARTY.md`, bevor es verwendet wird.
+1. M4c: CI auswerten, Nachweis eintragen, mergen. Danach M5 (Client-Laufzeit: Vorlagen unter `deploy/template/`, Wrapper, Pester-Tests).
 2. M6 (Oberfläche), M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
 
 ## Entscheidungen (Kurzfassung, Details in `docs/PLANUNG.md` §8)

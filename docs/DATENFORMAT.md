@@ -140,6 +140,7 @@ Liegt **nicht** im Grundordner, sondern unter `%LOCALAPPDATA%\Intune Package Bui
 |---|---|---|
 | `schemaVersion` | Zahl | 1 |
 | `baseFolder` | Text oder fehlt | Gewählter Grundordner; fehlt, solange der Benutzer noch keinen gewählt hat |
+| `contentPrepToolPath` | Text oder fehlt | Pfad zu `IntuneWinAppUtil.exe`; fehlt, solange keiner gewählt ist. Das Programm liefert das Werkzeug nicht mit (`docs/PLANUNG.md` §8 Nr. 7). Eine unbekannte Version wird nur nach ausdrücklicher Bestätigung im Einzelfall verwendet; diese Bestätigung wird **nicht** gespeichert |
 | `recentProjects` | Liste aus `projectId` und `lastOpenedUtc` | Zuletzt geöffnete Projekte, neueste zuerst, höchstens 10, ohne Duplikate |
 
 - **Der Programmmodus (Standard oder Erweitert) wird nicht gespeichert.** Der Standardmodus ist bei jedem Start aktiv (Spec §5.2).
