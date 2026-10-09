@@ -39,7 +39,7 @@ namespace IntunePackageBuilder.App.Tests
         {
             var main = new MainViewModel(_fixture.Services);
             main.ShowForm(_fixture.ExeAnalysis());
-            var form = (FormViewModel)main.Current;
+            var form = FormOf(main);
             FillVendorInput(form);
             if (advancedSettings)
             {
@@ -66,6 +66,14 @@ namespace IntunePackageBuilder.App.Tests
             return path;
         }
 
+        /// <summary>The current page as a form; when the flow stopped on the project page, the failure shows its error text.</summary>
+        private static FormViewModel FormOf(MainViewModel main)
+        {
+            var project = main.Current as ProjectViewModel;
+            Assert.True(project == null, "The flow stopped on the project page: " + (project == null ? string.Empty : project.ErrorText));
+            return (FormViewModel)main.Current;
+        }
+
         private static string Fingerprint(string folder)
         {
             return SourceManifestBuilder.Build(folder).ComputeFingerprint();
@@ -85,7 +93,7 @@ namespace IntunePackageBuilder.App.Tests
             project.SelectedVersion = project.Versions.Single();
             _fixture.Dialogs.FileToPick = SecondInstaller();
             project.UpdateCommand.Execute(null);
-            var form = (FormViewModel)main.Current;
+            var form = FormOf(main);
 
             Assert.Equal("/quiet /norestart", form.InstallArguments.Value);
             Assert.Equal("C:\\Program Files\\Fabrikam\\editor.exe", form.DetectionPath.Value);
@@ -113,7 +121,7 @@ namespace IntunePackageBuilder.App.Tests
             project.SelectedVersion = project.Versions.Single();
             _fixture.Dialogs.FileToPick = SecondInstaller();
             project.UpdateCommand.Execute(null);
-            var form = (FormViewModel)main.Current;
+            var form = FormOf(main);
 
             form.TargetVersion.Value = "12.0.3";
             PackageVersionConfig config;
@@ -163,7 +171,7 @@ namespace IntunePackageBuilder.App.Tests
             _fixture.Dialogs.FileToPick = SecondInstaller();
 
             project.NewVersionCommand.Execute(null);
-            var form = (FormViewModel)main.Current;
+            var form = FormOf(main);
 
             Assert.Equal(string.Empty, form.InstallArguments.Value);
             Assert.False(form.ShowAdoptedHint);
@@ -181,7 +189,7 @@ namespace IntunePackageBuilder.App.Tests
             project.SelectedVersion = project.Versions.Single();
 
             project.LoadVersionCommand.Execute(null);
-            var form = (FormViewModel)main.Current;
+            var form = FormOf(main);
             Assert.True(form.TargetVersion.IsReadOnly);
             Assert.Equal("12.0.3", form.TargetVersion.Value);
             await form.CreateAsync();
@@ -202,7 +210,7 @@ namespace IntunePackageBuilder.App.Tests
             project.SelectedVersion = project.Versions.Single();
             project.LoadVersionCommand.Execute(null);
 
-            ((FormViewModel)main.Current).BackCommand.Execute(null);
+            FormOf(main).BackCommand.Execute(null);
 
             Assert.IsType<ProjectViewModel>(main.Current);
         }
@@ -216,7 +224,7 @@ namespace IntunePackageBuilder.App.Tests
             project.SelectedVersion = project.Versions.Single();
             _fixture.Dialogs.FileToPick = SecondInstaller();
             project.UpdateCommand.Execute(null);
-            var form = (FormViewModel)main.Current;
+            var form = FormOf(main);
             Assert.True(form.ShowAdoptedHint);
             Assert.False(form.ProcessesToClose.IsVisible);
 
