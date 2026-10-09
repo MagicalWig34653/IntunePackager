@@ -34,5 +34,5 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 # The check runs on what was actually zipped, not on the staging folder.
 & ([System.IO.Path]::Combine($PSScriptRoot, 'Test-Distribution.ps1')) -Path $zip
-if ($LASTEXITCODE -ne 0) { throw 'The distribution check failed; the ZIP must not be released.' }
+if ($null -ne $LASTEXITCODE -and $LASTEXITCODE -ne 0) { throw 'The distribution check failed; the ZIP must not be released.' }
 Write-Output $zip

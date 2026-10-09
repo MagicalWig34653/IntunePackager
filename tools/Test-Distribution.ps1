@@ -33,3 +33,4 @@ if ($problems.Count -gt 0) {
     exit 1
 }
 Write-Output 'Distribution check passed.'
+exit 0
