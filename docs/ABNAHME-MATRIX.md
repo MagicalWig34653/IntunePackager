@@ -4,15 +4,15 @@ Zuordnung der verbindlichen automatisierten Prüfungen aus [SPEC.md](SPEC.md) §
 
 | ID | Szenario | Meilenstein(e) | Testart | Status |
 |---|---|---|---|---|
-| A01 | Erststart ohne Einstellungen und Projekte | M6 | UI | offen |
+| A01 | Erststart ohne Einstellungen und Projekte | M6 | UI | bestanden (CI 37948001793): FlaUI startet das echte Programm mit leeren Einstellungen, Startseite mit Ablegefläche, Auswahl, Modusschalter, Grundordner und leerer Projektliste |
 | A02 | MSI-Metadaten lesen, ohne Ausführung | M2 | xUnit | bestanden (CI 37832133738) |
-| A03 | EXE ohne Silent-/Erkennungsangaben sperrt Build | M1 (Modell), M6 (UI) | xUnit, UI | Modell bestanden (CI 37825409326), UI offen |
-| A04 | Auswahl und Drag-and-drop gleichwertig; Fehltypen/Mehrfach abgelehnt | M2 (Logik), M6 (UI) | xUnit, UI | Logik bestanden (CI 37833609876); gleiche Prüfung für beide Wege vorgesehen, UI offen |
+| A03 | EXE ohne Silent-/Erkennungsangaben sperrt Build | M1 (Modell), M6 (UI) | xUnit, UI | Modell bestanden (CI 37825409326); UI bestanden (CI 37948001793): EXE ohne Herstellerangaben wird am Formular beanstandet, es entsteht weder Fortschritt noch Ergebnisseite |
+| A04 | Auswahl und Drag-and-drop gleichwertig; Fehltypen/Mehrfach abgelehnt | M2 (Logik), M6 (UI) | xUnit, UI | Logik bestanden (CI 37833609876); UI bestanden (CI 37948001793): Datei falschen Typs wird auf der Startseite abgelehnt (der Testweg `--open` und das Ablegen laufen durch dieselbe Prüfung `HandleDrop`; das echte Ablegen per Maus ist nicht automatisiert, gleichwertige Auswahl über den Dialog ebenso nicht) |
 | A05 | Projekt mehrfach öffnen/wechseln ohne Kollision | M1, M7 | xUnit, UI | Speicherschicht bestanden (CI 37825409326), UI offen |
 | A06 | Notizen bleiben erhalten | M1, M7 | xUnit, UI | Speicherschicht bestanden (CI 37825409326), UI offen |
 | A07 | Update aus Version | M7 | xUnit, UI | offen |
-| A08 | Moduswechsel verliert keine Werte | M6, M7 | UI | offen |
-| A09 | Build blockiert UI nicht, Eingaben gesperrt | M4, M6 | xUnit, UI | Logik bestanden (CI 37887554732): `RunAsync` kehrt sofort zurück, zweiter Build derselben Version gesperrt, andere Version läuft, Phasen in Reihenfolge; Sperre der Eingaben in der UI offen (M6) |
+| A08 | Moduswechsel verliert keine Werte | M6, M7 | UI | bestanden für die Oberfläche (CI 37948001793): Moduswechsel hin und zurück ändert keinen eingegebenen Wert; die Erweiterungen in M7 prüft derselbe Test erneut |
+| A09 | Build blockiert UI nicht, Eingaben gesperrt | M4, M6 | xUnit, UI | Logik bestanden (CI 37887554732); UI bestanden (CI 37948001793): während des Baus ist das Formular gesperrt und die Fortschrittsanzeige sichtbar, danach erscheint die Ergebnisseite mit Paket und Anleitung (Bau mit dem echten Content Prep Tool) |
 | A10 | Gleiche Version erneut bauen | M4 | xUnit | bestanden (CI 37887554732): neue Build-ID auch bei gleichem Zeitpunkt, früherer Build byteweise unverändert |
 | A11 | Veränderte Quelle wird erkannt | M2, M4 | xUnit | Manifestprüfung bestanden (CI 37832133738); Verhalten im Build bestanden (CI 37887554732): geänderte, hinzugefügte oder fehlende Quelldatei und fehlendes Manifest werden vor jeder Verwendung abgewiesen, kein Build entsteht |
 | A12 | Rekursiver Ordner / Junction abgelehnt | M2 | xUnit | bestanden (CI 37833609876), mit echten Junctions |

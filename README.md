@@ -16,7 +16,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/Lizenz-AGPL--3.0-green" alt="Lizenz AGPL-3.0"></a>
 </p>
 
-> **Projektstand:** Projektgerüst, Core (Projekte, Versionen, Sperren, Einstellungen) Quellenanalyse (MSI, EXE, Manifest, sicherer Import) und die Generatoren (Erkennungsskript, Intune-Anleitung, JSON/CSV, Wrapper-Konfiguration) stehen und sind per Windows-CI getestet (M0 bis M5 fertig). Der Paketbau mit dem Content Prep Tool steht, das Werkzeug muss der Benutzer aber selbst beschaffen (Lizenz). Die Client-Laufzeit (Wrapper, Rückgabecodes, Hinweis zum Schließen von Programmen) ist per Pester getestet, ein Fortschrittsfenster und Gerätetests fehlen noch. Es gibt keine Oberfläche, also keine nutzbaren Funktionen, und es gibt kein Release. Die Bilder unten sind **Design-Mockups**, keine Screenshots eines lauffähigen Programms.
+> **Projektstand:** Projektgerüst, Core (Projekte, Versionen, Sperren, Einstellungen) Quellenanalyse (MSI, EXE, Manifest, sicherer Import) und die Generatoren (Erkennungsskript, Intune-Anleitung, JSON/CSV, Wrapper-Konfiguration) stehen und sind per Windows-CI getestet (M0 bis M6 fertig). Der Paketbau mit dem Content Prep Tool steht, das Werkzeug muss der Benutzer aber selbst beschaffen (Lizenz). Die Client-Laufzeit (Wrapper, Rückgabecodes, Hinweis zum Schließen von Programmen) ist per Pester getestet, ein Fortschrittsfenster und Gerätetests fehlen noch. Die Oberfläche für den Standardablauf (Installer ablegen, Angaben prüfen, Paket bauen, Ergebnis) steht und wird per UI-Test in der CI gesteuert; erweiterter Modus, Projektansicht und Update-Ablauf (M7), Distribution (M8) und Gerätetests fehlen, und es gibt kein Release. Die Bilder unten sind **Design-Mockups**, keine Screenshots eines lauffähigen Programms.
 
 Der Intune Package Builder ist eine Windows-Desktopanwendung, die aus einer MSI, einer EXE oder einem Herstellerordner ein vollständiges Microsoft-Intune-Win32-Paket erstellt:
 
@@ -55,8 +55,8 @@ Nicht Teil von Version 1: direkter Upload nach Intune, Graph-Anmeldung, Gruppenz
 | M3 | Generatoren: Erkennungsskript, Intune-Anleitung, JSON/CSV, Wrapper-Konfiguration | fertig |
 | M4 | Build-Pipeline mit dem Content Prep Tool | fertig |
 | M5 | Client-Laufzeit: Wrapper, Rückgabecodes, Benutzerinteraktion | fertig, ohne Fortschrittsfenster |
-| M6 | Oberfläche: Standardmodus, Drag-and-drop, Ergebnisse | als Nächstes |
-| M7 | Erweiterter Modus, Projektansicht, Update-Ablauf | geplant |
+| M6 | Oberfläche: Standardmodus, Drag-and-drop, Ergebnisse | fertig, Erscheinungsbild noch nicht begutachtet |
+| M7 | Erweiterter Modus, Projektansicht, Update-Ablauf | als Nächstes |
 | M8 | Distribution, Dokumentation, Geräte-Prüfprotokoll | geplant |
 | M9 | Optional: Intune-Upload per Microsoft Graph (nicht Teil von Version 1) | vorgemerkt |
 
