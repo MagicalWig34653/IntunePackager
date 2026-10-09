@@ -7,7 +7,7 @@ Beschreibt, wie aus einer Softwareversion ein Paket entsteht (Spec §7.2). Das D
 Externe Programme werden **nie** über eine Shell-Zeichenkette gestartet (Spec §10):
 
 - `ArgumentQuoter` baut aus einer Argumentliste die Befehlszeile nach den Regeln von `CommandLineToArgvW`, sodass jedes Argument unverändert beim Kindprozess ankommt (Leerzeichen, Anführungszeichen, Backslashes vor Anführungszeichen, abschließende Backslashes). Ein Test liest die erzeugten Befehlszeilen mit dem Windows-Parser selbst zurück.
-- `ProcessRunner` startet ohne Shell, mit umgeleiteter und abgesaugter Ausgabe, **geschlossener Standardeingabe** (ein Programm, das etwas erfragen will, endet, statt zu warten) und Zeitlimit; nach Ablauf wird der Prozess beendet. Die erfasste Ausgabe ist auf etwa 1 MB je Strom begrenzt.
+- `ProcessRunner` startet ohne Shell, mit umgeleiteter und abgesaugter Ausgabe, **geschlossener Standardeingabe** (ein Programm, das etwas erfragen will, endet, statt zu warten) und Zeitlimit; nach Ablauf wird der Prozess **samt seinen Kindprozessen** beendet (`taskkill /T /F`), weil ein Startprogramm oder eine Batchdatei sonst Kinder zurücklässt, die die Ausgabeleitungen offen halten; das Warten darauf ist danach begrenzt (CI-Fund, siehe `docs/ARBEITSSTAND.md`). Die erfasste Ausgabe ist auf etwa 1 MB je Strom begrenzt.
 
 ## Content Prep Tool (M4a)
 

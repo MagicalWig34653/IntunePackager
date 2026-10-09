@@ -48,7 +48,8 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
   - Neu in `Build`: `Processes/{ArgumentQuoter,ProcessRunner}.cs`, `Packaging/{ContentPrepTool,ContentPrepExceptions,IntunewinVerifier}.cs`; neues Testprojekt `tests/IntunePackageBuilder.Build.Tests` (in der Solution).
   - `ci.yml`: die Build-Jobs laden das Content Prep Tool (fester Commit, SHA-256 geprüft) und setzen `IPB_CONTENT_PREP_TOOL` für die Integrationstests.
   - Doku: neue Datei `docs/BUILD.md`, `THIRD-PARTY.md`, `docs/PLANUNG.md` §8 Nr. 7.
-  - Risiken, die die CI klärt: Start von `.cmd`-Dateien als Fake-Werkzeug; Kurzpfad/Langpfad im Arbeitsverzeichnis-Test; ob das echte Werkzeug auf den Runnern headless läuft.
+  - CI-Lauf 1 (37886667764, windows-2022): 48 von 49 Build-Tests bestanden, **einschließlich der Tests gegen das echte Content Prep Tool** (nicht übersprungen). Fehlschlag: Nach dem Zeitlimit beendete `Process.Kill` nur `cmd.exe`, das Kind `ping` hielt die Ausgabeleitung offen und das Warten dauerte 59 s. Behoben: Prozessbaum mit `taskkill /T /F` beenden, Warten begrenzen.
+  - Offene Risiken (Stand vor dem Fund): Start von `.cmd`-Dateien als Fake-Werkzeug; Kurzpfad/Langpfad im Arbeitsverzeichnis-Test; ob das echte Werkzeug auf den Runnern headless läuft.
 - M2 bis M3 sind gemergt (PR 10 bis 14).
 - Die Annahmen, die M3 aus den offenen Entscheidungen getroffen hat (Mindest-Windows-Version als Platzhalter, 64-Bit-Anforderung, Standard-`msiexec`-Aufruf), stehen in `docs/GENERATOREN.md` und in `docs/PLANUNG.md` §8.
 
@@ -58,6 +59,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 - **Der Edit/Write-Hook greift nicht bei Dateien, die per Bash-Heredoc entstehen.** Danach immer `python3 -I .claude/skills/check-i18n/check_i18n.py .` laufen lassen. Umlaute im C#-Code als `\u00e4`-Escapes schreiben; mein Schreibwerkzeug löst Escapes manchmal schon beim Schreiben zu echten Zeichen auf.
 - **Zeilentrenner (U+2028/U+2029) und Steuerzeichen im C#-Quelltext bauen den Compiler aus** (CS1010 in M3b-CI-Lauf 1): Das Schreibwerkzeug löst `\u2028`-Escapes zu echten Zeichen auf. `check_i18n.py` meldet solche Zeichen jetzt; nach dem Schreiben immer ausführen.
 - **Der Pester-Job kann am Runner-Image scheitern, bevor ein Test läuft** (`Set-PSRepository : No repository with the name 'PSGallery' was found`, PR 13, Lauf 37885323164). Der Installationsschritt in `ci.yml` registriert PSGallery jetzt bei Bedarf und wiederholt die Installation bis zu dreimal.
+- **`Process.Kill` beendet keine Kindprozesse.** Wer ein Programm mit umgeleiteter Ausgabe nach einem Zeitlimit beenden will, muss den Baum beenden (`taskkill /PID <id> /T /F`) und das Warten auf die Ausgabe begrenzen, sonst hängt der Aufrufer, bis das Kind endet.
 - **`Assert.True(false, ...)` löst xUnit2020 aus** und bricht den Build (Warnungen sind Fehler); `Assert.Fail(...)` verwenden.
 - **`JObject.Parse` formatiert datumsähnliche Texte um**; deshalb `JsonFormat.ParseObject` benutzen (Notizen bleiben unverändert).
 - **Die Sperrdatei hat der Halter schreibend offen**; zum Lesen `FileShare.ReadWrite | FileShare.Delete` angeben.
