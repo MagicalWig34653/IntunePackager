@@ -164,5 +164,7 @@ Quellen: Microsoft Learn (Permissions reference, win32LobApp, mobileAppContentFi
 
 Erledigt: M0 (Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung; CI grün, .NET-Tests 8/8, Pester 10/10), README, Icon, Entwurfs-Mockups, Pages-Seite und Claude-Code-Umgebung.
 
-1. M1 beginnen (Core: Modelle, Schema, atomares Speichern, Migration, Projekt-IDs, Sperren, Grundordner) mit Tests für A03 (Modell), A05, A06, A14.
-2. Danach M2 (Quellenanalyse).
+Erledigt: M1 (Core), M2 (Quellenanalyse) und M3 (Generatoren), jeweils mit CI-Nachweis in `docs/ARBEITSSTAND.md`.
+
+1. M4 (Build-Pipeline mit dem Content Prep Tool) und M5 (Client-Laufzeit) können nun parallel laufen; in dieser Reihenfolge begonnen wird mit M4. Das Content Prep Tool braucht vorher Herkunft und SHA-256 in `THIRD-PARTY.md`.
+2. Danach M6 bis M8 (Oberfläche, erweiterter Modus, Distribution und Prüfprotokoll).
