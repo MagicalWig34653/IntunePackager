@@ -26,6 +26,10 @@ namespace IntunePackageBuilder.App
             {
                 e.Cancel = true;
             }
+            else if (!_model.PrepareClose())
+            {
+                e.Cancel = true;
+            }
 
             base.OnClosing(e);
         }

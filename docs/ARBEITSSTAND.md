@@ -50,6 +50,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## In Arbeit
 
+- M7a (Branch `claude/great-feynman-hi1xfp`): Projektansicht (`ProjectViewModel`, `ProjectView`: Name, Versionsliste nach Versionsnummer, Notizen mit Speichern beim Verlassen und Schließen), Projekt öffnen aus der Liste und "Projektordner öffnen" auf der Startseite, Tests in `App.Tests` und ein UI-Test für A05/A06. Beschreibung: `docs/OBERFLAECHE.md`. **Unverifiziert bis zum CI-Lauf.** Noch offen in M7: "Update erstellen" / "Version laden" / "Neue Version ohne Vorlage" (A07), Hinweis im Standardmodus auf übernommene erweiterte Einstellungen, erweiterte Ansicht der Metadaten und Quellenprüfung.
 - Vorgabe vom 2026-10-09: unterstützt werden **Windows Server 2019 und neuer sowie Windows 11** (vorher Server 2022). Angepasst in Spec §4/§12.2, Planung §8 Nr. 11, Standard-Mindest-OS der Intune-Anforderung (`Windows 10 1809`, kein Platzhalter mehr) und READMEs. **Ungeprüft:** Server 2019 hat in GitHub Actions keinen Runner mehr; der Nachweis bleibt ein Gerätetest (Spec §12.2). Auf Server 2019 muss .NET Framework 4.8 nachinstalliert werden.
 - M4a ist gemergt (PR 15, CI-Lauf 37886853214 grün; Lauf 1 hatte den Prozessbaum-Fund, siehe Lehren).
 - M4b ist gemergt (PR 16, CI-Lauf 37887554732 grün).

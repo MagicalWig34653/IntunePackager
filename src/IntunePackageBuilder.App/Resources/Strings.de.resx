@@ -194,4 +194,22 @@
   <data name="Dialog_CloseText" xml:space="preserve"><value>Das Paket wird noch erstellt. Wenn Sie das Programm jetzt schließen, wird dieser Build abgebrochen und nichts veröffentlicht. Trotzdem schließen?</value></data>
   <data name="Dialog_Error" xml:space="preserve"><value>Das Programm konnte nicht starten: {0}</value></data>
   <data name="Start_DropActive" xml:space="preserve"><value>Zum Analysieren loslassen</value></data>
+  <data name="Start_OpenProject" xml:space="preserve"><value>Projekt öffnen</value></data>
+  <data name="Start_OpenProjectFolder" xml:space="preserve"><value>Projektordner öffnen…</value></data>
+  <data name="Start_ProjectFolderInvalid" xml:space="preserve"><value>{0} ist kein Projektordner (keine lesbare project.json mit passender ID).</value></data>
+  <data name="Start_ProjectFolderBaseTitle" xml:space="preserve"><value>Diesen Ordner als Grundordner verwenden?</value></data>
+  <data name="Start_ProjectFolderBaseText" xml:space="preserve"><value>Das Projekt {0} liegt in {1}. {1} als Grundordner für alle Projekte verwenden?</value></data>
+  <data name="Project_Heading" xml:space="preserve"><value>Projekt</value></data>
+  <data name="Project_Id" xml:space="preserve"><value>Projekt-ID</value></data>
+  <data name="Project_Notes" xml:space="preserve"><value>Notizen</value></data>
+  <data name="Project_SaveNotes" xml:space="preserve"><value>Notizen speichern</value></data>
+  <data name="Project_NotesSaved" xml:space="preserve"><value>Notizen gespeichert.</value></data>
+  <data name="Project_NotesError" xml:space="preserve"><value>Die Notizen konnten nicht gespeichert werden: {0}</value></data>
+  <data name="Project_Versions" xml:space="preserve"><value>Versionen</value></data>
+  <data name="Project_NoVersions" xml:space="preserve"><value>Dieses Projekt hat noch keine Versionen.</value></data>
+  <data name="Project_VersionBroken" xml:space="preserve"><value>(nicht lesbar)</value></data>
+  <data name="Project_BuildsOne" xml:space="preserve"><value>1 Build, letzter: {0}</value></data>
+  <data name="Project_BuildsMany" xml:space="preserve"><value>{0} Builds, letzter: {1}</value></data>
+  <data name="Project_NoBuild" xml:space="preserve"><value>Noch kein Build</value></data>
+  <data name="Project_LoadFailed" xml:space="preserve"><value>Das Projekt konnte nicht geöffnet werden: {0}</value></data>
 </root>

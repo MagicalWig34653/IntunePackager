@@ -194,4 +194,22 @@
   <data name="Dialog_CloseText" xml:space="preserve"><value>The package is still being created. If you close the program now, this build is cancelled and nothing is published. Close anyway?</value></data>
   <data name="Dialog_Error" xml:space="preserve"><value>The program could not start: {0}</value></data>
   <data name="Start_DropActive" xml:space="preserve"><value>Release to analyze the installer</value></data>
+  <data name="Start_OpenProject" xml:space="preserve"><value>Open project</value></data>
+  <data name="Start_OpenProjectFolder" xml:space="preserve"><value>Open project folder…</value></data>
+  <data name="Start_ProjectFolderInvalid" xml:space="preserve"><value>{0} is not a project folder (no readable project.json with a matching ID).</value></data>
+  <data name="Start_ProjectFolderBaseTitle" xml:space="preserve"><value>Use this folder as base folder?</value></data>
+  <data name="Start_ProjectFolderBaseText" xml:space="preserve"><value>The project {0} is stored in {1}. Use {1} as the base folder for all projects?</value></data>
+  <data name="Project_Heading" xml:space="preserve"><value>Project</value></data>
+  <data name="Project_Id" xml:space="preserve"><value>Project ID</value></data>
+  <data name="Project_Notes" xml:space="preserve"><value>Notes</value></data>
+  <data name="Project_SaveNotes" xml:space="preserve"><value>Save notes</value></data>
+  <data name="Project_NotesSaved" xml:space="preserve"><value>Notes saved.</value></data>
+  <data name="Project_NotesError" xml:space="preserve"><value>The notes could not be saved: {0}</value></data>
+  <data name="Project_Versions" xml:space="preserve"><value>Versions</value></data>
+  <data name="Project_NoVersions" xml:space="preserve"><value>This project has no versions yet.</value></data>
+  <data name="Project_VersionBroken" xml:space="preserve"><value>(cannot be read)</value></data>
+  <data name="Project_BuildsOne" xml:space="preserve"><value>1 build, last: {0}</value></data>
+  <data name="Project_BuildsMany" xml:space="preserve"><value>{0} builds, last: {1}</value></data>
+  <data name="Project_NoBuild" xml:space="preserve"><value>No build yet</value></data>
+  <data name="Project_LoadFailed" xml:space="preserve"><value>The project could not be opened: {0}</value></data>
 </root>

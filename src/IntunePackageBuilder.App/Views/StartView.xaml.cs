@@ -17,6 +17,15 @@ namespace IntunePackageBuilder.App.Views
             e.Handled = true;
         }
 
+        private void OnProjectDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var model = DataContext as StartViewModel;
+            if (model != null && model.OpenSelectedCommand.CanExecute(null))
+            {
+                model.OpenSelectedCommand.Execute(null);
+            }
+        }
+
         private void OnDragLeave(object sender, DragEventArgs e)
         {
             e.Handled = true;

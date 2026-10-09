@@ -12,6 +12,9 @@
         <DataTemplate DataType="{x:Type vm:FormViewModel}">
             <views:FormView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ProjectViewModel}">
+            <views:ProjectView />
+        </DataTemplate>
         <DataTemplate DataType="{x:Type vm:ResultViewModel}">
             <views:ResultView />
         </DataTemplate>

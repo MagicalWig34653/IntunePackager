@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using FlaUI.Core.AutomationElements;
+using IntunePackageBuilder.Core.Projects;
 using Xunit;
 
 namespace IntunePackageBuilder.UiTests
@@ -108,6 +109,45 @@ namespace IntunePackageBuilder.UiTests
                 Assert.Equal("Contoso Ltd.", app.Require("Manufacturer").AsTextBox().Text);
                 Assert.Equal("/quiet /norestart", app.Require("InstallArguments").AsTextBox().Text);
             }
+        }
+
+        [Fact]
+        public void A05_A06_ProjectsOpenOneAfterAnotherAndNotesAreKept()
+        {
+            var projects = Path.Combine(_folder, "projects");
+            var store = new ProjectStore(projects);
+            Directory.CreateDirectory(projects);
+            store.Create("alpha", "Alpha Editor");
+            store.Create("beta", "Beta Viewer");
+            store.SaveNotes("beta", "notes of beta");
+
+            using (var app = new AppDriver(baseFolder: projects))
+            {
+                app.Require("ShowAll").AsCheckBox().IsChecked = true;
+
+                OpenProject(app, 0);
+                Assert.Equal("Alpha Editor", app.Require("ProjectName").Name);
+                SetText(app.Require("ProjectNotes"), "notes of alpha");
+                app.Require("Back").AsButton().Invoke();
+                Assert.NotNull(app.Require("DropArea"));
+                Assert.Equal("notes of alpha", store.Load("alpha").Notes);
+
+                OpenProject(app, 1);
+                Assert.Equal("Beta Viewer", app.Require("ProjectName").Name);
+                Assert.Equal("notes of beta", app.Require("ProjectNotes").AsTextBox().Text);
+                app.Require("Back").AsButton().Invoke();
+                Assert.NotNull(app.Require("DropArea"));
+                Assert.Equal("notes of beta", store.Load("beta").Notes);
+                Assert.Equal("notes of alpha", store.Load("alpha").Notes);
+            }
+        }
+
+        private static void OpenProject(AppDriver app, int index)
+        {
+            var list = app.Require("Projects").AsListBox();
+            Assert.True(Wait.Until(() => list.Items.Length > index, TimeSpan.FromSeconds(15)), "The project list did not show the projects.");
+            list.Items[index].Select();
+            app.Require("OpenProject").AsButton().Invoke();
         }
 
         [Fact]
