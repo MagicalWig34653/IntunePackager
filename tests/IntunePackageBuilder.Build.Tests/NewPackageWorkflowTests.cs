@@ -244,7 +244,10 @@ namespace IntunePackageBuilder.Build.Tests
 
             Assert.Equal(BuildProblem.PackagingFailed, exception.Problem);
             Assert.True(File.Exists(Path.Combine(BaseFolder, "fabrikam-editor", "project.json")));
-            Assert.Empty(Directory.GetDirectories(Path.Combine(BaseFolder, "fabrikam-editor", "versions", "12.0.3", "builds")).Where(d => !d.EndsWith(".partial", StringComparison.Ordinal)));
+            var published = Directory.GetDirectories(Path.Combine(BaseFolder, "fabrikam-editor", "versions", "12.0.3", "builds"))
+                .Where(d => !d.EndsWith(".partial", StringComparison.Ordinal))
+                .ToList();
+            Assert.Empty(published);
 
             var retry = Run(Workflow(new FakeRunner()), Request());
             Assert.False(retry.ProjectWasCreated);
