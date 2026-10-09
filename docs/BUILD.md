@@ -75,3 +75,21 @@ builds/<build-id>/
 
 **Nicht geprüft:** Die Sperre der Oberfläche während des Builds (M6), Abbruch mitten im Werkzeug, ein tatsächlich volles Laufwerk (der Platz wird über eine austauschbare Messung geprüft; `ERROR_DISK_FULL` wird auf `NotEnoughSpace` abgebildet, aber nicht real provoziert) und Pfade über 259 Zeichen mit aktivierter Langpfad-Unterstützung.
 
+## Arbeitsablauf „Paket erstellen“ (M6a)
+
+Zwischen Oberfläche und Pipeline liegt eine Schicht ohne WPF (`IntunePackageBuilder.Build/Workflow`), damit der Ablauf des Standardmodus testbar ist, bevor es Fenster gibt.
+
+**`SourceAnalyzer.Analyze(DroppedItem, installerRelativePath)`** liest den abgelegten Installer, ohne ihn auszuführen (MSI-Datenbank, EXE-Versionsresource), und liefert eine `SourceAnalysis`: Typ, Importart, Installerpfad (bei einem Ordner muss der Installer darin benannt werden), Vorschläge für Name, Hersteller und Version, bei MSI den ProductCode, außerdem **Hinweise als Codes** (`AnalysisNote`: MSI braucht den Quellordner, externe Cabinets, `ALLUSERS` nicht gesetzt, EXE ohne Versionsinformation, EXE braucht Herstellerangaben). `CreateConfiguration()` macht daraus einen **Entwurf**: Was das Programm nicht wissen kann (EXE-Schalter, Deinstallationsprogramm, Erkennungsdatei), bleibt leer und wird vom Validator gemeldet. Fehler sind `AnalysisFailedException` mit Code (`UnsupportedFileType`, `FileMissing`, `NotAnInstaller`, `InstallerNotSelected`, `InstallerOutsideFolder`, `Unreadable`); eine fehlgeschlagene Analyse verändert nichts.
+
+**`NewPackageWorkflow.Run`** ist „Paket erstellen“ (Spec §5.2):
+
+1. Konfiguration prüfen (`ConfigurationInvalid` mit den Feldern, damit die Oberfläche das erste fehlerhafte Feld fokussieren kann), Werkzeug prüfen (`ToolNotConfigured`), Projekt-ID prüfen. **Bis hierher wird nichts angelegt.**
+2. Projekt und Version anlegen (oder, wenn es sie schon gibt, die Version mit der Konfiguration aktualisieren), Quelle sichern (nur wenn die Version noch keine hat).
+3. Eine **bereits gespeicherte Quelle wird nie ersetzt**: Legt der Benutzer für eine vorhandene Version einen anderen Installer ab, endet der Ablauf mit `SourceAlreadyStored`, statt unbemerkt den alten zu bauen (SHA-256 bei einer Datei, Fingerabdruck bei einem Ordner).
+4. Pipeline ausführen (`docs/BUILD.md`, oben).
+5. `BuildOutcome` für die Ergebnisseite aus **den Dateien dieses Builds** beschreiben (Software, Version, Build-ID, Pfade, Befehle, Kontext, Erkennungsskript und -ziel, Log) samt `ClipboardText` mit den Intune-Werten des Builds (`schlüssel: wert`, aus `SettingsWriter.Flatten`). Ein Ergebnis eines früheren Builds kann so nicht erscheinen.
+
+Wird die **Quelle abgelehnt** (`SourceRejected`, mit `ImportProblem`) oder scheitert das Speichern, entfernt der Ablauf ein Projekt, das er selbst in diesem Aufruf angelegt hat, wieder (nur dieses; Aufräumen bleibt auf Eigenes beschränkt). **Scheitert der Build**, bleiben Projekt und Version bestehen, damit der Benutzer die Ursache beheben und erneut bauen kann; es erscheint keine Erfolgsseite.
+
+Tests: `SourceAnalyzerTests`, `NewPackageWorkflowTests` (Fake-Packwerkzeug; die MSI-Analyse selbst ist in `IntunePackageBuilder.Analysis.Tests` geprüft).
+

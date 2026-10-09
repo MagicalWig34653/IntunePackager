@@ -52,7 +52,8 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 - M4b ist gemergt (PR 16, CI-Lauf 37887554732 grün).
 - M4 ist abgeschlossen und gemergt (PR 15 bis 17).
 - M0 bis M5 sind abgeschlossen (M5 in PR 18, CI-Lauf 37888755850; Rest siehe Tabelle oben). Der Abschluss-Commit von M5 (Matrix, READMEs, Webseite) liegt ebenfalls in PR 18.
-- Noch nichts aus M6 begonnen.
+- M6a (Branch `claude/great-feynman-hi1xfp`): Arbeitsablauf ohne WPF (`Build/Workflow`: `SourceAnalyzer`, `NewPackageWorkflow`, `BuildOutcome`) und Tests (`SourceAnalyzerTests`, `NewPackageWorkflowTests`), Doku `docs/BUILD.md`. **Unverifiziert bis zum CI-Lauf.**
+- M6b (Ressourcen, ViewModels, Fenster) ist noch nicht begonnen.
 - Die Annahmen, die M3 und M5 aus den offenen Entscheidungen getroffen haben (Mindest-Windows-Version als Platzhalter, 64-Bit-Anforderung, Standard-`msiexec`-Aufruf ohne `ALLUSERS`, keine PSADT-Nutzung), stehen in `docs/GENERATOREN.md`, `docs/CLIENT.md` und `docs/PLANUNG.md` §8.
 
 ## Lehren (für künftige Sessions)
