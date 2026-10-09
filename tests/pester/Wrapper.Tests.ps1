@@ -196,6 +196,24 @@ Describe 'Get-ReturnCodeType' {
     }
 }
 
+Describe 'Get-ProcessTimeLimit' {
+    It 'leaves the time limit minus the margin when nothing was used yet' {
+        $limit = Get-ProcessTimeLimit -TimeoutMinutes 60 -StartedUtc ([datetime]::UtcNow)
+        $limit | Should -BeGreaterThan 57.9
+        $limit | Should -BeLessOrEqual 58
+    }
+
+    It 'subtracts the time already used, for example waiting for programs to close' {
+        $limit = Get-ProcessTimeLimit -TimeoutMinutes 60 -StartedUtc ([datetime]::UtcNow.AddMinutes(-20))
+        $limit | Should -BeGreaterThan 37.5
+        $limit | Should -BeLessOrEqual 38
+    }
+
+    It 'never goes below one minute' {
+        Get-ProcessTimeLimit -TimeoutMinutes 5 -StartedUtc ([datetime]::UtcNow.AddMinutes(-30)) | Should -Be 1
+    }
+}
+
 Describe 'New-ProcessCommand' {
     It 'builds the silent MSI installation with a log and appends configured properties' {
         $config = New-TestConfig -Type 'Msi' -InstallerPath 'Files\setup.msi' -Arguments 'ALLUSERS=1 INSTALLDIR="C:\Apps\X"'

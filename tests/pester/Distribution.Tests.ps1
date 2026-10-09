@@ -112,6 +112,12 @@ Describe 'A18 - distribution content' {
         $problems | Should -Match ([regex]::Escape(($Relative -replace '\\', '/')))
     }
 
+    It 'rejects a distribution that lacks a required file' {
+        $folder = New-FakeDistribution -Name 'incomplete' -Repository $script:goodRepository
+        Remove-Item -LiteralPath (Join-Path $folder 'template\Install.cmd')
+        (@(Get-DistributionProblem -Folder $folder)) -join "`n" | Should -Match 'Required file is missing'
+    }
+
     It 'rejects a file that changed after the checksums were written' {
         $folder = New-FakeDistribution -Name 'changed' -Repository $script:goodRepository
         [System.IO.File]::AppendAllText((Join-Path $folder 'de\IntunePackageBuilder.resources.dll'), 'tampered')
