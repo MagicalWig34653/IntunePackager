@@ -168,7 +168,7 @@ Quellen: Microsoft Learn (Permissions reference, win32LobApp, mobileAppContentFi
 
 Erledigt: M0 (Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung; Zahlen je Lauf in `docs/ARBEITSSTAND.md`), README, Icon, Entwurfs-Mockups, Pages-Seite und Claude-Code-Umgebung.
 
-Erledigt: M1 (Core), M2 (Quellenanalyse), M3 (Generatoren), M4 (Build-Pipeline), M5 (Client-Laufzeit, ohne Fortschrittsfenster), M6 (Oberfläche für den Standardmodus, FlaUI-Tests in der CI) und M7 (erweiterter Modus, Projektansicht, Update-Ablauf), jeweils mit CI-Nachweis in `docs/ARBEITSSTAND.md`.
+Erledigt: M1 (Core), M2 (Quellenanalyse), M3 (Generatoren), M4 (Build-Pipeline), M5 (Client-Laufzeit, ohne Fortschrittsfenster), M6 (Oberfläche für den Standardmodus, FlaUI-Tests in der CI) M7 (erweiterter Modus, Projektansicht, Update-Ablauf) und M8 bis auf die Gerätetests (Distribution mit Prüfung A18, Dokumentation, Prüfprotokoll), jeweils mit CI-Nachweis in `docs/ARBEITSSTAND.md`.
 
-1. M8 (Distribution: ZIP-Bau und Prüfsummen, Doku, Prüfprotokoll); Fortschrittsfenster der Client-Laufzeit als offenen Punkt führen (`docs/CLIENT.md`).
-2. Gerätetests nach Spec §12.2 sind in der Cloud-Sitzung nicht möglich und bleiben als offen ausgewiesen.
+1. Gerätetests nach Spec §12.2 (`docs/PRUEFPROTOKOLL.md`) auf echten Geräten; sie sind in der Cloud-Sitzung nicht möglich und bleiben als offen ausgewiesen.
+2. Entscheidungen zu Signierung und Fortschrittsfenster der Client-Laufzeit (`docs/CLIENT.md`).

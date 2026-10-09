@@ -90,14 +90,14 @@ Describe 'Own PowerShell files' {
     }
 
     It 'all start with a UTF-8 BOM' {
-        $offenders = @(Get-OwnScript -Directory 'deploy', 'src', 'tests' -Include '*.ps1', '*.psm1', '*.psd1' |
+        $offenders = @(Get-OwnScript -Directory 'deploy', 'src', 'tests', 'tools' -Include '*.ps1', '*.psm1', '*.psd1' |
             Where-Object { -not (Test-Utf8Bom -Path $_.FullName) } |
             ForEach-Object { $_.FullName.Substring($repoRoot.Length + 1) })
         $offenders | Should -BeNullOrEmpty -Because "own PowerShell files must be UTF-8 with BOM: $($offenders -join ', ')"
     }
 
     It 'use no PowerShell 7 only syntax' {
-        $offenders = @(Get-OwnScript -Directory 'deploy', 'src' -Include '*.ps1', '*.psm1' |
+        $offenders = @(Get-OwnScript -Directory 'deploy', 'src', 'tools' -Include '*.ps1', '*.psm1' |
             ForEach-Object {
                 $found = @(Find-Ps7OnlySyntax -Text (Get-Content -Raw -Path $_.FullName))
                 if ($found.Count -gt 0) { '{0}: {1}' -f $_.FullName.Substring($repoRoot.Length + 1), ($found -join ', ') }
