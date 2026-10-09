@@ -74,6 +74,30 @@ namespace IntunePackageBuilder.Core.Tests
         }
 
         [Fact]
+        public void SaveAndLoad_RoundTripTheContentPrepToolPath()
+        {
+            NewStore().Save(new AppSettings { ContentPrepToolPath = "C:\\Tools\\IntuneWinAppUtil.exe" });
+
+            var loaded = NewStore().Load();
+
+            Assert.Null(loaded.Error);
+            Assert.Equal("C:\\Tools\\IntuneWinAppUtil.exe", loaded.Settings.ContentPrepToolPath);
+        }
+
+        [Fact]
+        public void Load_ReadsAFileWrittenBeforeTheToolPathExisted()
+        {
+            Directory.CreateDirectory(_root);
+            File.WriteAllText(SettingsFile, "{ \"schemaVersion\": 1, \"baseFolder\": \"C:\\\\Projects\" }");
+
+            var loaded = NewStore().Load();
+
+            Assert.Null(loaded.Error);
+            Assert.Equal("C:\\Projects", loaded.Settings.BaseFolder);
+            Assert.Null(loaded.Settings.ContentPrepToolPath);
+        }
+
+        [Fact]
         public void Save_LeavesOnlyTheSettingsFile()
         {
             var store = NewStore();

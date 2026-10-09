@@ -12,11 +12,11 @@ Zuordnung der verbindlichen automatisierten Prüfungen aus [SPEC.md](SPEC.md) §
 | A06 | Notizen bleiben erhalten | M1, M7 | xUnit, UI | Speicherschicht bestanden (CI 37825409326), UI offen |
 | A07 | Update aus Version | M7 | xUnit, UI | offen |
 | A08 | Moduswechsel verliert keine Werte | M6, M7 | UI | offen |
-| A09 | Build blockiert UI nicht, Eingaben gesperrt | M4, M6 | xUnit, UI | offen |
-| A10 | Gleiche Version erneut bauen | M4 | xUnit | offen |
-| A11 | Veränderte Quelle wird erkannt | M2, M4 | xUnit | Manifestprüfung bestanden (CI 37832133738); Verhalten im Build (M4) offen |
+| A09 | Build blockiert UI nicht, Eingaben gesperrt | M4, M6 | xUnit, UI | Logik bestanden (CI 37887554732): `RunAsync` kehrt sofort zurück, zweiter Build derselben Version gesperrt, andere Version läuft, Phasen in Reihenfolge; Sperre der Eingaben in der UI offen (M6) |
+| A10 | Gleiche Version erneut bauen | M4 | xUnit | bestanden (CI 37887554732): neue Build-ID auch bei gleichem Zeitpunkt, früherer Build byteweise unverändert |
+| A11 | Veränderte Quelle wird erkannt | M2, M4 | xUnit | Manifestprüfung bestanden (CI 37832133738); Verhalten im Build bestanden (CI 37887554732): geänderte, hinzugefügte oder fehlende Quelldatei und fehlendes Manifest werden vor jeder Verwendung abgewiesen, kein Build entsteht |
 | A12 | Rekursiver Ordner / Junction abgelehnt | M2 | xUnit | bestanden (CI 37833609876), mit echten Junctions |
-| A13 | Rechte-/Platz-/Packwerkzeugfehler | M4 | xUnit | offen |
+| A13 | Rechte-/Platz-/Packwerkzeugfehler | M4 | xUnit | bestanden (CI 37887554732; Werkzeug: CI 37886853214): nicht beschreibbarer Build-Ordner, zu wenig Platz (über austauschbare Messung), zu lange Pfade, Werkzeugfehler, Zeitüberschreitung, ungültiges Paket, fehlende Vorlagen; nichts Halbes veröffentlicht, Aufräumen nur mit Marker. Nicht real provoziert: ein wirklich volles Laufwerk |
 | A14 | Zweiter Prozess, gleiche Version | M1 | xUnit (Mehrprozess) | Sperre auf Speicherebene bestanden mit echtem Zweitprozess (CI 37827032442); Verhalten in der UI offen |
 | A15 | Erkennung älter / passend / neuer / fremd | M3, M5 | Pester | Erzeugtes Skript gegen echte Registry-Schlüssel und Dateien bestanden (CI 37884553567); Verhalten im Wrapper (M5) und unter LocalSystem (M8) offen |
 | A16 | Erkennung ohne Paketcache | M3, M5 | Pester | Skript allein in leerem Ordner, anderer Arbeitsordner, ohne Bezug zu Paket oder Cache bestanden (CI 37884553567) |
