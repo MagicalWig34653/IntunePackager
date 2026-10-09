@@ -51,6 +51,7 @@ namespace IntunePackageBuilder.App.ViewModels
         private readonly MainViewModel _main;
         private readonly AppServices _services;
         private readonly SourceAnalysis _analysis;
+        private readonly FormTemplate _template;
         private bool _minimumFollowsTarget = true;
         private bool _isBusy;
         private bool _needsTool;
@@ -59,12 +60,13 @@ namespace IntunePackageBuilder.App.ViewModels
         private string _errorText;
         private DateTime _started;
 
-        public FormViewModel(MainViewModel main, AppServices services, SourceAnalysis analysis)
+        public FormViewModel(MainViewModel main, AppServices services, SourceAnalysis analysis, FormTemplate template = null)
         {
             _main = main;
             _services = services;
             _analysis = analysis;
-            var draft = analysis.CreateConfiguration();
+            _template = template ?? new FormTemplate { Mode = FormMode.NewPackage };
+            var draft = NewDraft();
 
             SoftwareName = new FormField("SoftwareName");
             Manufacturer = new FormField("Manufacturer");
@@ -111,7 +113,19 @@ namespace IntunePackageBuilder.App.ViewModels
             TargetVersion.Assign(draft.Identity.TargetVersion);
             ProductCode.Assign(draft.Install.ProductCode);
             DetectionMinimumVersion.Assign(draft.Detection.MinimumVersion);
-            ProjectId.Assign(IntunePackageBuilder.Core.Projects.ProjectId.Suggest(draft.Identity.SoftwareName));
+            ProjectId.Assign(_template.ExistingProjectId ?? IntunePackageBuilder.Core.Projects.ProjectId.Suggest(draft.Identity.SoftwareName));
+            ProjectId.IsReadOnly = _template.ExistingProjectId != null;
+            _projectIdUntouched = _template.ExistingProjectId == null;
+            TargetVersion.IsReadOnly = _template.Mode == FormMode.Rebuild;
+            InstallArguments.Assign(draft.Install.Arguments);
+            UninstallProgram.Assign(draft.Uninstall.ExecutablePath);
+            UninstallArguments.Assign(draft.Uninstall.Arguments);
+            DetectionPath.Assign(draft.Detection.Path);
+            ProcessesToClose.Assign(string.Join(Environment.NewLine, draft.Interaction.ProcessesToClose));
+            Shortcuts.Assign(string.Join(Environment.NewLine, draft.PostInstall.SharedShortcutsToRemove.Select(s => s.Root + "|" + s.RelativePath)));
+            InstallMessage.Assign(draft.Interaction.InstallMessage);
+            UninstallMessage.Assign(draft.Interaction.UninstallMessage);
+            DetailMessage.Assign(draft.Interaction.DetailMessage);
             Timeout.Assign(draft.Runtime.TimeoutMinutes.ToString(CultureInfo.InvariantCulture));
             SuccessCodes.Assign(string.Join(", ", draft.Runtime.SuccessCodes));
             RebootCodes.Assign(string.Join(", ", draft.Runtime.RebootCodes));
@@ -134,12 +148,14 @@ namespace IntunePackageBuilder.App.ViewModels
             BackCommand = new RelayCommand(() => RaiseBack(), () => !IsBusy);
             ChooseToolCommand = new RelayCommand(() => { var ignored = ChooseToolAsync(); });
             OpenToolDownloadCommand = new RelayCommand(() => _services.Shell.OpenUrl(ToolDownloadUrl));
+            ShowAdvancedCommand = new RelayCommand(() => _main.AdvancedMode = true);
 
             _main.PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == "AdvancedMode")
                 {
                     RefreshVisibility();
+                    Raise("ShowAdoptedHint");
                 }
             };
             RefreshVisibility();
@@ -187,6 +203,41 @@ namespace IntunePackageBuilder.App.ViewModels
 
         /// <summary>Hints about the installer that was read (needs its folder, per-user default, vendor input).</summary>
         public IReadOnlyList<string> Notes { get; private set; }
+
+        /// <summary>The heading of the page: it names the base version of an update or a rebuild.</summary>
+        public string HeadingText
+        {
+            get
+            {
+                switch (_template.Mode)
+                {
+                    case FormMode.Update:
+                        return Loc.Format("Form_UpdateHeading", _template.BasisVersion);
+                    case FormMode.Rebuild:
+                        return Loc.Format("Form_RebuildHeading", _template.BasisVersion);
+                    case FormMode.NewVersion:
+                        return Loc.Get("Form_NewVersionHeading");
+                    default:
+                        return Loc.Get("Form_Heading");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Standard mode shows settings adopted from the base version only through this hint, with a direct way to check them
+        /// (SPEC 5.3).
+        /// </summary>
+        public bool ShowAdoptedHint
+        {
+            get { return _template.AdvancedAdopted && !_main.AdvancedMode; }
+        }
+
+        public string AdoptedHintText
+        {
+            get { return Loc.Format("Form_AdoptedHint", _template.BasisVersion); }
+        }
+
+        public ICommand ShowAdvancedCommand { get; private set; }
 
         public MainViewModel Main
         {
@@ -305,7 +356,7 @@ namespace IntunePackageBuilder.App.ViewModels
         /// <summary>Builds the configuration from the entries. Entries that cannot be read as numbers or lists are reported in <paramref name="problems"/>.</summary>
         public PackageVersionConfig BuildConfiguration(IList<FieldProblem> problems)
         {
-            var config = _analysis.CreateConfiguration();
+            var config = NewDraft();
             config.Identity.SoftwareName = SoftwareName.Value.Trim();
             config.Identity.Manufacturer = Manufacturer.Value.Trim();
             config.Identity.TargetVersion = TargetVersion.Value.Trim();
@@ -371,6 +422,11 @@ namespace IntunePackageBuilder.App.ViewModels
                 found.Add(new FieldProblem("ProjectId", Loc.Get("Valid_ProjectId")));
             }
 
+            if (_template.Mode != FormMode.NewPackage && _template.Mode != FormMode.Rebuild && VersionExists(configuration.Identity.TargetVersion))
+            {
+                found.Add(new FieldProblem("TargetVersion", Loc.Get("Form_VersionExists")));
+            }
+
             foreach (var issue in ConfigurationValidator.Validate(configuration))
             {
                 found.Add(new FieldProblem(KeyFor(issue.Field), Texts.ForValidation(issue.Code)));
@@ -425,7 +481,8 @@ namespace IntunePackageBuilder.App.ViewModels
             {
                 Item = _analysis.Item,
                 Configuration = config,
-                RequestedProjectId = _main.AdvancedMode && !string.IsNullOrWhiteSpace(ProjectId.Value) ? ProjectId.Value.Trim() : null,
+                RequestedProjectId = _template.ExistingProjectId
+                    ?? (_main.AdvancedMode && !string.IsNullOrWhiteSpace(ProjectId.Value) ? ProjectId.Value.Trim() : null),
                 Language = Loc.Language,
                 RuntimeTemplateDirectory = _services.RuntimeTemplateDirectory,
                 ContentPrepToolPath = toolPath,
@@ -577,6 +634,43 @@ namespace IntunePackageBuilder.App.ViewModels
                 {
                     handler(this, ordered[0].Key);
                 }
+            }
+        }
+
+        /// <summary>A private copy of the starting point: the draft of the template or the plain analysis.</summary>
+        private PackageVersionConfig NewDraft()
+        {
+            return _template.Draft != null ? UpdateDraft.Clone(_template.Draft) : _analysis.CreateConfiguration();
+        }
+
+        private bool VersionExists(string version)
+        {
+            if (_template.ExistingProjectId == null || string.IsNullOrWhiteSpace(version))
+            {
+                return false;
+            }
+
+            var resolution = _services.BaseFolder;
+            if (resolution.Status != BaseFolderStatus.Ok)
+            {
+                return false;
+            }
+
+            VersionNumber parsed;
+            if (!VersionNumber.TryParse(version.Trim(), out parsed))
+            {
+                return false;
+            }
+
+            try
+            {
+                return new VersionStore(new ProjectStore(resolution.Path)).List(_template.ExistingProjectId)
+                    .Any(e => e.Version != null && e.Version.Equals(parsed));
+            }
+            catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException)
+            {
+                _services.Logger.Log(LogLevel.Warning, "The versions of the project could not be listed", exception);
+                return false;
             }
         }
 

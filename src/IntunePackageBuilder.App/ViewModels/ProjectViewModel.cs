@@ -7,10 +7,12 @@ using System.Windows.Input;
 using IntunePackageBuilder.App.Infrastructure;
 using IntunePackageBuilder.App.Services;
 using IntunePackageBuilder.Build.Pipeline;
+using IntunePackageBuilder.Build.Workflow;
 using IntunePackageBuilder.Core.Builds;
 using IntunePackageBuilder.Core.Logging;
 using IntunePackageBuilder.Core.Projects;
 using IntunePackageBuilder.Core.Settings;
+using IntunePackageBuilder.Core.Sources;
 using IntunePackageBuilder.Core.Storage;
 using IntunePackageBuilder.Core.Versions;
 
@@ -55,6 +57,18 @@ namespace IntunePackageBuilder.App.ViewModels
             Versions = new ObservableCollection<VersionItem>();
             SaveNotesCommand = new RelayCommand(() => SaveNotes());
             BackCommand = new RelayCommand(Back);
+            UpdateCommand = new RelayCommand(() => StartFromSource(FormMode.Update, false));
+            UpdateFolderCommand = new RelayCommand(() => StartFromSource(FormMode.Update, true));
+            NewVersionCommand = new RelayCommand(() => StartFromSource(FormMode.NewVersion, false));
+            NewVersionFolderCommand = new RelayCommand(() => StartFromSource(FormMode.NewVersion, true));
+            LoadVersionCommand = new RelayCommand(LoadVersion);
+            main.PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == "AdvancedMode")
+                {
+                    Raise("IsAdvanced");
+                }
+            };
 
             var resolution = services.BaseFolder;
             if (resolution.Status != BaseFolderStatus.Ok)
@@ -77,6 +91,25 @@ namespace IntunePackageBuilder.App.ViewModels
         public ICommand SaveNotesCommand { get; private set; }
 
         public ICommand BackCommand { get; private set; }
+
+        /// <summary>"Create update": adopts the settings of the selected version for a new installer (SPEC 6.5).</summary>
+        public ICommand UpdateCommand { get; private set; }
+
+        public ICommand UpdateFolderCommand { get; private set; }
+
+        /// <summary>"New version without template": a new version of this project, nothing adopted.</summary>
+        public ICommand NewVersionCommand { get; private set; }
+
+        public ICommand NewVersionFolderCommand { get; private set; }
+
+        /// <summary>"Load version": opens the selected version to build it again from its stored source.</summary>
+        public ICommand LoadVersionCommand { get; private set; }
+
+        /// <summary>Advanced mode shows the commands that take a whole vendor folder.</summary>
+        public bool IsAdvanced
+        {
+            get { return _main.AdvancedMode; }
+        }
 
         /// <summary>False when the project could not be read: the notes are shown empty and are never written then.</summary>
         public bool CanEditNotes { get; private set; } = true;
@@ -173,6 +206,96 @@ namespace IntunePackageBuilder.App.ViewModels
                 InfoText = null;
                 return false;
             }
+        }
+
+        private void StartFromSource(FormMode mode, bool folder)
+        {
+            ErrorText = null;
+            var basis = _selectedVersion;
+            if (mode == FormMode.Update && (basis == null || basis.Config == null))
+            {
+                ErrorText = Loc.Get("Project_SelectVersion");
+                return;
+            }
+
+            if (!SaveNotes())
+            {
+                return;
+            }
+
+            var path = folder
+                ? _services.Dialogs.PickFolder(Loc.Get("Project_ChooseSource"), null)
+                : _services.Dialogs.PickFile(Loc.Get("Project_ChooseSource"), Loc.Get("Dialog_InstallerFilter"), null);
+            if (path == null)
+            {
+                return;
+            }
+
+            string message;
+            var analysis = SourceSelector.Analyze(_services, folder, new[] { path }, out message);
+            if (analysis == null)
+            {
+                ErrorText = message;
+                return;
+            }
+
+            var template = new FormTemplate { Mode = mode, ExistingProjectId = ProjectId };
+            if (mode == FormMode.Update)
+            {
+                try
+                {
+                    template.Draft = UpdateDraft.Create(analysis, basis.Config);
+                }
+                catch (UpdateDraftException exception)
+                {
+                    _services.Logger.Log(LogLevel.Info, "The update cannot adopt the settings of version " + basis.VersionText, exception);
+                    ErrorText = Loc.Format("Project_UpdateInstallerTypeChanged", basis.VersionText);
+                    return;
+                }
+
+                template.BasisVersion = basis.VersionText;
+                template.AdvancedAdopted = UpdateDraft.HasAdvancedSettings(template.Draft);
+            }
+
+            _main.ShowForm(analysis, template);
+        }
+
+        private void LoadVersion()
+        {
+            ErrorText = null;
+            var basis = _selectedVersion;
+            if (basis == null || basis.Config == null)
+            {
+                ErrorText = Loc.Get("Project_SelectVersion");
+                return;
+            }
+
+            if (!SaveNotes())
+            {
+                return;
+            }
+
+            var source = new VersionStore(_store).SourceDirectory(ProjectId, basis.VersionText);
+            if (!Directory.Exists(source))
+            {
+                ErrorText = Loc.Format("Project_SourceMissing", basis.VersionText, source);
+                return;
+            }
+
+            var config = basis.Config;
+            var analysis = new SourceAnalysis
+            {
+                Item = new DroppedItem(DroppedKind.Folder, source),
+                InstallerType = config.Source.InstallerType,
+                ImportKind = config.Source.ImportKind,
+                InstallerRelativePath = config.Source.InstallerRelativePath,
+                SuggestedName = config.Identity.SoftwareName,
+                SuggestedManufacturer = config.Identity.Manufacturer,
+                SuggestedVersion = config.Identity.TargetVersion,
+                ProductCode = config.Install.ProductCode,
+                Notes = new AnalysisNote[0]
+            };
+            _main.ShowForm(analysis, new FormTemplate { Mode = FormMode.Rebuild, ExistingProjectId = ProjectId, Draft = config, BasisVersion = basis.VersionText });
         }
 
         private void Back()

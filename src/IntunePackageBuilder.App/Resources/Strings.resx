@@ -212,4 +212,19 @@
   <data name="Project_BuildsMany" xml:space="preserve"><value>{0} builds, last: {1}</value></data>
   <data name="Project_NoBuild" xml:space="preserve"><value>No build yet</value></data>
   <data name="Project_LoadFailed" xml:space="preserve"><value>The project could not be opened: {0}</value></data>
+  <data name="Project_Update" xml:space="preserve"><value>Create update</value></data>
+  <data name="Project_UpdateFolder" xml:space="preserve"><value>Update from vendor folder…</value></data>
+  <data name="Project_LoadVersion" xml:space="preserve"><value>Load version</value></data>
+  <data name="Project_NewVersion" xml:space="preserve"><value>New version without template</value></data>
+  <data name="Project_NewVersionFolder" xml:space="preserve"><value>New version from vendor folder…</value></data>
+  <data name="Project_ChooseSource" xml:space="preserve"><value>Choose the new installer</value></data>
+  <data name="Project_SelectVersion" xml:space="preserve"><value>Select a version first.</value></data>
+  <data name="Project_UpdateInstallerTypeChanged" xml:space="preserve"><value>The new installer is of a different type (MSI or EXE) than version {0}, so its settings cannot be adopted. Use "New version without template" instead.</value></data>
+  <data name="Project_SourceMissing" xml:space="preserve"><value>The stored source of version {0} is missing: {1}</value></data>
+  <data name="Form_UpdateHeading" xml:space="preserve"><value>Update of version {0}</value></data>
+  <data name="Form_RebuildHeading" xml:space="preserve"><value>Build version {0} again</value></data>
+  <data name="Form_NewVersionHeading" xml:space="preserve"><value>New version without template</value></data>
+  <data name="Form_AdoptedHint" xml:space="preserve"><value>Advanced settings were adopted from version {0}. Check them before you build.</value></data>
+  <data name="Form_AdoptedCheck" xml:space="preserve"><value>Show advanced settings</value></data>
+  <data name="Form_VersionExists" xml:space="preserve"><value>This version already exists in the project. Enter a new version, or load the version to build it again.</value></data>
 </root>

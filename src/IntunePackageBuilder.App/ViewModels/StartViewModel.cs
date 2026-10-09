@@ -202,50 +202,13 @@ namespace IntunePackageBuilder.App.ViewModels
         /// <summary>A drop on the drop area. Both ways in (drop and picker) end here and are checked the same way (SPEC 5.1, A04).</summary>
         public void HandleDrop(IReadOnlyList<string> paths)
         {
-            Message = null;
-            try
+            string message;
+            var analysis = SourceSelector.Analyze(_services, _main.AdvancedMode, paths, out message);
+            Message = message;
+            if (analysis != null)
             {
-                var item = SourceImporter.Classify(paths, _main.AdvancedMode);
-                string installer = null;
-                if (item.Kind == DroppedKind.Folder)
-                {
-                    installer = AskForInstallerInFolder(item.Path);
-                    if (installer == null)
-                    {
-                        return;
-                    }
-                }
-
-                _main.ShowForm(SourceAnalyzer.Analyze(item, installer));
+                _main.ShowForm(analysis);
             }
-            catch (ImportRejectedException exception)
-            {
-                Message = Texts.ForImport(exception);
-            }
-            catch (AnalysisFailedException exception)
-            {
-                _services.Logger.Log(LogLevel.Warning, "The dropped installer could not be analyzed", exception);
-                Message = Texts.ForAnalysis(exception);
-            }
-        }
-
-        private string AskForInstallerInFolder(string folder)
-        {
-            var chosen = _services.Dialogs.PickFile(Loc.Get("Dialog_InstallerFilter").Split('|')[0], Loc.Get("Dialog_InstallerFilter"), folder);
-            if (chosen == null)
-            {
-                return null;
-            }
-
-            var root = Path.GetFullPath(folder).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
-            var full = Path.GetFullPath(chosen);
-            if (!full.StartsWith(root, StringComparison.OrdinalIgnoreCase))
-            {
-                Message = Loc.Get("Import_InstallerOutsideSource");
-                return null;
-            }
-
-            return full.Substring(root.Length);
         }
 
         private void OpenSelected()

@@ -92,11 +92,23 @@ namespace IntunePackageBuilder.App.ViewModels
             Current = Start;
         }
 
-        public void ShowForm(SourceAnalysis analysis)
+        public void ShowForm(SourceAnalysis analysis, FormTemplate template = null)
         {
-            var form = new FormViewModel(this, Services, analysis);
+            var form = new FormViewModel(this, Services, analysis, template);
+            var projectId = template == null ? null : template.ExistingProjectId;
             form.Completed += (sender, outcome) => ShowResult(outcome);
-            form.BackRequested += (sender, args) => ShowStart();
+            form.BackRequested += (sender, args) =>
+            {
+                // A form that belongs to a project goes back to that project, a new package back to the start page.
+                if (projectId != null)
+                {
+                    ShowProject(projectId);
+                }
+                else
+                {
+                    ShowStart();
+                }
+            };
             Current = form;
         }
 
