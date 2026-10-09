@@ -3,7 +3,8 @@
 
 1. Every neutral/English .resx has a German twin with the same keys, and vice versa.
 2. XAML does not contain hard-coded user-visible text (Content/Text/Header/Title/ToolTip literals).
-3. Source/config files outside docs/ site/ design/ contain no German characters.
+3. Source/config files outside docs/ site/ design/ contain no German characters
+   and no raw control, line-separator or invisible characters.
 
 Usage: python3 -I check_i18n.py [repo_root]
 Exit code 1 when problems are found.
@@ -16,6 +17,8 @@ import xml.etree.ElementTree as ET
 ALLOWED_LITERALS = {"Intune Package Builder"}  # product name is not translated
 XAML_ATTR = re.compile(r'\b(Content|Text|Header|Title|ToolTip|Watermark|PlaceholderText)="([^"{][^"]*)"')
 UMLAUTS = re.compile("[\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]")
+# Line separators, controls and invisible characters must be written as escapes: raw in a C# string they break the build.
+INVISIBLE = re.compile("[\u0080-\u009f\u200b-\u200f\u2028\u2029\u202a-\u202e\ufeff]")
 SKIP_DIRS = {".git", "bin", "obj", "docs", "site", "design", "node_modules"}
 CODE_SUFFIXES = (".cs", ".xaml", ".csproj", ".props", ".ps1", ".psm1", ".yml", ".yaml", ".json", ".cmd")
 
@@ -64,6 +67,8 @@ def main():
                 for number, line in enumerate(handle, 1):
                     if UMLAUTS.search(line):
                         problems.append("%s:%d German characters in code/config" % (rel(root, path), number))
+                    if INVISIBLE.search(line):
+                        problems.append("%s:%d raw control, separator or invisible character (use an escape)" % (rel(root, path), number))
 
     for problem in problems:
         print(problem)

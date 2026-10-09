@@ -51,3 +51,36 @@ Werte, die zu einem Pfad gehören, stehen genau einmal in `DeploymentInterface` 
 - **CSV-Maskierung:** Zellen mit Komma, Anführungszeichen oder Zeilenumbruch werden nach RFC 4180 in Anführungszeichen gesetzt (`"` wird verdoppelt). Text, den ein Tabellenprogramm als Formel lesen könnte (erstes Zeichen `=`, `+`, `-`, `@`, Tabulator oder Wagenrücklauf), bekommt einen führenden Apostroph; einfache Zahlen bleiben unverändert. Dadurch können Namen oder Hersteller aus den Metadaten keine Formeln einschleusen (Abnahme A17). Der Apostroph ist die einzige Abweichung zwischen CSV und JSON.
 
 Beide Dateien werden atomar geschrieben.
+
+## Erkennungsskript (M3b)
+
+`DetectionScriptGenerator` erzeugt das eigenständige Skript `Detect-App.ps1` aus den `IntuneSettings` des Builds (Erkennungsregel, Build-ID). Es prüft den **tatsächlichen Zustand** des Geräts und liest weder Dateien des Pakets noch des Intune-Cache; es schreibt keine Datei und keinen Marker (Spec §8.3).
+
+### Verfahren
+
+| Installertyp | Prüfung |
+|---|---|
+| MSI | Registrierung unter `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\<ProductCode>` in **beiden** Registry-Ansichten (64 und 32 Bit, unabhängig von der Bitness des Prozesses); erkannt, wenn `DisplayVersion` mindestens der konfigurierten Mindestversion entspricht |
+| EXE | Datei (Pfad aus der Konfiguration, Umgebungsvariablen wie `%ProgramFiles%` werden aufgelöst) ist vorhanden und ihre Dateiversion (`FileMajorPart` bis `FilePrivatePart`) ist mindestens die Mindestversion. Pfad mit unaufgelöster Variable, Verzeichnis, fehlende Datei und Datei ohne Versionsinformation gelten als nicht erkannt. Läuft das Skript als 32-Bit-Prozess auf 64-Bit-Windows, bricht es mit Fehler ab (die Umgebungsvariablen zeigten sonst auf die 32-Bit-Ordner); dafür steht in den Intune-Werten `runAs32Bit = false` |
+
+Der Vergleich ist numerisch über bis zu vier Teile, fehlende Teile zählen als 0 (`1.10` ist größer als `1.9`, `4.2.1.0` entspricht `4.2.1`). Ein Suffix wie `-beta` hinter der Versionsnummer wird ignoriert; eine Version, die nicht mit bis zu vier Zahlenteilen beginnt (zum Beispiel fünf Teile oder reiner Text), ist **nicht erkannt**. Die Prüfung ist bewusst konservativ: Im Zweifel wird nachinstalliert, nicht fälschlich erkannt.
+
+### Intune-Vertrag
+
+- **Erkannt:** genau eine Zeile auf der Standardausgabe (`Detected <ProductCode oder Pfad> version <Version>`) und Exitcode 0.
+- **Nicht erkannt:** keine Ausgabe auf der Standardausgabe und Exitcode 1.
+- **Fehler** (Ausnahme im Skript): Meldung auf der Fehlerausgabe, Exitcode 1, nie eine positive Ausgabe.
+
+### Skriptform und Maskierung
+
+- Windows PowerShell 5.1, UTF-8 **mit BOM**, CRLF, `Set-StrictMode`, kein PowerShell-7-Syntax.
+- Werte aus der Konfiguration (ProductCode, Pfad, Mindestversion) erscheinen nur als **einfach angeführte Zeichenketten**. `PowerShellLiteral` verdoppelt das gerade Apostroph **und die typografischen Apostrophe** U+2018, U+2019, U+201A und U+201B, die PowerShell ebenfalls als Anführungszeichen liest. Steuerzeichen, Zeilentrenner (U+0085, U+2028, U+2029) und unsichtbare Richtungszeichen werden nicht maskiert, sondern abgelehnt (`UnsafeScriptValueException`).
+- Der ProductCode muss eine GUID in Klammern sein, die Mindestversion eine numerische Version mit ein bis vier Teilen; sonst wird kein Skript erzeugt. Die Build-ID steht nur als Kommentar, Zeichen außerhalb von ASCII werden dort durch `?` ersetzt.
+- Geschrieben wird atomar über `AtomicFile` mit BOM.
+
+### Tests
+
+- xUnit (`DetectionScriptGeneratorTests`): Inhalt je Verfahren, Intune-Vertrag, Eigenständigkeit, BOM, Maskierung aller Anführungszeichen, abgelehnte Eingaben, Kommentar-Einschleusung.
+- Pester (`tests/pester/DetectionScript.Tests.ps1`, Windows PowerShell 5.1): erzeugt das Skript über die gebaute `Generation.dll` und führt es in einem Kindprozess gegen **echte Registry-Schlüssel** (zufälliger ProductCode, beide Ansichten, Aufräumen nach dem Test) und **echte Dateien** (`kernel32.dll` als Referenz) aus: älter, passend, neuer, fremd installiert, nicht installiert, Verzeichnis, fehlende Datei, Einschleusungsversuch (A15); Skript allein in einem leeren Ordner, aus anderem Arbeitsordner, ohne Bezug zu Paket oder Intune-Cache (A16). Der Pester-Job in `ci.yml` baut dafür vorher `Generation`.
+- **Nicht abgedeckt:** das Verhalten unter dem Konto `LocalSystem` und innerhalb der Intune Management Extension; das belegt erst der Gerätetest in M8.
+
