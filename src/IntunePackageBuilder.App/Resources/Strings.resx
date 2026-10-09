@@ -227,4 +227,27 @@
   <data name="Form_AdoptedHint" xml:space="preserve"><value>Advanced settings were adopted from version {0}. Check them before you build.</value></data>
   <data name="Form_AdoptedCheck" xml:space="preserve"><value>Show advanced settings</value></data>
   <data name="Form_VersionExists" xml:space="preserve"><value>This version already exists in the project. Enter a new version, or load the version to build it again.</value></data>
+  <data name="Form_MetadataHeading" xml:space="preserve"><value>Read metadata</value></data>
+  <data name="Form_SourceCheckHeading" xml:space="preserve"><value>Source check</value></data>
+  <data name="Form_SourceCheck" xml:space="preserve"><value>Check source</value></data>
+  <data name="Meta_ProductName" xml:space="preserve"><value>Product name</value></data>
+  <data name="Meta_Manufacturer" xml:space="preserve"><value>Manufacturer</value></data>
+  <data name="Meta_ProductVersion" xml:space="preserve"><value>Product version</value></data>
+  <data name="Meta_ProductCode" xml:space="preserve"><value>Product code</value></data>
+  <data name="Meta_UpgradeCode" xml:space="preserve"><value>Upgrade code</value></data>
+  <data name="Meta_AllUsers" xml:space="preserve"><value>ALLUSERS</value></data>
+  <data name="Meta_Cabinets" xml:space="preserve"><value>External cabinet files</value></data>
+  <data name="Meta_NeedsSourceFolder" xml:space="preserve"><value>Needs its source folder</value></data>
+  <data name="Meta_CompanyName" xml:space="preserve"><value>Company name</value></data>
+  <data name="Meta_FileDescription" xml:space="preserve"><value>File description</value></data>
+  <data name="Meta_OriginalFilename" xml:space="preserve"><value>Original file name</value></data>
+  <data name="Meta_FileVersion" xml:space="preserve"><value>File version</value></data>
+  <data name="Meta_NotSet" xml:space="preserve"><value>(not set)</value></data>
+  <data name="Meta_None" xml:space="preserve"><value>(none)</value></data>
+  <data name="Meta_Yes" xml:space="preserve"><value>yes</value></data>
+  <data name="Meta_No" xml:space="preserve"><value>no</value></data>
+  <data name="Meta_NoMetadata" xml:space="preserve"><value>No metadata were read from the stored source of this version.</value></data>
+  <data name="Source_Result" xml:space="preserve"><value>{0} file(s), {1} bytes in total. Fingerprint: {2}</value></data>
+  <data name="Source_Unsafe" xml:space="preserve"><value>The source contains a link or reparse point and cannot be stored safely.</value></data>
+  <data name="Source_Failed" xml:space="preserve"><value>The source could not be read: {0}</value></data>
 </root>

@@ -6,7 +6,7 @@ Stand: 2026-10-09 (M6 abgeschlossen)
 
 ## Aktueller Meilenstein
 
-**M7 - Erweiterter Modus, Projektansicht, Update-Ablauf** (A05, A06, A07 und die Erweiterungen von A08). M6 (Oberfläche für den Standardmodus) ist abgeschlossen, mit CI-Nachweis unten; **das Erscheinungsbild ist nie begutachtet worden** (keine Screenshots in der Cloud-Sitzung), und Bedienungstests nach Spec §12.2 (Tastatur, DPI, Fenstergröße) stehen aus. M0 bis M5 sind abgeschlossen (M5: Client-Laufzeit, `docs/CLIENT.md`; **ohne** Fortschrittsfenster, das Spec §8.2 verlangt).
+**M8 - Distribution, Dokumentation, Prüfprotokoll** (A18, Spec §12.2). M6 (Standardmodus) und M7 (erweiterter Modus, Projektansicht, Update-Ablauf) sind abgeschlossen, mit CI-Nachweis unten; **das Erscheinungsbild ist nie begutachtet worden** (keine Screenshots in der Cloud-Sitzung), und Bedienungstests nach Spec §12.2 (Tastatur, DPI, Fenstergröße) stehen aus. M0 bis M5 sind abgeschlossen (M5: Client-Laufzeit, `docs/CLIENT.md`; **ohne** Fortschrittsfenster, das Spec §8.2 verlangt).
 
 Alle Ausgaben entstehen aus einem **Snapshot** (Konfiguration, Build-ID, Sprache, Quellenmanifest), nie aus UI-Zustand. Die Befehle in Anleitung, JSON, CSV und Ergebnisseite stammen aus **einer** Quelle (`IntuneSettings`), damit sie nicht auseinanderlaufen. Sprache der Anleitung folgt der Programmsprache beim Build und wird im Snapshot festgehalten (`docs/PLANUNG.md` §8).
 
@@ -45,12 +45,14 @@ Alle Läufe: Windows-CI mit `windows-latest`, `windows-2022` und Pester unter Wi
 | M5: Client-Laufzeit (Install.cmd, Wrapper, Rückgabecodes, Hinweis zum Schließen von Programmen, Nacharbeiten), Pester gegen echte Prozesse, Registry, Dateien und `msiexec`; Kette Pipeline → `Install.cmd` | 37888755850 | alle drei Jobs bestanden beim ersten Lauf (Pester: 119; Core 273, Analysis 31, Generation 97, Build.Tests mit WrapperChainTests) |
 | M6b: ViewModels, Ressourcen de/en, App.Tests (Lauf 1: ein Testfehler bei einem Text, der in beiden Sprachen gleich ist; Lauf 2 grün); Server-2019-Anpassung | 37916468167 | alle drei Jobs bestanden (App.Tests: 23 + 2 neue Theorien; Core 275, Analysis 31, Generation 97, Build 110) |
 | M6c: WPF-Ansichten (PR 21) und FlaUI-Oberflächentests (PR 22; Lauf 1: vier Fehler, weil Panels und Rahmen nicht im UI-Automation-Baum stehen, Lauf 2 grün) | 37948001793 | alle vier Jobs bestanden (UI tests: 5 von 5, darunter ein Bau mit dem echten Content Prep Tool bis zur Ergebnisseite) |
+| M7a: Projektansicht, Projekt öffnen, Notizen (PR 23) | 37949478226 | alle vier Jobs bestanden beim ersten Lauf (UI tests eingeschlossen) |
+| M7b: Update-Ablauf (PR 24; Lauf 1: vier Fehler, weil eine Stub-Datei nicht analysiert werden kann, Lauf 2 grün) | 37983555527 | alle vier Jobs bestanden (App.Tests und Build.Tests mit den neuen Update-Tests) |
 
 Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups, Pages-Webseite (deployt), Claude-Code-Umgebung (`CLAUDE.md`, Agents, Skills, Hook). Neue Dateien und Formate: siehe `docs/DATENFORMAT.md`.
 
 ## In Arbeit
 
-- M7a ist gemergt (PR 23, CI-Lauf 37949478226 grün: Projektansicht, Projekt öffnen, Notizen; alle vier Jobs bestanden, UI-Test A05/A06 eingeschlossen). M7b (Branch `claude/great-feynman-hi1xfp`): Update-Ablauf: `UpdateDraft` (Build/Workflow), `FormTemplate`/`FormMode`, "Update erstellen", "Version laden", "Neue Version ohne Vorlage", Hinweis auf übernommene erweiterte Einstellungen, gemeinsame Quellenwahl `SourceSelector`; Tests `UpdateDraftTests`, `UpdateFlowTests`. Beschreibung: `docs/OBERFLAECHE.md`. **Unverifiziert bis zum CI-Lauf.** Noch offen in M7: erweiterte Ansicht der ausgelesenen Metadaten und der Quellenprüfung (Spec 5.3), Abnahme A05/A06/A07 in der Matrix eintragen und M7 abschließen.
+- M7a (PR 23, Lauf 37949478226) und M7b (PR 24, Lauf 37983555527) sind gemergt und grün. M7c (Branch `claude/great-feynman-hi1xfp`): erweiterte Ansicht der ausgelesenen Metadaten und "Quelle prüfen" im Formular (`MetadataText`, `CheckSourceAsync`), Tests in `FormViewModelTests`; danach A05/A06/A07/A08 in der Matrix eintragen und M7 abschließen. **Unverifiziert bis zum CI-Lauf.**
 - Vorgabe vom 2026-10-09: unterstützt werden **Windows Server 2019 und neuer sowie Windows 11** (vorher Server 2022). Angepasst in Spec §4/§12.2, Planung §8 Nr. 11, Standard-Mindest-OS der Intune-Anforderung (`Windows 10 1809`, kein Platzhalter mehr) und READMEs. **Ungeprüft:** Server 2019 hat in GitHub Actions keinen Runner mehr; der Nachweis bleibt ein Gerätetest (Spec §12.2). Auf Server 2019 muss .NET Framework 4.8 nachinstalliert werden.
 - M4a ist gemergt (PR 15, CI-Lauf 37886853214 grün; Lauf 1 hatte den Prozessbaum-Fund, siehe Lehren).
 - M4b ist gemergt (PR 16, CI-Lauf 37887554732 grün).
@@ -76,7 +78,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Nächste Schritte (in Reihenfolge)
 
-1. M7: erweiterter Modus (Felder aus Spec §5.3), Projektansicht mit Notizen und Versionen, "Update erstellen" aus einer Version, vorhandenen Projektordner öffnen; Abnahme A05, A06, A07 und A08 mit den Erweiterungen.
+1. M8: Distribution (ZIP-Bau mit Prüfsummen und Ausschlussliste, A18 als Skript in der CI), Benutzer- und Entwicklerdoku, Prüfprotokoll `docs/PRUEFPROTOKOLL.md` für die Gerätetests (Spec §12.2), die in der Cloud-Sitzung nicht möglich sind.
 2. M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
 
 ## Entscheidungen (Kurzfassung, Details in `docs/PLANUNG.md` §8)

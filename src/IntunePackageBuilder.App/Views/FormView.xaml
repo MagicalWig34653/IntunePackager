@@ -65,6 +65,18 @@
                     <TextBlock TextWrapping="Wrap" Text="{Binding ErrorText}" />
                 </StackPanel>
 
+                <StackPanel Margin="0,10,0,0" Visibility="{Binding IsAdvanced, Converter={StaticResource Visible}}">
+                    <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Form_MetadataHeading}" />
+                    <TextBox IsReadOnly="True" TextWrapping="Wrap" Text="{Binding MetadataText, Mode=OneWay}"
+                             AutomationProperties.AutomationId="Metadata" AutomationProperties.Name="{infra:Loc Form_MetadataHeading}" />
+                    <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Form_SourceCheckHeading}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="{infra:Loc Form_SourceCheck}" Command="{Binding CheckSourceCommand}" AutomationProperties.AutomationId="CheckSource" />
+                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding SourceCheckText}"
+                                   AutomationProperties.AutomationId="SourceCheckResult" />
+                    </StackPanel>
+                </StackPanel>
+
                 <ItemsControl ItemsSource="{Binding Fields}" IsEnabled="{Binding IsEditable}" Focusable="False" Margin="0,4,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

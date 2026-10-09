@@ -1,6 +1,6 @@
 # Oberfläche (WPF)
 
-Stand: M7b. Die Oberfläche steckt im Projekt `src/IntunePackageBuilder.App`; die Logik liegt in ViewModels ohne WPF-Abhängigkeit, damit sie ohne Fenster testbar ist (`tests/IntunePackageBuilder.App.Tests`). Das Erscheinungsbild ist **nie begutachtet** worden (keine Screenshots in der Cloud-Sitzung).
+Stand: M7c. Die Oberfläche steckt im Projekt `src/IntunePackageBuilder.App`; die Logik liegt in ViewModels ohne WPF-Abhängigkeit, damit sie ohne Fenster testbar ist (`tests/IntunePackageBuilder.App.Tests`). Das Erscheinungsbild ist **nie begutachtet** worden (keine Screenshots in der Cloud-Sitzung).
 
 ## Aufbau
 
@@ -28,6 +28,10 @@ Alle sichtbaren Texte stehen in `Resources/Strings.resx` und `Strings.de.resx`. 
 - **Version laden:** dieselbe Version wird aus ihrer gespeicherten Quelle erneut gebaut (neue Build-ID, Versionsnummer gesperrt).
 - Eine Versionsnummer, die es im Projekt schon gibt, wird am Feld abgelehnt (außer beim erneuten Bauen).
 - Sind erweiterte Einstellungen übernommen worden, zeigt der Standardmodus einen Hinweis mit direktem Weg in den erweiterten Modus (Spec 5.3).
+
+## Erweiterte Ansicht der Metadaten und der Quellenprüfung (Spec 5.3)
+
+Im erweiterten Modus zeigt das Formular die ausgelesenen Metadaten (MSI: Produktname, Hersteller, Version, ProductCode, UpgradeCode, `ALLUSERS`, externe Cabinet-Dateien, Bedarf an Quellordner; EXE: Dateiversionsangaben) und eine Schaltfläche "Quelle prüfen". Sie liest die Quelle so, wie der Bau sie speichert (Dateianzahl, Gesamtgröße, Fingerabdruck der Inhalte; ein Link oder Reparse-Punkt wird gemeldet) und startet oder ändert nichts.
 
 ## Schalter für Tests und Support
 
