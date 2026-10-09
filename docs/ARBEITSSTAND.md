@@ -67,9 +67,9 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Nächste Schritte (in Reihenfolge)
 
-1. M3d: CI auswerten, M3 abschließen (Skill `milestone`), mergen (siehe oben), jede Scheibe als eigener PR mit Doku im selben PR (`docs/GENERATOREN.md` erweitern: Erkennungsvertrag, Anleitung, Wrapper-Konfiguration).
-3. Danach M4 (Build-Pipeline mit dem Content Prep Tool) und M5 (Client-Laufzeit); beide können nach M3 parallel laufen (siehe `docs/PLANUNG.md` §4). Das Content Prep Tool (`tools/`) braucht Herkunft und SHA-256 in `THIRD-PARTY.md`, bevor es verwendet wird.
-4. M6 (Oberfläche), M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
+1. M3d: CI auswerten, M3 abschließen (Skill `milestone`), mergen.
+2. Danach M4 (Build-Pipeline mit dem Content Prep Tool) und M5 (Client-Laufzeit); beide können nach M3 parallel laufen (siehe `docs/PLANUNG.md` §4). Das Content Prep Tool (`tools/`) braucht Herkunft und SHA-256 in `THIRD-PARTY.md`, bevor es verwendet wird.
+3. M6 (Oberfläche), M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
 
 ## Entscheidungen (Kurzfassung, Details in `docs/PLANUNG.md` §8)
 
