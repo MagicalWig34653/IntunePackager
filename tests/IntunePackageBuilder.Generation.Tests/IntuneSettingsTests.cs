@@ -44,12 +44,13 @@ namespace IntunePackageBuilder.Generation.Tests
         }
 
         [Fact]
-        public void TheRequirementIsA64BitWindowsAndTheVersionIsAMarkedPlaceholder()
+        public void TheRequirementIsA64BitWindowsFromServer2019OnAndIsNotAPlaceholder()
         {
             var settings = IntuneSettingsBuilder.From(Samples.Snapshot(Samples.Msi()));
 
             Assert.Equal("x64", settings.Requirements.Architecture);
-            Assert.Equal("Windows 10 1607", settings.Requirements.MinimumWindowsVersion);
+            Assert.Equal("Windows 10 1809", settings.Requirements.MinimumWindowsVersion);
+            Assert.False(settings.Requirements.MinimumWindowsVersionIsPlaceholder);
         }
 
         [Fact]

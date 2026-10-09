@@ -48,13 +48,14 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## In Arbeit
 
+- Vorgabe vom 2026-10-09: unterstützt werden **Windows Server 2019 und neuer sowie Windows 11** (vorher Server 2022). Angepasst in Spec §4/§12.2, Planung §8 Nr. 11, Standard-Mindest-OS der Intune-Anforderung (`Windows 10 1809`, kein Platzhalter mehr) und READMEs. **Ungeprüft:** Server 2019 hat in GitHub Actions keinen Runner mehr; der Nachweis bleibt ein Gerätetest (Spec §12.2). Auf Server 2019 muss .NET Framework 4.8 nachinstalliert werden.
 - M4a ist gemergt (PR 15, CI-Lauf 37886853214 grün; Lauf 1 hatte den Prozessbaum-Fund, siehe Lehren).
 - M4b ist gemergt (PR 16, CI-Lauf 37887554732 grün).
 - M4 ist abgeschlossen und gemergt (PR 15 bis 17).
 - M0 bis M5 sind abgeschlossen (M5 in PR 18, CI-Lauf 37888755850; Rest siehe Tabelle oben). Der Abschluss-Commit von M5 (Matrix, READMEs, Webseite) liegt ebenfalls in PR 18.
 - M6a ist gemergt (PR 19): Arbeitsablauf ohne WPF (`Build/Workflow`: `SourceAnalyzer`, `NewPackageWorkflow`, `BuildOutcome`), Tests und `docs/BUILD.md`.
 - M6b (Branch `claude/great-feynman-hi1xfp`): Ressourcen (`Resources/Strings.resx` und `Strings.de.resx`), Infrastruktur (`Loc`, `RelayCommand`), Dienste (`AppServices`, `IUserDialogs`, `IShell`) und ViewModels ohne WPF-Abhängigkeit (`MainViewModel`, `StartViewModel`, `FormViewModel`, `ResultViewModel`, `Texts`) mit dem neuen Testprojekt `tests/IntunePackageBuilder.App.Tests` (u. a. Test, dass jeder aus Codes gebildete Textschlüssel in beiden Sprachen existiert). **Unverifiziert bis zum CI-Lauf** (in der Cloud-Sitzung gibt es kein .NET SDK). Noch offen für M6c: XAML-Ansichten (Hauptfenster mit Seitenvorlagen, `LocExtension`, Drag-and-drop, Zeitgeber für die verstrichene Zeit), `DialogsImpl` und `ShellImpl`, Verdrahtung in `App.xaml.cs` (Sprache aus der Windows-UI-Sprache, `deploy/template` als Content ausliefern) und FlaUI-Tests.
-- Die Annahmen, die M3 und M5 aus den offenen Entscheidungen getroffen haben (Mindest-Windows-Version als Platzhalter, 64-Bit-Anforderung, Standard-`msiexec`-Aufruf ohne `ALLUSERS`, keine PSADT-Nutzung), stehen in `docs/GENERATOREN.md`, `docs/CLIENT.md` und `docs/PLANUNG.md` §8.
+- Die Annahmen, die M3 und M5 aus den offenen Entscheidungen getroffen haben (Mindest-Windows-Version, inzwischen entschieden: Windows 10 1809 als Basis von Server 2019 und neuer, `docs/PLANUNG.md` §8 Nr. 11; 64-Bit-Anforderung, Standard-`msiexec`-Aufruf ohne `ALLUSERS`, keine PSADT-Nutzung), stehen in `docs/GENERATOREN.md`, `docs/CLIENT.md` und `docs/PLANUNG.md` §8.
 
 ## Lehren (für künftige Sessions)
 

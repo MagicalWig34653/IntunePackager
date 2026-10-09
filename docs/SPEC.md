@@ -58,7 +58,7 @@ Das Autorentool führt die importierte Software weder zur Analyse noch als Paket
 
 ### Autorentool
 
-- Unterstützung für Windows 11 x64 und **Windows Server 2022 x64 mit Desktop Experience**.
+- Unterstützung für Windows 11 x64 und **Windows Server 2019 x64 und neuer (2019, 2022, 2025) mit Desktop Experience**.
 - Keine Abhängigkeit von ausschließlich unter Windows 11 verfügbaren Oberflächenbibliotheken.
 - Moderne, native Desktopdarstellung mit verlässlicher Tastaturbedienung und DPI-Skalierung.
 - Eine geeignete Referenzarchitektur ist **C# mit WPF auf .NET Framework 4.8**. Eine andere Architektur ist zulässig, wenn sie dieselben Plattform-, Bedienungs- und Auslieferungsanforderungen erfüllt.
@@ -383,7 +383,7 @@ Paketiertests verwenden inerte Dateien und kontrollierte MSI-Datenbanken. Sie f�
 
 ### 12.2 Geräte- und Bedienungstests
 
-- Start und Standardablauf unter Windows 11 sowie Windows Server 2022 mit Desktop Experience.
+- Start und Standardablauf unter Windows 11 sowie Windows Server 2019 und neuer (mindestens 2019 und 2022) mit Desktop Experience.
 - Bedienung bei kleiner Fenstergröße und 100 %, 125 %, 150 % und 200 % Skalierung; keine unerreichbaren Hauptaktionen.
 - Kompakte Standard-MSI-Ansicht auf einem üblichen 1366×768-Arbeitsplatz ohne unnötiges Scrollen.
 - Tastaturbedienung, sichtbarer Fokus, sinnvolle Tab-Reihenfolge und verständliche Beschriftungen.

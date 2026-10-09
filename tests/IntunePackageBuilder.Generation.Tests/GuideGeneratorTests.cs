@@ -119,16 +119,19 @@ namespace IntunePackageBuilder.Generation.Tests
         }
 
         [Fact]
-        public void TheMinimumWindowsVersionIsMarkedAsPlaceholderUntilItIsConfirmed()
+        public void TheMinimumWindowsVersionIsMarkedAsPlaceholderOnlyWhenItIsNotConfirmed()
         {
-            Assert.Contains("Placeholder", MsiGuide());
-            Assert.True(IntuneSettingsBuilder.From(Samples.Snapshot(Samples.Msi())).Requirements.MinimumWindowsVersionIsPlaceholder);
+            Assert.DoesNotContain("Placeholder", MsiGuide("en"));
+            Assert.Contains("Windows 10 1809", MsiGuide("en"));
 
-            var confirmed = new IntuneSettingsOptions { MinimumWindowsVersion = "Windows 11 22H2", MinimumWindowsVersionConfirmed = true };
-            var html = MsiGuide("en", confirmed);
+            var open = new IntuneSettingsOptions { MinimumWindowsVersionConfirmed = false };
+            var html = MsiGuide("en", open);
 
-            Assert.DoesNotContain("Placeholder", html);
-            Assert.Contains("Windows 11 22H2", html);
+            Assert.Contains("Placeholder", html);
+            Assert.True(IntuneSettingsBuilder.From(Samples.Snapshot(Samples.Msi()), open).Requirements.MinimumWindowsVersionIsPlaceholder);
+
+            var other = new IntuneSettingsOptions { MinimumWindowsVersion = "Windows 11 22H2" };
+            Assert.Contains("Windows 11 22H2", MsiGuide("en", other));
         }
 
         [Fact]
