@@ -6,13 +6,13 @@ Grundlage: [SPEC.md](SPEC.md) (Version 1.0). Dieses Dokument übersetzt die Spez
 
 | Thema | Entscheidung (Vorschlag) | Begründung |
 |---|---|---|
-| Autorentool | C# / WPF auf .NET Framework 4.8 | Referenzarchitektur der Spec; auf Windows 11 und Server 2022 vorinstalliert; auf Server 2019 ist 4.7.2 vorinstalliert und 4.8 muss einmalig nachinstalliert werden (Voraussetzung, siehe Entscheidung 11); kein WinUI 3 |
+| Autorentool | C# / WPF auf .NET Framework 4.8 | Referenzarchitektur der Spec; auf Windows 11 und Server 2022 vorinstalliert (4.8); auf Server 2019 ist 4.7.2 vorinstalliert und 4.8 muss einmalig nachinstalliert werden (Voraussetzung, siehe Entscheidung 11); kein WinUI 3 |
 | UI-Muster | MVVM, ohne schweres Framework (nur `INotifyPropertyChanged`, eigene `RelayCommand`) | Wenige Abhängigkeiten, Spec §11 verlangt strikte Trennung UI / Fachmodell |
 | MSI lesen | P/Invoke auf `msi.dll` (`MsiOpenDatabase` im Read-only-Modus, Tabelle `Property`) | Liest nur die Datenbank, führt keine Custom Actions aus (A02) |
 | EXE-Metadaten | `FileVersionInfo` | Reine Dateiinformation (§7.1) |
 | Pakettool | Microsoft Win32 Content Prep Tool (`IntuneWinAppUtil.exe`, MIT) | Pflicht laut §3; Version und SHA-256 im Abhängigkeitsmanifest |
 | Client-Wrapper | Windows PowerShell 5.1, 64-Bit, UTF-8 mit BOM | §4; Vorlagen liegen als Dateien in `deploy/` |
-| Benutzerinteraktion | PSAppDeployToolkit, feste Version, unverändert (Vendor-Ordner) | §4/§8.2; Version wird in M5 anhand Server 2019 und neuer / Win 11 festgelegt |
+| Benutzerinteraktion | PSAppDeployToolkit, feste Version, unverändert (Vendor-Ordner) | §4/§8.2; in M5 durch eine eigene Sitzungsvermittlung ersetzt (Entscheidung 8), PSADT-Prüfung auf Server 2019 und neuer / Win 11 bleibt offen |
 | Konfiguration | JSON mit `schemaVersion`; atomares Schreiben (Temp-Datei + `File.Replace`) | §6.3, kein halbgeschriebenes `project.json` |
 | Code language | English only: identifiers, comments, log messages, commit messages, config and workflow files | Project decision; documentation under `docs/` stays German |
 | UI language | German and English via .resx resources, follows the program language (default: Windows UI language, switchable in settings) | Project decision; no user-visible string is hard-coded in code |
@@ -166,9 +166,9 @@ Quellen: Microsoft Learn (Permissions reference, win32LobApp, mobileAppContentFi
 
 ## 10. Nächste Schritte
 
-Erledigt: M0 (Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung; CI grün, .NET-Tests 8/8, Pester 10/10), README, Icon, Entwurfs-Mockups, Pages-Seite und Claude-Code-Umgebung.
+Erledigt: M0 (Gerüst, Windows-CI, Logging-Grundlage, Pester-Gerüst, Format-Prüfung; Zahlen je Lauf in `docs/ARBEITSSTAND.md`), README, Icon, Entwurfs-Mockups, Pages-Seite und Claude-Code-Umgebung.
 
-Erledigt: M1 (Core), M2 (Quellenanalyse), M3 (Generatoren) M4 (Build-Pipeline) M5 (Client-Laufzeit, ohne Fortschrittsfenster) und M6 (Oberfläche für den Standardmodus, FlaUI-Tests in der CI), jeweils mit CI-Nachweis in `docs/ARBEITSSTAND.md`.
+Erledigt: M1 (Core), M2 (Quellenanalyse), M3 (Generatoren), M4 (Build-Pipeline), M5 (Client-Laufzeit, ohne Fortschrittsfenster) und M6 (Oberfläche für den Standardmodus, FlaUI-Tests in der CI), jeweils mit CI-Nachweis in `docs/ARBEITSSTAND.md`.
 
 1. M7 (erweiterter Modus, Projektansicht mit Notizen und Versionen, Update-Ablauf); Fortschrittsfenster der Client-Laufzeit als offenen Punkt führen (`docs/CLIENT.md`).
 2. Danach M8 (Distribution und Prüfprotokoll).

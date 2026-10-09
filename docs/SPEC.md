@@ -383,7 +383,7 @@ Paketiertests verwenden inerte Dateien und kontrollierte MSI-Datenbanken. Sie f�
 
 ### 12.2 Geräte- und Bedienungstests
 
-- Start und Standardablauf unter Windows 11 sowie Windows Server 2019 und neuer (mindestens 2019 und 2022) mit Desktop Experience.
+- Start und Standardablauf unter Windows 11 sowie Windows Server 2019 und neuer mit Desktop Experience.
 - Bedienung bei kleiner Fenstergröße und 100 %, 125 %, 150 % und 200 % Skalierung; keine unerreichbaren Hauptaktionen.
 - Kompakte Standard-MSI-Ansicht auf einem üblichen 1366×768-Arbeitsplatz ohne unnötiges Scrollen.
 - Tastaturbedienung, sichtbarer Fokus, sinnvolle Tab-Reihenfolge und verständliche Beschriftungen.
