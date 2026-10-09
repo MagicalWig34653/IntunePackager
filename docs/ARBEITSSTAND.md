@@ -43,7 +43,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 - M2 ist abgeschlossen und gemergt (PR 10).
 - M3a ist gemergt (PR 11, CI-Lauf 37835593601 grün).
-- M3b (Branch `claude/great-feynman-hi1xfp`): **unverifiziert bis zum CI-Lauf.**
+- M3b (Branch `claude/great-feynman-hi1xfp`): **unverifiziert bis zum CI-Lauf.** CI-Lauf 1 (37884460677): Build-Fehler in `PowerShellLiteral.cs` (rohe Zeilentrenner statt Escapes), behoben.
   - Neu in `Generation`: `Scripts/{PowerShellLiteral,DetectionScriptGenerator}.cs`.
   - Neue Tests: `DetectionScriptGeneratorTests` (xUnit) und `tests/pester/DetectionScript.Tests.ps1` (Pester, echte Registry und Dateien); `ci.yml`: der Pester-Job baut vorher `Generation`.
   - Doku: `docs/GENERATOREN.md` Abschnitt „Erkennungsskript (M3b)“.
@@ -52,6 +52,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 - **Die CI findet echte Fehler.** M1a: Newtonsoft hängt Listen beim Laden an Konstruktor-Standards an (`[0]` wurde `[0, 0]`); behoben mit `ObjectCreationHandling.Replace`. M1b: der Kindprozess im Sperr-Test fand Newtonsoft.Json nicht, weil xUnit Assemblies in einen Shadow-Copy-Ordner kopiert; der Test kopiert die DLLs jetzt aus dem Originalordner (`CodeBase`).
 - **Der Edit/Write-Hook greift nicht bei Dateien, die per Bash-Heredoc entstehen.** Danach immer `python3 -I .claude/skills/check-i18n/check_i18n.py .` laufen lassen. Umlaute im C#-Code als `\u00e4`-Escapes schreiben; mein Schreibwerkzeug löst Escapes manchmal schon beim Schreiben zu echten Zeichen auf.
+- **Zeilentrenner (U+2028/U+2029) und Steuerzeichen im C#-Quelltext bauen den Compiler aus** (CS1010 in M3b-CI-Lauf 1): Das Schreibwerkzeug löst `\u2028`-Escapes zu echten Zeichen auf. `check_i18n.py` meldet solche Zeichen jetzt; nach dem Schreiben immer ausführen.
 - **`Assert.True(false, ...)` löst xUnit2020 aus** und bricht den Build (Warnungen sind Fehler); `Assert.Fail(...)` verwenden.
 - **`JObject.Parse` formatiert datumsähnliche Texte um**; deshalb `JsonFormat.ParseObject` benutzen (Notizen bleiben unverändert).
 - **Die Sperrdatei hat der Halter schreibend offen**; zum Lesen `FileShare.ReadWrite | FileShare.Delete` angeben.

@@ -49,13 +49,13 @@ namespace IntunePackageBuilder.Generation.Scripts
 
         private static bool IsQuote(char c)
         {
-            return c == '\'' || c == '‘' || c == '’' || c == '‚' || c == '‛';
+            return c == '\'' || c == '\u2018' || c == '\u2019' || c == '\u201A' || c == '\u201B';
         }
 
         private static bool IsForbidden(char c)
         {
-            return c < ' ' || c == '\u007F' || (c >= '\u0080' && c <= '\u009F') || c == ' ' || c == ' '
-                || (c >= '​' && c <= '‏') || (c >= '‪' && c <= '‮') || c == '﻿';
+            return c < ' ' || c == '\u007F' || (c >= '\u0080' && c <= '\u009F') || c == '\u2028' || c == '\u2029'
+                || (c >= '\u200B' && c <= '\u200F') || (c >= '\u202A' && c <= '\u202E') || c == '\uFEFF';
         }
     }
 }
