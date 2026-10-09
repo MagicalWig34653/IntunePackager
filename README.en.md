@@ -11,12 +11,12 @@
 
 <p align="center">
   <a href="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml"><img src="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/Status-Runtime%20done%2C%20no%20UI%20yet-orange" alt="Status: runtime done, no UI yet">
+  <img src="https://img.shields.io/badge/Status-Standard%20mode%20done%2C%20no%20release-orange" alt="Status: standard mode done, no release">
   <img src="https://img.shields.io/badge/Platform-Windows%2011%20%7C%20Server%202019%2B-blue" alt="Platform">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-green" alt="License AGPL-3.0"></a>
 </p>
 
-> **Project status:** the project scaffold, the core (projects, versions, locks, settings), the source analysis (MSI, EXE, manifest, safe import) and the generators (detection script, Intune guide, JSON/CSV, wrapper configuration) are in place and tested by Windows CI (M0 to M5 done). The package build with the Content Prep Tool works, but users have to obtain the tool themselves (license). The client runtime (wrapper, return codes, prompt to close programs) is tested with Pester; a progress window and device tests are still missing. There is no user interface yet, so no usable features, and there is no release. The images below are **design mockups**, not screenshots of a working program.
+> **Project status:** the project scaffold, the core (projects, versions, locks, settings), the source analysis (MSI, EXE, manifest, safe import) and the generators (detection script, Intune guide, JSON/CSV, wrapper configuration) are in place and tested by Windows CI (M0 to M6 done). The package build with the Content Prep Tool works, but users have to obtain the tool themselves (license). The client runtime (wrapper, return codes, prompt to close programs) is tested with Pester; a progress window and device tests are still missing. The user interface for the standard flow (drop an installer, check the entries, build the package, result) is in place and driven by a UI test in CI; advanced mode has its toggle, folder import and form fields, but project view, notes and update flow (M7), distribution (M8) and device tests are missing, and there is no release. Windows Server 2019 support is a requirement but has not been tested on a device yet. The images below are **design mockups**, not screenshots of a working program.
 
 Intune Package Builder is a Windows desktop application that turns an MSI, an EXE or a vendor folder into a complete Microsoft Intune Win32 package:
 
@@ -28,7 +28,9 @@ The result is a `.intunewin` file, a standalone detection script and a setup gui
   <img src="site/img/mockup-start-en.png" alt="Design mockup of the start page" width="720">
 </p>
 
-## Planned features
+## Features (status and plan)
+
+Implemented and tested by CI: standard mode, source analysis, generators, package build, client runtime (without progress window). The rest is planned (milestones above).
 
 - **Standard mode** with file picker and drag and drop. An MSI needs no technical input; for an EXE the vendor's parameters are asked for, never guessed.
 - **Advanced mode** for vendor folders, MSI properties, apps that must be closed, timeout and return codes.
@@ -55,8 +57,8 @@ Out of scope for version 1: direct Intune upload, Graph sign-in, group assignmen
 | M3 | Generators: detection script, Intune guide, JSON/CSV, wrapper configuration | done |
 | M4 | Build pipeline with the Content Prep Tool | done |
 | M5 | Client runtime: wrapper, return codes, user interaction | done, without progress window |
-| M6 | UI: standard mode, drag and drop, results | next |
-| M7 | Advanced mode, project view, update flow | planned |
+| M6 | UI: standard mode, drag and drop, results | done, appearance not reviewed yet |
+| M7 | Advanced mode, project view, update flow | next |
 | M8 | Distribution, documentation, device test protocol | planned |
 | M9 | Optional: Intune upload via Microsoft Graph (not part of version 1) | noted |
 

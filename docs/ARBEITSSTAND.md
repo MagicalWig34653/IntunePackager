@@ -2,11 +2,11 @@
 
 **Regel: Sessions are disposable.** Diese Datei muss es jeder neuen Session ermöglichen, ohne Rückfrage weiterzuarbeiten. Sie wird in jedem PR aktualisiert. Zuerst lesen: diese Datei, dann `CLAUDE.md`, dann `docs/PLANUNG.md`.
 
-Stand: 2026-10-08
+Stand: 2026-10-09 (M6 abgeschlossen)
 
 ## Aktueller Meilenstein
 
-**M6 - Oberfläche** (WPF: Standardmodus mit Drag-and-drop, Formular, Ergebnisseite, Sprache de/en aus `.resx`). Abnahme: A01, A03, A04 (UI), A05, A06, A08, A09 (UI) mit FlaUI-Tests; mehr dazu in `docs/PLANUNG.md` §4. M0 bis M5 sind abgeschlossen (M5: Client-Laufzeit, `docs/CLIENT.md`; **ohne** Fortschrittsfenster, das Spec §8.2 verlangt).
+**M7 - Erweiterter Modus, Projektansicht, Update-Ablauf** (A05, A06, A07 und die Erweiterungen von A08). M6 (Oberfläche für den Standardmodus) ist abgeschlossen, mit CI-Nachweis unten; **das Erscheinungsbild ist nie begutachtet worden** (keine Screenshots in der Cloud-Sitzung), und Bedienungstests nach Spec §12.2 (Tastatur, DPI, Fenstergröße) stehen aus. M0 bis M5 sind abgeschlossen (M5: Client-Laufzeit, `docs/CLIENT.md`; **ohne** Fortschrittsfenster, das Spec §8.2 verlangt).
 
 Alle Ausgaben entstehen aus einem **Snapshot** (Konfiguration, Build-ID, Sprache, Quellenmanifest), nie aus UI-Zustand. Die Befehle in Anleitung, JSON, CSV und Ergebnisseite stammen aus **einer** Quelle (`IntuneSettings`), damit sie nicht auseinanderlaufen. Sprache der Anleitung folgt der Programmsprache beim Build und wird im Snapshot festgehalten (`docs/PLANUNG.md` §8).
 
@@ -19,7 +19,7 @@ Aufteilung in einzeln mergbare Scheiben (Projekt `IntunePackageBuilder.Generatio
 | M3c | HTML-Anleitung (lokal lesbar, druckbar, Deutsch und Englisch) mit allen Abschnitten aus Spec §9 (App-Typ, Paketdatei, App-Informationen, Programm, Installationsverhalten, Anforderungen, Zeitlimit, Neustartverhalten, Rückgabecodes, Erkennung, Zuweisung, Abhängigkeiten, Fehleranalyse); Maskierung gegen aktive Inhalte (A17); Warnung vor dem Mischen von `.intunewin` und Erkennungsskript verschiedener Builds; behauptet nie eine erfolgreiche Zuweisung oder Installation | fertig, CI-Nachweis unten (PR 13) |
 | M3d | Wrapper-Konfiguration für die Client-Laufzeit (maschinenlesbar, aus demselben Snapshot) und Abnahme von A17 über alle Formate | fertig, CI-Nachweis unten (PR 14) |
 
-Entscheidungen, die M3 braucht: `docs/PLANUNG.md` §8 listet Mindest-Windows-Build (Anforderungen in Intune), Zielarchitektur und die `ALLUSERS`-Frage (MSI-Standardparameter). Ohne Antwort gelten bis dahin diese Annahmen, die im PR zu nennen sind: Anforderung nur Architektur x64 und Windows 10 Version 1607 oder neuer (Mindestwert für Win32-Apps, nur als Platzhalter markiert), Standardinstallation mit `msiexec /i "<msi>" /qn /norestart /l*v "<log>"`.
+Entscheidungen, die M3 braucht: `docs/PLANUNG.md` §8 listet Mindest-Windows-Build (Anforderungen in Intune), Zielarchitektur und die `ALLUSERS`-Frage (MSI-Standardparameter). Ohne Antwort gelten bis dahin diese Annahmen, die im PR zu nennen sind: Anforderung nur Architektur x64 und Windows 10 Version 1809 oder neuer (Basis von Server 2019, inzwischen entschieden, `docs/PLANUNG.md` §8 Nr. 11; ursprünglich war 1607 als Platzhalter angenommen), Standardinstallation mit `msiexec /i "<msi>" /qn /norestart /l*v "<log>"`.
 
 Abgeschlossen: M1 (Core), M2 (Quellenanalyse: M2a MSI-Reader, M2b EXE-Reader und Quellenmanifest, M2c sicherer Import) und M3 (Generatoren: M3a bis M3d).
 
@@ -44,6 +44,7 @@ Alle Läufe: Windows-CI mit `windows-latest`, `windows-2022` und Pester unter Wi
 | M4c: Pfad des Content Prep Tools in den Einstellungen, Abschluss von M4 | 37887912671 | alle drei Jobs bestanden |
 | M5: Client-Laufzeit (Install.cmd, Wrapper, Rückgabecodes, Hinweis zum Schließen von Programmen, Nacharbeiten), Pester gegen echte Prozesse, Registry, Dateien und `msiexec`; Kette Pipeline → `Install.cmd` | 37888755850 | alle drei Jobs bestanden beim ersten Lauf (Pester: 119; Core 273, Analysis 31, Generation 97, Build.Tests mit WrapperChainTests) |
 | M6b: ViewModels, Ressourcen de/en, App.Tests (Lauf 1: ein Testfehler bei einem Text, der in beiden Sprachen gleich ist; Lauf 2 grün); Server-2019-Anpassung | 37916468167 | alle drei Jobs bestanden (App.Tests: 23 + 2 neue Theorien; Core 275, Analysis 31, Generation 97, Build 110) |
+| M6c: WPF-Ansichten (PR 21) und FlaUI-Oberflächentests (PR 22; Lauf 1: vier Fehler, weil Panels und Rahmen nicht im UI-Automation-Baum stehen, Lauf 2 grün) | 37948001793 | alle vier Jobs bestanden (UI tests: 5 von 5, darunter ein Bau mit dem echten Content Prep Tool bis zur Ergebnisseite) |
 
 Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups, Pages-Webseite (deployt), Claude-Code-Umgebung (`CLAUDE.md`, Agents, Skills, Hook). Neue Dateien und Formate: siehe `docs/DATENFORMAT.md`.
 
@@ -55,7 +56,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 - M4 ist abgeschlossen und gemergt (PR 15 bis 17).
 - M0 bis M5 sind abgeschlossen (M5 in PR 18, CI-Lauf 37888755850; Rest siehe Tabelle oben). Der Abschluss-Commit von M5 (Matrix, READMEs, Webseite) liegt ebenfalls in PR 18.
 - M6a ist gemergt (PR 19): Arbeitsablauf ohne WPF (`Build/Workflow`: `SourceAnalyzer`, `NewPackageWorkflow`, `BuildOutcome`), Tests und `docs/BUILD.md`.
-- M6b ist gemergt (PR 20, CI-Lauf 37916468167 grün). M6c-1 (Branch `claude/great-feynman-hi1xfp`): XAML-Ansichten (`MainWindow`, `Views/StartView`, `FormView`, `ResultView`), `LocExtension`, `DialogsImpl`, `ShellImpl`, Verdrahtung in `App.xaml.cs` (Sprache aus der Windows-UI-Sprache, Testschalter `--language` und `--settings-dir`), Ausliefern von `deploy/template` neben der EXE. **Unverifiziert bis zum CI-Lauf; das Aussehen ist nie gesehen worden** (keine Screenshots in der Cloud-Sitzung). Offen für M6c-2: FlaUI-Smoke- und UI-Tests im Windows-CI (A01, A03/A04 UI, A05, A06, A08, A09 UI), danach M6 abschließen.
+- M6 ist abgeschlossen (M6b PR 20, M6c-1 PR 21, M6c-2 PR 22 mit CI-Lauf 37948001793). Ungeprüft bleibt das Erscheinungsbild und das echte Ablegen per Maus (der Test benutzt `--open`, die Prüfung ist dieselbe).
 - Die Annahmen, die M3 und M5 aus den offenen Entscheidungen getroffen haben (Mindest-Windows-Version, inzwischen entschieden: Windows 10 1809 als Basis von Server 2019 und neuer, `docs/PLANUNG.md` §8 Nr. 11; 64-Bit-Anforderung, Standard-`msiexec`-Aufruf ohne `ALLUSERS`, keine PSADT-Nutzung), stehen in `docs/GENERATOREN.md`, `docs/CLIENT.md` und `docs/PLANUNG.md` §8.
 
 ## Lehren (für künftige Sessions)
@@ -74,7 +75,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Nächste Schritte (in Reihenfolge)
 
-1. M6c (Oberfläche, Ansichten): XAML-Ansichten auf den ViewModels aus M6b, App-Verdrahtung, FlaUI-Smoke- und UI-Tests in einem Windows-CI-Job (A01, A03/A04 UI, A05, A06, A08, A09 UI); danach M6 mit dem Skill `milestone` abschließen.
+1. M7: erweiterter Modus (Felder aus Spec §5.3), Projektansicht mit Notizen und Versionen, "Update erstellen" aus einer Version, vorhandenen Projektordner öffnen; Abnahme A05, A06, A07 und A08 mit den Erweiterungen.
 2. M7 (erweiterter Modus, Projektansicht, Update-Ablauf), M8 (Distribution, Prüfprotokoll). Geräte- und Pilot-Tests nach Spec §12.2 und eine Signierung lassen sich in der Cloud-Sitzung nicht durchführen und müssen am Ende ausdrücklich als offen ausgewiesen werden.
 
 ## Entscheidungen (Kurzfassung, Details in `docs/PLANUNG.md` §8)
