@@ -2,7 +2,7 @@
 
 **Regel: Sessions are disposable.** Diese Datei muss es jeder neuen Session ermöglichen, ohne Rückfrage weiterzuarbeiten. Sie wird in jedem PR aktualisiert. Zuerst lesen: diese Datei, dann `CLAUDE.md`, dann `docs/PLANUNG.md`.
 
-Stand: 2026-10-09 (M6 abgeschlossen)
+Stand: 2026-10-10 (Release 0.0.1 veröffentlicht; PSADT-Integration begonnen)
 
 ## Aktueller Meilenstein
 
@@ -55,7 +55,8 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## In Arbeit
 
-- Veröffentlichung (Branch `claude/great-feynman-hi1xfp`): Workflow `.github/workflows/release.yml` (Tag `v*` oder manueller Lauf mit Version; verlangt grüne CI auf dem Stand, baut mit der Version aus dem Tag, führt die Tests aus, baut und prüft die ZIP (A18) und veröffentlicht sie samt `.sha256` als GitHub-Veröffentlichung), Beschreibung in `docs/RELEASE.md`, Hinweise `docs/release-notes/v0.0.1.md`. **Unverifiziert, bis der erste Lauf grün ist.** Die erste Fassung 0.0.1 wird als Vorabversion veröffentlicht: unsigniert, ohne Gerätetests.
+- Veröffentlichung 0.0.1: **veröffentlicht** als Vorabversion, Release-Lauf 38036308511 (Workflow `release.yml`, manueller Start) grün; [v0.0.1](https://github.com/MagicalWig34653/IntunePackager/releases/tag/v0.0.1) enthält `IntunePackageBuilder-0.0.1.zip` (461785 Bytes, SHA-256 `5f6a275fb92c1f96b387482e94e6afdf76373b0e52539c1f482cf83af8c0c5ca` laut GitHub) und die `.sha256`-Datei. Nicht geprüft: Download und Start der ZIP auf einem Windows-Gerät. Unsigniert, ohne Gerätetests.
+- PSAppDeployToolkit als optionale zweite Engine (Auftrag 2026-10-10; Entscheidung `docs/PLANUNG.md` §8 Nr. 12). **Lizenzprüfung ergab:** PSADT ist LGPL-3.0, das Release-Paket bündelt aber `iNKORE.UI.WPF.Modern` mit Zusatzbedingungen (keine kommerzielle Nutzung ohne Erlaubnis, nutzender Code vollständig Open Source, kein Verkauf, Namensnennung). Der Auftraggeber verlangt: mitliefern nur bei nicht kommerzieller Nutzung, sonst beschafft der Benutzer es selbst; das ist rechtlich nicht zuzusichern, deshalb **wird PSADT nicht mitgeliefert** (wie das Content Prep Tool). Scheiben: (1) Pin `deploy/psadt/psadt.json`, Update-Workflow `update-psadt.yml` (Dependabot kann PSADT nicht verfolgen), `workflow_dispatch` in `ci.yml`, `.github/dependabot.yml`, Pester `tests/pester/Psadt.Tests.ps1` — **unverifiziert, bis die CI grün ist; der Update-Workflow selbst lief noch nie** (Einstellung „Allow GitHub Actions to create and approve pull requests“ muss der Eigentümer aktivieren). Folgt: (2) Einstellung/Prüfung der ZIP im Programm (`PsadtPackage`, SHA-256 gegen den Pin), (3) Engine-Abschnitt in der Versionskonfiguration (`docs/DATENFORMAT.md`) und Oberfläche mit den PSADT-Optionen (Logo, Banner, Farbe, Dialogstil, Texte, Aufschub, Hinweise), (4) Paketbau mit PSADT aus dem Snapshot, (5) Anleitung/JSON, Tests, Doku. Ob PSADT-Pakete auf Windows 11 und Server 2019 laufen, ist nicht geprüft.
 
 - Nachträgliche Prüfung gegen die Spec (unabhängiger Lauf nach M8, danach selbst gegen den Code belegt): behoben wurde (PR 27, CI-Lauf 37986961655: alle fünf Jobs grün; das Verhalten auf einem Gerät bleibt ungeprüft) die Summe aus Wartezeit zum Schließen und Installationszeit, die das Zeitlimit überschreiten konnte (`Get-ProcessTimeLimit`, Pester-Test), ein verständlicher Fehlerdialog statt des Absturzfensters bei unbehandelten Oberflächenfehlern, die Pflichtdateien der Distribution (A18) sowie die irreführenden Beschriftungen der Benutzertexte und ein Hinweis zu Lizenzschlüsseln in Parametern. Nur dokumentiert, nicht behoben: Benutzertexte nicht angezeigt, kein "Verschieben", Zielarchitektur ohne Wirkung, Arbeitsordner nach Schließen während eines Baus, `build.log` nach der Veröffentlichung, Code 1707, DPI-Manifest (alle in `docs/BEKANNTE-GRENZEN.md`).
 - M8 ist bis auf die Gerätetests fertig (PR 26, CI-Lauf 37985656760: alle fünf Jobs grün, darunter die Distribution mit der echten ZIP; Läufe davor: Exitcode-Fehler im Skript und Pester-Fehler durch die Fehlerausgabe des Kindprozesses). Offen und nicht in der Cloud-Sitzung machbar: alle Tests T01 bis T14 des Prüfprotokolls, Signierung, Fortschrittsfenster, Server 2019 auf einem Gerät.
@@ -97,7 +98,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Offene Fragen
 
-- PSADT-Version, Mindest-Windows-Build, Signierung, Zielarchitektur, Test-Infrastruktur (siehe `docs/PLANUNG.md` §8). Keine davon blockiert M1 bis M4; vor M5 bzw. M8 sind sie zu klären.
+- Signierung, Zielarchitektur, Test-Infrastruktur, Rechtsfrage zu iNKORE (Mitlieferung von PSADT nur nach Erlaubnis von iNKORE Studios) (siehe `docs/PLANUNG.md` §8). Keine davon blockiert M1 bis M4; vor M5 bzw. M8 sind sie zu klären.
 - Pages-Seite ist deployt; ihr Abruf aus der Cloud-Sitzung ist durch die Netzwerkrichtlinie gesperrt, daher nicht von hier verifizierbar.
 
 ## Wiederaufnahme
