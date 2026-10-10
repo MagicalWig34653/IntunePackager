@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace IntunePackageBuilder.Core.Versions
@@ -15,7 +16,12 @@ namespace IntunePackageBuilder.Core.Versions
         ConflictingExitCodes,
         ForcedRestartCodeNotAllowed,
         InvalidShortcut,
-        WrongDetectionMethod
+        WrongDetectionMethod,
+        PsadtInvalidColor,
+        PsadtInvalidFile,
+        PsadtInvalidLanguage,
+        PsadtInvalidNumber,
+        PsadtRetryCodeMissing
     }
 
     /// <summary>A problem found in a configuration. The UI maps <see cref="Code"/> to a localized text.</summary>
@@ -87,6 +93,7 @@ namespace IntunePackageBuilder.Core.Versions
 
             ValidateRuntime(issues, config.Runtime);
             ValidateShortcuts(issues, config.PostInstall);
+            ValidateDeployment(issues, config);
             return issues;
         }
 
@@ -205,6 +212,73 @@ namespace IntunePackageBuilder.Core.Versions
                 || Overlaps(runtime.RebootCodes, runtime.RetryCodes))
             {
                 issues.Add(new ValidationIssue("runtime", ValidationCode.ConflictingExitCodes));
+            }
+        }
+
+        /// <summary>Toolkit language codes that have a strings file in PSAppDeployToolkit 4.x.</summary>
+        public static readonly IReadOnlyList<string> PsadtLanguages = new[]
+        {
+            "ar", "bg", "cs", "da", "de", "el", "en", "es", "fi", "fr", "he", "hu", "it", "ja", "ko", "lv", "nb", "nl",
+            "pl", "pt", "pt-BR", "ru", "sk", "sv", "tr", "zh-CN", "zh-HK"
+        };
+
+        public const string AutomaticLanguage = "auto";
+
+        private static readonly Regex ColorPattern = new Regex(@"^#[0-9A-Fa-f]{6}$", RegexOptions.CultureInvariant);
+
+        private static readonly Regex AssetFileNamePattern = new Regex(@"^[A-Za-z0-9][A-Za-z0-9._ -]{0,62}\.(png|jpg|jpeg)$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+
+        public static bool IsPsadtAssetFileName(string value)
+        {
+            return value != null && AssetFileNamePattern.IsMatch(value) && !value.Contains("..");
+        }
+
+        private static void ValidateDeployment(List<ValidationIssue> issues, PackageVersionConfig config)
+        {
+            if (config.Deployment.Engine != DeploymentEngine.Psadt)
+            {
+                return;
+            }
+
+            var psadt = config.Deployment.Psadt;
+            if (!string.IsNullOrWhiteSpace(psadt.AccentColor) && !ColorPattern.IsMatch(psadt.AccentColor))
+            {
+                issues.Add(new ValidationIssue("deployment.psadt.accentColor", ValidationCode.PsadtInvalidColor));
+            }
+
+            if (!string.IsNullOrWhiteSpace(psadt.UiLanguage)
+                && psadt.UiLanguage != AutomaticLanguage
+                && !PsadtLanguages.Contains(psadt.UiLanguage))
+            {
+                issues.Add(new ValidationIssue("deployment.psadt.uiLanguage", ValidationCode.PsadtInvalidLanguage));
+            }
+
+            CheckAssetFile(issues, "deployment.psadt.logoFile", psadt.LogoFile);
+            CheckAssetFile(issues, "deployment.psadt.logoDarkFile", psadt.LogoDarkFile);
+            CheckAssetFile(issues, "deployment.psadt.bannerFile", psadt.BannerFile);
+
+            if (psadt.DeferTimes < 0 || psadt.DeferTimes > PsadtSection.MaxDeferTimes || (psadt.AllowDefer && psadt.DeferTimes < 1))
+            {
+                issues.Add(new ValidationIssue("deployment.psadt.deferTimes", ValidationCode.PsadtInvalidNumber));
+            }
+
+            if (psadt.RequiredDiskSpaceMb < 0 || psadt.RequiredDiskSpaceMb > PsadtSection.MaxRequiredDiskSpaceMb)
+            {
+                issues.Add(new ValidationIssue("deployment.psadt.requiredDiskSpaceMb", ValidationCode.PsadtInvalidNumber));
+            }
+
+            // A postponed or timed-out dialog ends with the retry code, so Intune must know that code as "retry".
+            if (config.Runtime.RetryCodes.Count == 0)
+            {
+                issues.Add(new ValidationIssue("runtime.retryCodes", ValidationCode.PsadtRetryCodeMissing));
+            }
+        }
+
+        private static void CheckAssetFile(List<ValidationIssue> issues, string field, string value)
+        {
+            if (!string.IsNullOrWhiteSpace(value) && !IsPsadtAssetFileName(value))
+            {
+                issues.Add(new ValidationIssue(field, ValidationCode.PsadtInvalidFile));
             }
         }
 

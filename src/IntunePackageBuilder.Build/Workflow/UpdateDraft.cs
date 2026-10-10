@@ -63,6 +63,7 @@ namespace IntunePackageBuilder.Build.Workflow
             draft.Interaction = copy.Interaction;
             draft.PostInstall = copy.PostInstall;
             draft.Runtime = copy.Runtime;
+            draft.Deployment = copy.Deployment;
             return draft;
         }
 
@@ -75,7 +76,8 @@ namespace IntunePackageBuilder.Build.Workflow
             }
 
             var defaults = new RuntimeSection();
-            return config.Interaction.ProcessesToClose.Count > 0
+            return config.Deployment.Engine != DeploymentEngine.Native
+                || config.Interaction.ProcessesToClose.Count > 0
                 || !string.IsNullOrWhiteSpace(config.Interaction.InstallMessage)
                 || !string.IsNullOrWhiteSpace(config.Interaction.UninstallMessage)
                 || !string.IsNullOrWhiteSpace(config.Interaction.DetailMessage)
@@ -126,6 +128,26 @@ namespace IntunePackageBuilder.Build.Workflow
             copy.Runtime.SuccessCodes = new List<int>(source.Runtime.SuccessCodes);
             copy.Runtime.RebootCodes = new List<int>(source.Runtime.RebootCodes);
             copy.Runtime.RetryCodes = new List<int>(source.Runtime.RetryCodes);
+            copy.Deployment.Engine = source.Deployment.Engine;
+            var psadt = source.Deployment.Psadt;
+            copy.Deployment.Psadt = new PsadtSection
+            {
+                DialogStyle = psadt.DialogStyle,
+                AccentColor = psadt.AccentColor,
+                CompanyName = psadt.CompanyName,
+                UiLanguage = psadt.UiLanguage,
+                LogoFile = psadt.LogoFile,
+                LogoDarkFile = psadt.LogoDarkFile,
+                BannerFile = psadt.BannerFile,
+                BalloonNotifications = psadt.BalloonNotifications,
+                ShowProgress = psadt.ShowProgress,
+                AllowDefer = psadt.AllowDefer,
+                DeferTimes = psadt.DeferTimes,
+                CheckDiskSpace = psadt.CheckDiskSpace,
+                RequiredDiskSpaceMb = psadt.RequiredDiskSpaceMb,
+                BlockExecution = psadt.BlockExecution,
+                PromptToSave = psadt.PromptToSave
+            };
             return copy;
         }
     }

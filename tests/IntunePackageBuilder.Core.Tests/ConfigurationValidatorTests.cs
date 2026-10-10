@@ -258,5 +258,102 @@ namespace IntunePackageBuilder.Core.Tests
         {
             Assert.Equal(expected, ConfigurationValidator.IsProductCode(value));
         }
+
+        private static PackageVersionConfig ValidPsadt()
+        {
+            var config = ValidMsi();
+            config.Deployment.Engine = DeploymentEngine.Psadt;
+            return config;
+        }
+
+        [Fact]
+        public void TheNativeWrapperIsTheDefaultEngineAndNeedsNoToolkitSettings()
+        {
+            var config = ValidMsi();
+            Assert.Equal(DeploymentEngine.Native, config.Deployment.Engine);
+            config.Deployment.Psadt.AccentColor = "not a colour";
+            Assert.Empty(ConfigurationValidator.Validate(config));
+        }
+
+        [Fact]
+        public void ToolkitDefaultsAreValid()
+        {
+            Assert.Empty(ConfigurationValidator.Validate(ValidPsadt()));
+        }
+
+        [Theory]
+        [InlineData("#0078D4", true)]
+        [InlineData("#abcdef", true)]
+        [InlineData("0078D4", false)]
+        [InlineData("#0078D", false)]
+        [InlineData("red", false)]
+        public void AccentColourMustBeSixHexDigits(string colour, bool valid)
+        {
+            var config = ValidPsadt();
+            config.Deployment.Psadt.AccentColor = colour;
+            var found = ConfigurationValidator.Validate(config).Any(i => i.Field == "deployment.psadt.accentColor");
+            Assert.Equal(!valid, found);
+        }
+
+        [Theory]
+        [InlineData("logo.png", true)]
+        [InlineData("Company logo 2.JPG", true)]
+        [InlineData("..\\logo.png", false)]
+        [InlineData("sub/logo.png", false)]
+        [InlineData("C:\\logo.png", false)]
+        [InlineData("logo.exe", false)]
+        [InlineData("a..b.png", false)]
+        public void ImagesAreSimpleFileNamesOfPngOrJpg(string name, bool valid)
+        {
+            var config = ValidPsadt();
+            config.Deployment.Psadt.LogoFile = name;
+            var found = ConfigurationValidator.Validate(config).Any(i => i.Field == "deployment.psadt.logoFile" && i.Code == ValidationCode.PsadtInvalidFile);
+            Assert.Equal(!valid, found);
+        }
+
+        [Fact]
+        public void LanguageIsAutoOrAKnownToolkitCode()
+        {
+            var config = ValidPsadt();
+            foreach (var good in new[] { null, "auto", "de", "pt-BR", "zh-CN" })
+            {
+                config.Deployment.Psadt.UiLanguage = good;
+                Assert.Empty(ConfigurationValidator.Validate(config));
+            }
+
+            config.Deployment.Psadt.UiLanguage = "xx";
+            AssertIssue(config, "deployment.psadt.uiLanguage", ValidationCode.PsadtInvalidLanguage);
+        }
+
+        [Fact]
+        public void PostponingNeedsAtLeastOneAllowedPostponement()
+        {
+            var config = ValidPsadt();
+            config.Deployment.Psadt.AllowDefer = true;
+            config.Deployment.Psadt.DeferTimes = 0;
+            AssertIssue(config, "deployment.psadt.deferTimes", ValidationCode.PsadtInvalidNumber);
+            config.Deployment.Psadt.DeferTimes = PsadtSection.MaxDeferTimes + 1;
+            AssertIssue(config, "deployment.psadt.deferTimes", ValidationCode.PsadtInvalidNumber);
+            config.Deployment.Psadt.DeferTimes = 3;
+            Assert.Empty(ConfigurationValidator.Validate(config));
+        }
+
+        [Fact]
+        public void DiskSpaceMustBeNonNegativeAndBounded()
+        {
+            var config = ValidPsadt();
+            config.Deployment.Psadt.RequiredDiskSpaceMb = -1;
+            AssertIssue(config, "deployment.psadt.requiredDiskSpaceMb", ValidationCode.PsadtInvalidNumber);
+            config.Deployment.Psadt.RequiredDiskSpaceMb = PsadtSection.MaxRequiredDiskSpaceMb + 1;
+            AssertIssue(config, "deployment.psadt.requiredDiskSpaceMb", ValidationCode.PsadtInvalidNumber);
+        }
+
+        [Fact]
+        public void TheToolkitNeedsARetryCodeBecauseAPostponedInstallationEndsWithIt()
+        {
+            var config = ValidPsadt();
+            config.Runtime.RetryCodes.Clear();
+            AssertIssue(config, "runtime.retryCodes", ValidationCode.PsadtRetryCodeMissing);
+        }
     }
 }

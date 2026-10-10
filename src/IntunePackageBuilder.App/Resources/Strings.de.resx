@@ -252,4 +252,9 @@
   <data name="Source_Failed" xml:space="preserve"><value>Die Quelle konnte nicht gelesen werden: {0}</value></data>
   <data name="Dialog_UnexpectedError" xml:space="preserve"><value>Das Programm ist auf ein unerwartetes Problem gestoßen und konnte nicht beenden, was Sie angefordert haben. Einzelheiten stehen im Log-Ordner: {0}. Nicht gespeicherte Eingaben können verloren sein.</value></data>
   <data name="Dialog_UnexpectedErrorTitle" xml:space="preserve"><value>Unerwartetes Problem</value></data>
+  <data name="Valid_PsadtInvalidColor" xml:space="preserve"><value>Geben Sie die Akzentfarbe als #RRGGBB an, zum Beispiel #0078D4.</value></data>
+  <data name="Valid_PsadtInvalidFile" xml:space="preserve"><value>Verwenden Sie ein PNG- oder JPG-Bild mit einem einfachen Dateinamen.</value></data>
+  <data name="Valid_PsadtInvalidLanguage" xml:space="preserve"><value>Verwenden Sie auto oder einen Sprachcode des Toolkits, zum Beispiel de oder en.</value></data>
+  <data name="Valid_PsadtInvalidNumber" xml:space="preserve"><value>Geben Sie eine ganze Zahl im erlaubten Bereich an (Aufschieben braucht mindestens 1).</value></data>
+  <data name="Valid_PsadtRetryCodeMissing" xml:space="preserve"><value>Das Toolkit beendet eine aufgeschobene Installation mit einem Wiederholungscode, daher ist mindestens ein Wiederholungscode nötig.</value></data>
 </root>

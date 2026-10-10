@@ -252,4 +252,9 @@
   <data name="Source_Failed" xml:space="preserve"><value>The source could not be read: {0}</value></data>
   <data name="Dialog_UnexpectedError" xml:space="preserve"><value>The program ran into an unexpected problem and could not finish what you asked. Details are in the log folder: {0}. Entries that were not saved may be lost.</value></data>
   <data name="Dialog_UnexpectedErrorTitle" xml:space="preserve"><value>Unexpected problem</value></data>
+  <data name="Valid_PsadtInvalidColor" xml:space="preserve"><value>Enter the accent colour as #RRGGBB, for example #0078D4.</value></data>
+  <data name="Valid_PsadtInvalidFile" xml:space="preserve"><value>Use a PNG or JPG image with a simple file name.</value></data>
+  <data name="Valid_PsadtInvalidLanguage" xml:space="preserve"><value>Use auto or a language code of the toolkit, for example de or en.</value></data>
+  <data name="Valid_PsadtInvalidNumber" xml:space="preserve"><value>Enter a whole number in the allowed range (postponing needs at least 1).</value></data>
+  <data name="Valid_PsadtRetryCodeMissing" xml:space="preserve"><value>The toolkit ends a postponed installation with a retry code, so at least one retry code is needed.</value></data>
 </root>
