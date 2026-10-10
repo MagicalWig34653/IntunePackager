@@ -37,6 +37,7 @@ Umgesetzt und per CI getestet: Standardmodus, erweiterter Modus, Projekte mit Ve
 - **Projekte und Versionen** in einem frei wählbaren Grundordner, mit Notizen und der Übernahme von Einstellungen bei Updates.
 - **Echte Erkennung** des installierten Zustands (ProductCode bzw. Dateiversion), unabhängig vom Intune-Cache.
 - **Sicheres Verhalten auf dem Zielgerät:** LocalSystem, native 64-Bit-PowerShell, Fortschrittsfenster, keine erzwungenen Prozessbeendigungen oder Neustarts.
+- **Optional das PSAppDeployToolkit** statt der eigenen Laufzeit (erweiterter Modus): Dialoge auf dem Gerät mit eigenem Logo, Banner, Farbe, Dialogstil, Texten, Verschieben und Speicherprüfung. Das Toolkit wird nicht mitgeliefert (Lizenzbedingungen seiner Bibliotheken); Sie stellen die ZIP einer Veröffentlichung bereit, das Programm prüft sie gegen bekannte Versionen. **Auf Geräten nicht erprobt.** Ein Workflow hält die bekannten Versionen aktuell (Pull Request, CI läuft neu).
 - **Nachvollziehbare Builds** mit Konfigurationssnapshot, Quellenprüfsummen und Build-Manifest.
 - **Deutsch und Englisch:** Oberfläche, Intune-Anleitung und Benutzerhinweise folgen der Programmsprache.
 

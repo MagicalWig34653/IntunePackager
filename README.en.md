@@ -37,6 +37,7 @@ Implemented and tested by CI: standard mode, advanced mode, projects with versio
 - **Projects and versions** in a base folder of your choice, with notes and reuse of settings for updates.
 - **Real detection** of the installed state (product code or file version), independent of the Intune cache.
 - **Safe behavior on the target device:** LocalSystem, native 64-bit PowerShell, progress window, no forced process termination or restarts.
+- **Optionally the PSAppDeployToolkit** instead of the built-in runtime (advanced mode): dialogs on the device with your own logo, banner, colour, dialog style, texts, postponing and a disk space check. The toolkit is not shipped (license terms of its libraries); you supply the ZIP of a release and the program checks it against known versions. **Not tried on devices.** A workflow keeps the known versions up to date (pull request, CI runs again).
 - **Traceable builds** with a configuration snapshot, source checksums and a build manifest.
 - **German and English:** the interface, the Intune guide and user notices follow the program language.
 
