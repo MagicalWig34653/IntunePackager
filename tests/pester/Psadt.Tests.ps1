@@ -49,8 +49,9 @@ Describe 'The recorded pin' {
         $newest = @($pin.versions)[0]
         $row = @($script:thirdParty -split "`n" | Where-Object { $_ -like '| PSAppDeployToolkit (*' })
         $row.Count | Should -Be 1
-        $row[0] | Should -BeLike ('*| ' + $newest.version + ' (Commit `' + $newest.commit + '`)*')
-        $row[0] | Should -BeLike ('*`' + $newest.sha256 + '`*')
+        # Plain substring checks: in a wildcard pattern the backtick is an escape character.
+        $row[0].Contains('| ' + $newest.version + ' (Commit `' + $newest.commit + '`)') | Should -BeTrue
+        $row[0].Contains('`' + $newest.sha256 + '`') | Should -BeTrue
     }
 
     It 'is written back unchanged when the newest version is added again' {
@@ -80,8 +81,8 @@ Describe 'Update-PsadtThirdPartyRow' {
     It 'changes version, commit and checksum of the toolkit row and nothing else' {
         $updated = Update-PsadtThirdPartyRow -Text $script:thirdParty -Version '9.9.9' -Commit $script:commit -Sha256 $script:hash
         $row = @($updated -split "`n" | Where-Object { $_ -like '| PSAppDeployToolkit (*' })
-        $row[0] | Should -BeLike ('*| 9.9.9 (Commit `' + $script:commit + '`)*')
-        $row[0] | Should -BeLike ('*`' + $script:hash + '` (ZIP der Veröffentlichung)*')
+        $row[0].Contains('| 9.9.9 (Commit `' + $script:commit + '`)') | Should -BeTrue
+        $row[0].Contains('`' + $script:hash + '` (ZIP der Veröffentlichung)') | Should -BeTrue
         $before = @($script:thirdParty -split "`n" | Where-Object { $_ -notlike '| PSAppDeployToolkit (*' })
         $after = @($updated -split "`n" | Where-Object { $_ -notlike '| PSAppDeployToolkit (*' })
         $after | Should -Be $before
