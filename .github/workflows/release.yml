@@ -1,0 +1,148 @@
+name: Release
+
+# Builds, tests and publishes the portable distribution.
+#  * Push of a tag v<major>.<minor>.<patch>[-label]: builds that tag and attaches the ZIP to the GitHub release of the tag.
+#  * Manual run with a version: creates the tag v<version> on the selected commit, then builds and publishes the same way.
+# A release is only made from a commit whose CI is green (see the gate step). The result is unsigned.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release without the v, for example 0.0.1 (the tag v<version> is created on the selected commit)"
+        required: true
+      prerelease:
+        description: "Mark the release as a pre-release"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine the version
+        id: version
+        shell: pwsh
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+          INPUT_PRERELEASE: ${{ github.event.inputs.prerelease }}
+        run: |
+          if ($env:EVENT_NAME -eq 'push') {
+              $version = $env:REF_NAME.TrimStart('v')
+              $prerelease = ($version -match '-') -or ($version -match '^0\.')
+          }
+          else {
+              $version = $env:INPUT_VERSION.Trim().TrimStart('v')
+              $prerelease = ($env:INPUT_PRERELEASE -ne 'false')
+          }
+          if ($version -notmatch '^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$') {
+              throw "'$version' is not a version like 1.2.3 or 1.2.3-rc.1"
+          }
+          $tag = "v$version"
+          if ($env:EVENT_NAME -ne 'push') {
+              $existing = git tag --list $tag
+              if ($existing) { throw "The tag $tag already exists; a release is never overwritten." }
+          }
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "prerelease=$($prerelease.ToString().ToLowerInvariant())" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "Releasing $tag (pre-release: $prerelease) from $env:GITHUB_SHA"
+
+      - name: Require a green CI on this commit
+        shell: pwsh
+        run: |
+          $required = @(
+              'Build and test (windows-latest)',
+              'Build and test (windows-2022)',
+              'Pester (Windows PowerShell 5.1)',
+              'UI tests (FlaUI)',
+              'Distribution (build and check)'
+          )
+          $runs = @((gh api "repos/$env:GITHUB_REPOSITORY/commits/$env:GITHUB_SHA/check-runs?per_page=100" | ConvertFrom-Json).check_runs)
+          $problems = @()
+          foreach ($name in $required) {
+              $latest = $runs | Where-Object { $_.name -eq $name } | Sort-Object started_at -Descending | Select-Object -First 1
+              if (-not $latest) { $problems += "No check run '$name' on this commit" }
+              elseif ($latest.conclusion -ne 'success') { $problems += "Check '$name' is '$($latest.status)/$($latest.conclusion)'" }
+          }
+          if ($problems.Count -gt 0) {
+              $problems | ForEach-Object { Write-Error $_ -ErrorAction Continue }
+              throw 'The commit does not have a green CI; nothing is released.'
+          }
+          'All required checks are green on this commit.'
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore IntunePackageBuilder.sln
+
+      - name: Build (Release, version from the tag)
+        run: dotnet build IntunePackageBuilder.sln --configuration Release --no-restore -p:Version=${{ steps.version.outputs.version }}
+
+      - name: Test
+        run: dotnet test IntunePackageBuilder.sln --configuration Release --no-build
+
+      - name: Build the distribution ZIP and check it (A18)
+        shell: powershell
+        run: |
+          .\tools\New-Distribution.ps1 -BuildOutput src\IntunePackageBuilder.App\bin\Release\net48 -OutputDirectory dist -Version '${{ steps.version.outputs.version }}'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $zip = Get-ChildItem dist -Filter '*.zip' | Select-Object -First 1
+          $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip.FullName).Hash.ToLowerInvariant()
+          [System.IO.File]::WriteAllText("$($zip.FullName).sha256", "$hash *$($zip.Name)`n")
+          "$($zip.Name) $hash"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distribution-${{ steps.version.outputs.version }}
+          path: |
+            dist/*.zip
+            dist/*.sha256
+          if-no-files-found: error
+
+      - name: Publish the GitHub release
+        shell: pwsh
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+          PRERELEASE: ${{ steps.version.outputs.prerelease }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          $notes = "docs/release-notes/$env:TAG.md"
+          if (-not (Test-Path -LiteralPath $notes)) {
+              $notes = Join-Path $env:RUNNER_TEMP 'notes.md'
+              @(
+                  "Intune Package Builder $env:VERSION",
+                  '',
+                  'Portable distribution (ZIP). The program is not signed and the device and usability tests of the specification are not done: see docs/BEKANNTE-GRENZEN.md and docs/PRUEFPROTOKOLL.md inside the ZIP.',
+                  'The Win32 Content Prep Tool is not included; users supply it themselves (THIRD-PARTY.md).',
+                  '',
+                  'Verify the download with the .sha256 file next to the ZIP.'
+              ) | Set-Content -LiteralPath $notes -Encoding utf8
+          }
+          $arguments = @('release', 'create', $env:TAG, '--title', "Intune Package Builder $env:VERSION", '--notes-file', $notes)
+          if ($env:EVENT_NAME -eq 'push') { $arguments += '--verify-tag' } else { $arguments += @('--target', $env:GITHUB_SHA) }
+          if ($env:PRERELEASE -eq 'true') { $arguments += '--prerelease' }
+          $arguments += (Get-ChildItem dist -File | ForEach-Object { $_.FullName })
+          & gh @arguments
+          if ($LASTEXITCODE -ne 0) { throw 'gh release create failed' }
