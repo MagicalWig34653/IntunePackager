@@ -2,7 +2,7 @@
 
 **Regel: Sessions are disposable.** Diese Datei muss es jeder neuen Session ermöglichen, ohne Rückfrage weiterzuarbeiten. Sie wird in jedem PR aktualisiert. Zuerst lesen: diese Datei, dann `CLAUDE.md`, dann `docs/PLANUNG.md`.
 
-Stand: 2026-10-09 (M6 abgeschlossen)
+Stand: 2026-10-10 (Release 0.0.1 veröffentlicht; PSADT-Integration begonnen)
 
 ## Aktueller Meilenstein
 
@@ -55,7 +55,8 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## In Arbeit
 
-- Veröffentlichung (Branch `claude/great-feynman-hi1xfp`): Workflow `.github/workflows/release.yml` (Tag `v*` oder manueller Lauf mit Version; verlangt grüne CI auf dem Stand, baut mit der Version aus dem Tag, führt die Tests aus, baut und prüft die ZIP (A18) und veröffentlicht sie samt `.sha256` als GitHub-Veröffentlichung), Beschreibung in `docs/RELEASE.md`, Hinweise `docs/release-notes/v0.0.1.md`. **Unverifiziert, bis der erste Lauf grün ist.** Die erste Fassung 0.0.1 wird als Vorabversion veröffentlicht: unsigniert, ohne Gerätetests.
+- Veröffentlichung 0.0.1: **veröffentlicht** als Vorabversion (Tag `v0.0.1` zeigt auf den Commit `0ceffcd`, also ohne PSADT-Engine), Release-Lauf 38036308511 (Workflow `release.yml`, manueller Start) grün; [v0.0.1](https://github.com/MagicalWig34653/IntunePackager/releases/tag/v0.0.1) enthält `IntunePackageBuilder-0.0.1.zip` (461785 Bytes, SHA-256 `5f6a275fb92c1f96b387482e94e6afdf76373b0e52539c1f482cf83af8c0c5ca` laut GitHub) und die `.sha256`-Datei. Nicht geprüft: Download und Start der ZIP auf einem Windows-Gerät. Unsigniert, ohne Gerätetests.
+- PSAppDeployToolkit als optionale zweite Engine (Auftrag 2026-10-10; Entscheidung `docs/PLANUNG.md` §8 Nr. 12; PR 30, Branch `claude/great-feynman-hi1xfp`). **Lizenzprüfung:** PSADT ist LGPL-3.0 (mit der AGPL-3.0 dieses Projekts vereinbar), das Release-Paket bündelt aber `iNKORE.UI.WPF.Modern` mit Zusatzbedingungen (keine kommerzielle Nutzung ohne Erlaubnis, nutzender Code vollständig Open Source, kein Verkauf, Namensnennung) und `iNKORE.UI.WPF` (LGPL-2.1). Der Auftraggeber verlangt: mitliefern nur bei nicht kommerzieller Nutzung, sonst beschafft der Benutzer es selbst; das ist nicht zuzusichern, also **wird PSADT nicht mitgeliefert** (die Distribution lehnt PSADT-Dateien ab). Umgesetzt (CI-Nachweis: Lauf 38047129935 auf Commit `9063c60`, alle fünf Jobs grün, darunter Pester gegen das **echte** Toolkit 4.1.8; geschrieben ohne .NET SDK und PowerShell in der Cloud-Sitzung): (1) Pin `deploy/psadt/psadt.json` (4.1.8, SHA-256 der ZIP aus der echten Veröffentlichung berechnet), Workflow `update-psadt.yml` (wöchentlich; Pull Request, startet die CI per `workflow_dispatch`; Dependabot kann PSADT nicht verfolgen), `.github/dependabot.yml` für NuGet und Actions, (2) Modell `deployment` in `configuration.json` (additiv, Standard `Native`) mit Validator und `UpdateDraft`, (3) `PsadtOverlay` (Überlagerung `Config\config.psd1`, `Strings\strings.psd1`), Abschnitte `engine`/`psadt` in `Deployment.config.json`, (4) Vorlage `deploy/psadt/template/` (`Install.cmd`, `Invoke-AppDeployToolkit.ps1`; startet den Installer weiter über `DeployCore.psm1` mit dem neuen Parameter `-Interaction`; das Toolkit beendet **nie** Programme, weil es sonst `Stop-Process -Force` nutzt), (5) Build: ZIP-Prüfung und sicheres Auspacken des Moduls, Bilder im Versionsordner `psadt-assets`, Manifest-Felder `toolkit*`, Workflow-Übernahme der Bilder bei Updates, (6) Oberfläche im erweiterten Modus (`ToolkitViewModel`), Einstellung `psadtPackagePath`, (7) Tests: xUnit (Core, Generation, Build, App), Pester `PsadtEngine.Tests.ps1` gegen das **echte** Toolkit (CI lädt die festgelegte Veröffentlichung), Doku und Prüfprotokoll T15 bis T18. **Nicht geprüft:** alles mit echtem Benutzer auf einem Gerät (Dialoge, Gestaltung, Verschieben, Zeitlimit), Windows 11 und Server 2019 mit dem Toolkit, der Update-Workflow (noch nie gelaufen; der Eigentümer muss „Allow GitHub Actions to create and approve pull requests“ aktivieren), das Aussehen der neuen Oberfläche. Offene Rechtsfrage: Mitlieferung nur nach schriftlicher Erlaubnis von iNKORE Studios (studios@inkore.net).
 
 - Nachträgliche Prüfung gegen die Spec (unabhängiger Lauf nach M8, danach selbst gegen den Code belegt): behoben wurde (PR 27, CI-Lauf 37986961655: alle fünf Jobs grün; das Verhalten auf einem Gerät bleibt ungeprüft) die Summe aus Wartezeit zum Schließen und Installationszeit, die das Zeitlimit überschreiten konnte (`Get-ProcessTimeLimit`, Pester-Test), ein verständlicher Fehlerdialog statt des Absturzfensters bei unbehandelten Oberflächenfehlern, die Pflichtdateien der Distribution (A18) sowie die irreführenden Beschriftungen der Benutzertexte und ein Hinweis zu Lizenzschlüsseln in Parametern. Nur dokumentiert, nicht behoben: Benutzertexte nicht angezeigt, kein "Verschieben", Zielarchitektur ohne Wirkung, Arbeitsordner nach Schließen während eines Baus, `build.log` nach der Veröffentlichung, Code 1707, DPI-Manifest (alle in `docs/BEKANNTE-GRENZEN.md`).
 - M8 ist bis auf die Gerätetests fertig (PR 26, CI-Lauf 37985656760: alle fünf Jobs grün, darunter die Distribution mit der echten ZIP; Läufe davor: Exitcode-Fehler im Skript und Pester-Fehler durch die Fehlerausgabe des Kindprozesses). Offen und nicht in der Cloud-Sitzung machbar: alle Tests T01 bis T14 des Prüfprotokolls, Signierung, Fortschrittsfenster, Server 2019 auf einem Gerät.
@@ -86,10 +87,12 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 ## Nächste Schritte (in Reihenfolge)
 
 1. Gerätetests nach Spec §12.2 (Prüfprotokoll T01 bis T14) auf echten Geräten durchführen und im Protokoll festhalten; Entscheidungen zu Signierung und Fortschrittsfenster (`docs/PLANUNG.md` §8); erst danach gilt eine Version als abnahmefähig.
-2. Optional (M9, nicht Teil von Version 1): Intune-Upload per Microsoft Graph.
+2. Toolkit-Engine: nach dem Merge von PR 30 (a) den Update-Workflow einmal von Hand starten (`workflow_dispatch`) und prüfen, dass er ohne neue Version nichts tut; der Eigentümer aktiviert dafür „Allow GitHub Actions to create and approve pull requests“; (b) Geräte-Tests T15 bis T18; (c) Anfrage an iNKORE Studios, falls PSADT doch mitgeliefert werden soll; (d) Aussehen der neuen Abschnitte im erweiterten Modus begutachten.
+3. Optional (M9, nicht Teil von Version 1): Intune-Upload per Microsoft Graph.
 
 ## Entscheidungen (Kurzfassung, Details in `docs/PLANUNG.md` §8)
 
+- PSAppDeployToolkit ist optionale zweite Engine, wird nicht mitgeliefert (Lizenz der gebündelten Bibliotheken) und beendet nie Programme (`docs/PLANUNG.md` §8 Nr. 12).
 - Name bleibt Intune Package Builder; UI Deutsch und Englisch nach Programmsprache; Quellcode komplett Englisch; Doku unter `docs/` Deutsch.
 - JSON-Bibliothek für das Autorentool: Newtonsoft.Json (läuft ohne Zusatzprobleme auf .NET Framework 4.8; `System.Text.Json` zieht auf net48 viele Abhängigkeiten nach).
 - Fehler werden im Core als Codes/Ausnahmen gemeldet, nie als Anzeigetext; Anzeigetexte kommen später aus Ressourcen.
@@ -97,7 +100,7 @@ Außerdem fertig: Planung, Spezifikation, README (de/en), Icon, Entwurfs-Mockups
 
 ## Offene Fragen
 
-- PSADT-Version, Mindest-Windows-Build, Signierung, Zielarchitektur, Test-Infrastruktur (siehe `docs/PLANUNG.md` §8). Keine davon blockiert M1 bis M4; vor M5 bzw. M8 sind sie zu klären.
+- Signierung, Zielarchitektur, Test-Infrastruktur, Rechtsfrage zu iNKORE (Mitlieferung von PSADT nur nach Erlaubnis von iNKORE Studios) (siehe `docs/PLANUNG.md` §8). Keine davon blockiert M1 bis M4; vor M5 bzw. M8 sind sie zu klären.
 - Pages-Seite ist deployt; ihr Abruf aus der Cloud-Sitzung ist durch die Netzwerkrichtlinie gesperrt, daher nicht von hier verifizierbar.
 
 ## Wiederaufnahme

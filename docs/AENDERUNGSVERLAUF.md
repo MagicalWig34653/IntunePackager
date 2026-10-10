@@ -2,7 +2,7 @@
 
 Der vollständige Verlauf steht in der Git-Historie; hier die Stufen (Meilensteine) mit dem CI-Nachweis in `ARBEITSSTAND.md`.
 
-## 0.0.1 (erste abnahmefähige Fassung, soweit ohne Gerätetests möglich)
+## 0.0.1 (erste Vorabversion, soweit ohne Gerätetests möglich; abnahmefähig erst nach den Gerätetests)
 
 - **M0** Projektgerüst, Windows-CI, Logging, Pester, Formatprüfung.
 - **M1** Core: Projekte, Versionen, Sperren (auch zwischen Prozessen), Einstellungen, Grundordner, atomares Schreiben, Migration.

@@ -82,5 +82,44 @@ namespace IntunePackageBuilder.Core.Tests
             Assert.Equal("MsiProductCode", document["detection"].Value<string>("method"));
             Assert.Equal("contoso-reader", document.Value<string>("projectId"));
         }
+
+        [Fact]
+        public void ToolkitSettingsRoundTripAndAreWrittenInReadableForm()
+        {
+            var config = Sample();
+            config.Deployment.Engine = DeploymentEngine.Psadt;
+            config.Deployment.Psadt.DialogStyle = PsadtDialogStyle.Classic;
+            config.Deployment.Psadt.AccentColor = "#0078D4";
+            config.Deployment.Psadt.LogoFile = "logo.png";
+            config.Deployment.Psadt.AllowDefer = true;
+            config.Deployment.Psadt.DeferTimes = 5;
+
+            var json = JsonConvert.SerializeObject(config, JsonFormat.CreateSettings());
+            var parsed = JObject.Parse(json);
+            Assert.Equal("Psadt", (string)parsed["deployment"]["engine"]);
+            Assert.Equal("Classic", (string)parsed["deployment"]["psadt"]["dialogStyle"]);
+
+            var copy = JsonConvert.DeserializeObject<PackageVersionConfig>(json, JsonFormat.CreateSettings());
+            Assert.Equal(DeploymentEngine.Psadt, copy.Deployment.Engine);
+            Assert.Equal(PsadtDialogStyle.Classic, copy.Deployment.Psadt.DialogStyle);
+            Assert.Equal("#0078D4", copy.Deployment.Psadt.AccentColor);
+            Assert.Equal("logo.png", copy.Deployment.Psadt.LogoFile);
+            Assert.True(copy.Deployment.Psadt.AllowDefer);
+            Assert.Equal(5, copy.Deployment.Psadt.DeferTimes);
+            Assert.True(copy.Deployment.Psadt.ShowProgress);
+        }
+
+        [Fact]
+        public void AFileWrittenBeforeTheDeploymentSectionExistedReadsAsTheNativeWrapper()
+        {
+            const string json = "{\"schemaVersion\":1,\"projectId\":\"contoso-reader\"}";
+
+            var config = JsonConvert.DeserializeObject<PackageVersionConfig>(json, JsonFormat.CreateSettings());
+
+            Assert.Equal(DeploymentEngine.Native, config.Deployment.Engine);
+            Assert.Equal(PsadtDialogStyle.Fluent, config.Deployment.Psadt.DialogStyle);
+            Assert.True(config.Deployment.Psadt.BalloonNotifications);
+            Assert.Equal(3, config.Deployment.Psadt.DeferTimes);
+        }
     }
 }

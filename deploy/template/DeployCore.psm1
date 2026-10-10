@@ -539,7 +539,12 @@ function Invoke-Deployment {
         [string]$PackageRoot,
         [string]$LogDirectory,
         [string]$ConfigFileName = 'Deployment.config.json',
-        [hashtable]$ShortcutRootOverride
+        [hashtable]$ShortcutRootOverride,
+
+        # Optional replacement for the user interaction (used by the PSAppDeployToolkit entry script). Keys, all optional:
+        #   RequestClose = { param($Config, $Action, $MaxWaitMinutes) 'Ready' | 'Retry' }  instead of Request-CloseProcesses
+        #   ShowProgress = { param($Config, $Action) }  called right before the installer starts
+        [hashtable]$Interaction
     )
     $script:LogFile = $null
     try {
@@ -557,9 +562,19 @@ function Invoke-Deployment {
         $timeout = [int](Get-ConfigValue -Object $config -Name 'timeoutMinutes' -Default 60)
         $started = [datetime]::UtcNow
 
-        $ready = Request-CloseProcesses -Config $config -Action $DeploymentType -MaxWaitMinutes ([Math]::Max(1, [Math]::Min(30, [int]($timeout / 3))))
+        $maxWait = [Math]::Max(1, [Math]::Min(30, [int]($timeout / 3)))
+        if ($Interaction -and $Interaction.ContainsKey('RequestClose')) {
+            $ready = & $Interaction['RequestClose'] $config $DeploymentType $maxWait
+        }
+        else {
+            $ready = Request-CloseProcesses -Config $config -Action $DeploymentType -MaxWaitMinutes $maxWait
+        }
         if ($ready -ne 'Ready') {
             return [int]$script:ExitCodes.Retry
+        }
+
+        if ($Interaction -and $Interaction.ContainsKey('ShowProgress')) {
+            & $Interaction['ShowProgress'] $config $DeploymentType
         }
 
         $limit = [Math]::Round((Get-ProcessTimeLimit -TimeoutMinutes $timeout -StartedUtc $started), 1)

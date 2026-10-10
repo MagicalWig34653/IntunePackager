@@ -39,6 +39,12 @@ namespace IntunePackageBuilder.App.Services
         /// <summary>Folder with the client runtime templates (<c>Install.cmd</c> and helpers) shipped with the program.</summary>
         public string RuntimeTemplateDirectory { get; private set; }
 
+        /// <summary>Folder with the entry script and <c>Install.cmd</c> of the PSAppDeployToolkit engine, shipped with the program.</summary>
+        public string PsadtTemplateDirectory { get; set; }
+
+        /// <summary>The <c>psadt.json</c> with the pinned toolkit versions, shipped with the program.</summary>
+        public string PsadtPinPath { get; set; }
+
         /// <summary>Short working folder for builds; null uses the default below the temp folder.</summary>
         public string WorkRoot { get; set; }
 

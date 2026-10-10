@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using IntunePackageBuilder.Build.Packaging;
+using IntunePackageBuilder.Build.Psadt;
 using IntunePackageBuilder.Core;
 using IntunePackageBuilder.Core.Builds;
 using IntunePackageBuilder.Core.Sources;
@@ -34,6 +35,9 @@ namespace IntunePackageBuilder.Build.Pipeline
         public const int MaxPathLength = 259;
 
         private const long SpaceReserveBytes = 64L * 1024 * 1024;
+
+        /// <summary>Entry script of the toolkit engine; <c>Install.cmd</c> starts it.</summary>
+        public const string PsadtEntryScript = "Invoke-AppDeployToolkit.ps1";
 
         private readonly IContentPrepRunner _runner;
         private readonly Func<DateTime> _utcNow;
@@ -87,7 +91,7 @@ namespace IntunePackageBuilder.Build.Pipeline
                 };
 
                 enter(BuildPhase.ValidateConfiguration);
-                ValidateRequest(request);
+                var toolkit = ValidateRequest(request);
                 var versionDirectory = Path.GetFullPath(request.VersionDirectory);
                 buildsDirectory = Path.Combine(versionDirectory, BuildsFolder);
 
@@ -103,7 +107,7 @@ namespace IntunePackageBuilder.Build.Pipeline
                     var sourceDirectory = Path.Combine(versionDirectory, "source");
                     var sourceManifest = VerifySource(request, versionDirectory, sourceDirectory, log);
                     var workRoot = request.WorkRoot ?? Path.Combine(Path.GetTempPath(), "IntunePackageBuilder");
-                    CheckSpace(request, sourceManifest, workRoot, buildsDirectory);
+                    CheckSpace(request, sourceManifest, toolkit, workRoot, buildsDirectory);
 
                     enter(BuildPhase.PrepareWorkspace);
                     Directory.CreateDirectory(workRoot);
@@ -112,7 +116,7 @@ namespace IntunePackageBuilder.Build.Pipeline
                         log.Info(null, "working folder " + workspace.Root);
 
                         enter(BuildPhase.StagePackage);
-                        Stage(request, sourceManifest, sourceDirectory, workspace);
+                        Stage(request, sourceManifest, sourceDirectory, toolkit, workspace);
 
                         enter(BuildPhase.GenerateArtifacts);
                         var snapshot = BuildSnapshot.Create(request.Configuration, sourceManifest, buildId, request.Language, started);
@@ -131,7 +135,7 @@ namespace IntunePackageBuilder.Build.Pipeline
                         Wrap(BuildPhase.VerifyPackage, () => IntunewinVerifier.Verify(package));
 
                         enter(BuildPhase.Publish);
-                        var result = Publish(request, snapshot, sourceManifest, workspace, package, buildsDirectory, buildId, started, log);
+                        var result = Publish(request, snapshot, sourceManifest, toolkit, workspace, package, buildsDirectory, buildId, started, log);
 
                         enter(BuildPhase.Cleanup);
                         log.Info(BuildPhase.Cleanup, "done");
@@ -164,7 +168,8 @@ namespace IntunePackageBuilder.Build.Pipeline
             }
         }
 
-        private static void ValidateRequest(BuildRequest request)
+        /// <summary>Checks the request and returns the checked toolkit ZIP when the configuration selects the PSAppDeployToolkit, otherwise null.</summary>
+        private static PsadtPackageInfo ValidateRequest(BuildRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.VersionDirectory) || !Directory.Exists(request.VersionDirectory))
             {
@@ -198,6 +203,46 @@ namespace IntunePackageBuilder.Build.Pipeline
                     BuildProblem.TemplateMissing,
                     DeploymentInterface.EntryScript + " in " + request.RuntimeTemplateDirectory);
             }
+
+            return request.Configuration.Deployment.Engine == DeploymentEngine.Psadt ? ValidateToolkit(request) : null;
+        }
+
+        private static PsadtPackageInfo ValidateToolkit(BuildRequest request)
+        {
+            var supply = request.Psadt;
+            if (supply == null || string.IsNullOrWhiteSpace(supply.PackagePath) || !File.Exists(supply.PackagePath))
+            {
+                throw new BuildFailedException(BuildPhase.ValidateConfiguration, BuildProblem.ToolkitMissing, supply == null ? "no toolkit supplied" : supply.PackagePath);
+            }
+
+            foreach (var name in new[] { DeploymentInterface.EntryScript, PsadtEntryScript })
+            {
+                if (string.IsNullOrWhiteSpace(supply.TemplateDirectory) || !File.Exists(Path.Combine(supply.TemplateDirectory, name)))
+                {
+                    throw new BuildFailedException(BuildPhase.ValidateConfiguration, BuildProblem.TemplateMissing, name + " in " + supply.TemplateDirectory);
+                }
+            }
+
+            PsadtPackageInfo info;
+            try
+            {
+                info = PsadtPackage.Inspect(supply.PackagePath, supply.PinPath, supply.AllowUnknown);
+            }
+            catch (PsadtException exception)
+            {
+                var problem = exception.Problem == PsadtProblem.PackageNotRecognized
+                    ? BuildProblem.ToolkitNotRecognized
+                    : exception.Problem == PsadtProblem.PackageMissing ? BuildProblem.ToolkitMissing : BuildProblem.ToolkitInvalid;
+                throw new BuildFailedException(BuildPhase.ValidateConfiguration, problem, exception.Detail, exception);
+            }
+
+            var missing = PsadtAssets.Missing(Path.GetFullPath(request.VersionDirectory), request.Configuration.Deployment.Psadt);
+            if (missing.Count > 0)
+            {
+                throw new BuildFailedException(BuildPhase.ValidateConfiguration, BuildProblem.ToolkitAssetsMissing, string.Join(", ", missing));
+            }
+
+            return info;
         }
 
         private static void EnsureWritable(string buildsDirectory)
@@ -273,10 +318,10 @@ namespace IntunePackageBuilder.Build.Pipeline
             return manifest;
         }
 
-        private static void CheckSpace(BuildRequest request, SourceManifest manifest, string workRoot, string buildsDirectory)
+        private static void CheckSpace(BuildRequest request, SourceManifest manifest, PsadtPackageInfo toolkit, string workRoot, string buildsDirectory)
         {
             var probe = request.FreeSpaceProbe ?? FreeBytes;
-            var needed = (manifest.Files.Sum(f => f.Size) * 3) + SpaceReserveBytes;
+            var needed = ((manifest.Files.Sum(f => f.Size) + (toolkit == null ? 0 : toolkit.UncompressedBytes)) * 3) + SpaceReserveBytes;
             foreach (var location in new[] { workRoot, buildsDirectory })
             {
                 var free = probe(location);
@@ -312,9 +357,20 @@ namespace IntunePackageBuilder.Build.Pipeline
             }
         }
 
-        private static void Stage(BuildRequest request, SourceManifest manifest, string sourceDirectory, BuildWorkspace workspace)
+        private static void Stage(BuildRequest request, SourceManifest manifest, string sourceDirectory, PsadtPackageInfo toolkit, BuildWorkspace workspace)
         {
-            CopyTemplates(request.RuntimeTemplateDirectory, workspace.PackageDirectory);
+            if (toolkit == null)
+            {
+                CopyTemplates(request.RuntimeTemplateDirectory, workspace.PackageDirectory, null);
+            }
+            else
+            {
+                // The runtime functions are shared; the entry points of the two engines differ (the toolkit's replaces the wrapper's).
+                CopyTemplates(request.RuntimeTemplateDirectory, workspace.PackageDirectory, name => name != DeploymentInterface.EntryScript && name != "Deploy-Wrapper.ps1");
+                CopyTemplates(request.Psadt.TemplateDirectory, workspace.PackageDirectory, null);
+                PsadtPackage.ExtractModule(request.Psadt.PackagePath, workspace.PackageDirectory, RequirePathLength);
+                StageAssets(request, workspace.PackageDirectory);
+            }
 
             var filesRoot = Path.Combine(workspace.PackageDirectory, DeploymentInterface.PackageSourceFolder);
             foreach (var file in manifest.Files)
@@ -327,7 +383,19 @@ namespace IntunePackageBuilder.Build.Pipeline
             }
         }
 
-        private static void CopyTemplates(string templateDirectory, string packageRoot)
+        private static void StageAssets(BuildRequest request, string packageRoot)
+        {
+            var source = PsadtAssets.AssetsDirectory(Path.GetFullPath(request.VersionDirectory));
+            foreach (var name in PsadtAssets.Referenced(request.Configuration.Deployment.Psadt))
+            {
+                var target = Path.Combine(packageRoot, Generation.Psadt.PsadtOverlay.AssetsFolder, name);
+                RequirePathLength(target);
+                Directory.CreateDirectory(Path.GetDirectoryName(target));
+                File.Copy(Path.Combine(source, name), target, false);
+            }
+        }
+
+        private static void CopyTemplates(string templateDirectory, string packageRoot, Func<string, bool> include)
         {
             var root = Path.GetFullPath(templateDirectory).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
             foreach (var file in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories))
@@ -337,7 +405,13 @@ namespace IntunePackageBuilder.Build.Pipeline
                     throw new BuildFailedException(BuildPhase.StagePackage, BuildProblem.TemplateMissing, "a template file is a link: " + file);
                 }
 
-                var target = Path.Combine(packageRoot, file.Substring(root.Length));
+                var relative = file.Substring(root.Length);
+                if (include != null && !include(relative))
+                {
+                    continue;
+                }
+
+                var target = Path.Combine(packageRoot, relative);
                 RequirePathLength(target);
                 Directory.CreateDirectory(Path.GetDirectoryName(target));
                 File.Copy(file, target, false);
@@ -376,6 +450,7 @@ namespace IntunePackageBuilder.Build.Pipeline
             BuildRequest request,
             BuildSnapshot snapshot,
             SourceManifest sourceManifest,
+            PsadtPackageInfo toolkit,
             BuildWorkspace workspace,
             string package,
             string buildsDirectory,
@@ -418,6 +493,18 @@ namespace IntunePackageBuilder.Build.Pipeline
                 {
                     manifest.ContentPrepToolVersion = ContentPrepTool.IdentifyVersion(request.ContentPrepToolPath);
                     manifest.ContentPrepToolSha256 = ContentPrepTool.ComputeSha256(request.ContentPrepToolPath);
+                }
+
+                if (toolkit != null)
+                {
+                    manifest.ToolkitVersion = toolkit.Version;
+                    manifest.ToolkitSha256 = toolkit.Sha256;
+                    manifest.ToolkitAssets = new List<BuildFileEntry>();
+                    var assetsRoot = Path.GetDirectoryName(PsadtAssets.AssetsDirectory(Path.GetFullPath(request.VersionDirectory)));
+                    foreach (var name in PsadtAssets.Referenced(request.Configuration.Deployment.Psadt).OrderBy(n => n, StringComparer.Ordinal))
+                    {
+                        manifest.ToolkitAssets.Add(Describe(assetsRoot, Path.Combine(PsadtAssets.AssetsDirectory(Path.GetFullPath(request.VersionDirectory)), name)));
+                    }
                 }
 
                 foreach (var file in Directory.EnumerateFiles(partial, "*", SearchOption.AllDirectories)

@@ -1,6 +1,6 @@
 # Bekannte Grenzen
 
-Stand: Version 0.0.1. Was hier steht, ist **nicht** umgesetzt oder **nicht geprüft**. Es ist kein Mangel, der "später kommt", sondern der ehrliche Stand.
+Stand: Version 0.0.1 und der Entwicklungsstand danach (die Einträge zum PSAppDeployToolkit betreffen nur Stände nach 0.0.1; der Release v0.0.1 enthält die Toolkit-Engine nicht). Was hier steht, ist **nicht** umgesetzt oder **nicht geprüft**. Es ist kein Mangel, der "später kommt", sondern der ehrliche Stand.
 
 ## Nicht umgesetzt
 
@@ -12,8 +12,13 @@ Stand: Version 0.0.1. Was hier steht, ist **nicht** umgesetzt oder **nicht gepr�
 - **Signierung:** Programm und Skripte sind nicht signiert. `distribution-manifest.json` weist das aus.
 - **x86-Zielgeräte:** Die Anforderung lautet 64-Bit-Windows. Ein 32-Bit-Herstellerprogramm läuft darauf weiter; reine 32-Bit-Windows-Geräte werden nicht unterstützt.
 - **Das Content Prep Tool** wird nicht mitgeliefert (Lizenz). Wer es nicht beschaffen kann, kann keine `.intunewin`-Datei bauen.
+- **Das PSAppDeployToolkit** wird nicht mitgeliefert: Die Veröffentlichung enthält `iNKORE.UI.WPF.Modern` mit Zusatzbedingungen (keine kommerzielle Nutzung ohne schriftliche Erlaubnis des Autors, der nutzende Code muss vollständig Open Source sein, kein Verkauf, sichtbare Namensnennung) und `iNKORE.UI.WPF` (LGPL-2.1). Ob das für Ihre Nutzung zulässig ist, ist eine Rechtsfrage und nicht geklärt; das Programm trifft sie nicht für Sie. Das fertige Paket enthält das Toolkit samt dieser Bibliotheken.
 
 ## Nicht geprüft
+
+- **Die Toolkit-Engine (PSAppDeployToolkit) auf Geräten:** Dialoge in der Benutzersitzung, Logo, Banner, Farbe, Dialogstil, Verschieben, Ablauf des Zeitlimits, Programme schließen, Windows 11 und Windows Server 2019 und neuer. Die CI prüft nur mit dem echten Toolkit die Parametersätze, die Überlagerung und Läufe im stillen Modus (Prüfprotokoll T15 bis T18).
+- **Der Update-Workflow für das Toolkit** (`update-psadt.yml`) ist noch nie gelaufen. Damit er Pull Requests anlegen darf, muss in den Repository-Einstellungen „Allow GitHub Actions to create and approve pull requests“ aktiviert sein. Eine neue Toolkit-Version wird nur auf bekannte Dateien und Lizenzdatei geprüft, nicht auf Verhalten.
+- **Texte des Toolkits mit geschweiften Klammern** werden abgelehnt (das Toolkit liest `{Name}` als Nachschlagen).
 
 - **Geräte- und Pilot-Tests (Spec §12.2)** sind nicht durchgeführt: reale MSI- und EXE-Pakete im SYSTEM-Kontext auf einem Gerät, Benutzerfenster in echten Sitzungen (mehrere Sitzungen, fehlende Sitzung, Parallelinstallation), Rückgabecodes und Neustartbedarf auf einem Gerät, Übernahme der Anleitung in eine Intune-Pilot-App. Der Wrapper ist nur mit Pester gegen echte Prozesse, Registry, Dateien und `msiexec` getestet.
 - **Windows Server 2019:** Es gibt dafür keinen CI-Runner; die Unterstützung ist festgelegt, aber nicht auf einem Gerät geprüft.
@@ -26,7 +31,7 @@ Stand: Version 0.0.1. Was hier steht, ist **nicht** umgesetzt oder **nicht gepr�
 - **`build.log`** wird erst nach der Veröffentlichung geschrieben; scheitert das Schreiben, zeigt die Ergebnisseite trotzdem den Pfad. Die Datei steht nicht im `build-manifest.json`.
 - **Rückgabecodes:** Intune legt bei einer neuen Win32-App den Code 1707 als Erfolg vor; die Anleitung nennt das nicht (nicht gegen Intune geprüft). Nicht aufgeführte Codes gibt der Wrapper unverändert weiter.
 - **DPI:** Das Programm hat kein Manifest für Per-Monitor-DPI; WPF fällt auf die System-DPI zurück. Die Skalierung ist nicht geprüft (T04).
-- **Die A18-Prüfung** vergleicht die Prüfsummen mit der Datei `SHA256SUMS.txt` aus derselben ZIP (selbstbezüglich); die Prüfsumme der ausgelieferten `Newtonsoft.Json.dll` wird zusätzlich gegen `THIRD-PARTY.md` geprüft. Eine Prüfsumme außerhalb der ZIP gibt es erst mit einem Release.
+- **Die A18-Prüfung** vergleicht die Prüfsummen mit der Datei `SHA256SUMS.txt` aus derselben ZIP (selbstbezüglich); die Prüfsumme der ausgelieferten `Newtonsoft.Json.dll` wird zusätzlich gegen `THIRD-PARTY.md` geprüft. Eine Prüfsumme außerhalb der ZIP steht seit dem Release 0.0.1 in der Datei `.sha256` neben der ZIP (vom selben Workflow erzeugt).
 
 ## Bewusste Entscheidungen
 

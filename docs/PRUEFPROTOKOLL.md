@@ -33,6 +33,10 @@ Die automatisierten Prüfungen A01 bis A18 stehen mit CI-Läufen in [ABNAHME-MAT
 | T12 | Parallelinstallation | offen | |
 | T13 | Rückgabecodes und Neustartbedarf; keine unbeabsichtigten Prozessenden oder erzwungenen Neustarts | offen | |
 | T14 | Anleitung in eine Intune-Pilot-App übernehmen und auf einem Zielgerät prüfen | offen | |
+| T15 | Toolkit-Engine: Paket mit dem PSAppDeployToolkit als SYSTEM auf Windows 11 und Windows Server 2019 oder neuer; Installation, Deinstallation, Erkennung, Rückgabecodes | offen | Zusatz zu `docs/PLANUNG.md` §8 Nr. 12 |
+| T16 | Toolkit-Engine: Dialog „Programme schließen“ erscheint in der Benutzersitzung; Programme werden nicht beendet, auch nicht nach dem Zeitlimit oder in einer zweiten Sitzung; Verschieben und Zeitlimit enden mit 1618 | offen | |
+| T17 | Toolkit-Engine: Gestaltung sichtbar (Logo, dunkles Logo, Banner, Akzentfarbe, Dialogstil, Firmenname, Sprache, Texte) und lesbar | offen | |
+| T18 | Toolkit-Engine: ohne angemeldeten Benutzer und während Autopilot (ESP) läuft die Installation still bzw. endet mit 1618, ohne Dialog | offen | |
 
 ## Offene Punkte
 

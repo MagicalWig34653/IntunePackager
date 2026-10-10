@@ -1,6 +1,6 @@
 # Bedienungsanleitung
 
-Diese Anleitung beschreibt, was die Version 0.0.1 des Intune Package Builders heute kann. Sie behauptet nichts, was nicht umgesetzt ist; was fehlt, steht in [BEKANNTE-GRENZEN.md](BEKANNTE-GRENZEN.md). **Das Programm lädt nichts nach Intune hoch und weist nichts zu.** Es erzeugt ein Paket und eine Anleitung; die Werte tragen Sie selbst in Intune ein.
+Diese Anleitung beschreibt, was die Version 0.0.1 des Intune Package Builders heute kann. Sie behauptet nichts, was nicht umgesetzt ist (der Absatz zum PSAppDeployToolkit im erweiterten Modus gilt für Stände **nach** 0.0.1: der Release v0.0.1 enthält ihn nicht); was fehlt, steht in [BEKANNTE-GRENZEN.md](BEKANNTE-GRENZEN.md). **Das Programm lädt nichts nach Intune hoch und weist nichts zu.** Es erzeugt ein Paket und eine Anleitung; die Werte tragen Sie selbst in Intune ein.
 
 ## Voraussetzungen
 
@@ -58,6 +58,7 @@ Der Schalter oben rechts öffnet zusätzliche Einstellungen; ein Moduswechsel ä
 - Zusätzliche MSI-Eigenschaften bzw. Parameter, **Projekt-ID** (nur bei einem neuen Projekt), Programme, die vorher geschlossen sein müssen (eine Zeile je Programm), gemeinsame Verknüpfungen, die nach der Installation entfernt werden (`PublicDesktop|Name.lnk` oder `CommonStartMenu|Ordner\Name.lnk`), Texte für Benutzer, Zeitlimit, Erfolgs-, Neustart- und Wiederholungscodes.
 - **Ausgelesene Metadaten** und **Quelle prüfen** (Dateianzahl, Größe, Fingerabdruck).
 - Der Code 1641 gilt nie als stiller Erfolg und wird als Eingabe abgelehnt.
+- **Laufzeit auf dem Gerät:** Statt der eingebauten Laufzeit können Sie das **PSAppDeployToolkit** wählen. Es zeigt die Dialoge (zu schließende Programme, Fortschritt, Hinweise) und lässt sich gestalten: Logo (auch für das dunkle Farbschema), Banner, Akzentfarbe, Dialogstil (Fluent oder klassisch), Firmenname, Sprache, Hinweise am Bildschirmrand, Fortschrittsfenster, Verschieben (mit Anzahl) und Prüfung des freien Speichers. Die Texte „Installation/Deinstallation läuft“ und der Detailhinweis erscheinen in den Dialogen. Das Toolkit gehört **nicht** zum Lieferumfang: Laden Sie die Datei `PSAppDeployToolkit_Template_v4.zip` einer Veröffentlichung herunter und wählen Sie sie im Programm; das Programm prüft die Prüfsumme gegen die bekannten Versionen und fragt bei einer unbekannten Version vor der Verwendung. Beachten Sie die Lizenzbedingungen der Bibliotheken des Toolkits (`THIRD-PARTY.md`), insbesondere von iNKORE.UI.WPF.Modern. Installation, Rückgabecodes und Prüfung des Ergebnisses bleiben gleich. **Auf Geräten nicht erprobt** (`docs/BEKANNTE-GRENZEN.md`).
 
 ## Verhalten auf dem Zielgerät
 

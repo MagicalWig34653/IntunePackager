@@ -1,0 +1,52 @@
+name: Update PSAppDeployToolkit
+
+# Dependabot cannot follow PSAppDeployToolkit (no NuGet package), so this workflow checks the GitHub releases once a week,
+# records a newer version in deploy/psadt/psadt.json and THIRD-PARTY.md, opens a pull request and starts CI for it.
+# Pull requests created with the default token do not start CI themselves, hence the explicit workflow dispatch.
+# It never merges. Needs the repository setting "Allow GitHub Actions to create and approve pull requests".
+
+on:
+  schedule:
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  update:
+    name: Check for a new release
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Look for a newer release
+        id: check
+        shell: pwsh
+        run: ./tools/Update-PsadtPin.ps1 -PullRequestBodyPath "$env:RUNNER_TEMP/pr-body.md"
+      - name: Open the pull request and start CI
+        if: steps.check.outputs.changed == 'true'
+        shell: bash
+        env:
+          VERSION: ${{ steps.check.outputs.version }}
+        run: |
+          set -euo pipefail
+          branch="bot/psadt-${VERSION}"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "Branch $branch already exists; leaving it alone."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add deploy/psadt/psadt.json THIRD-PARTY.md
+          git commit -m "Pin PSAppDeployToolkit ${VERSION}"
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" --title "Pin PSAppDeployToolkit ${VERSION}" --body-file "$RUNNER_TEMP/pr-body.md" || {
+            echo "::error::The pull request could not be created. Enable 'Allow GitHub Actions to create and approve pull requests' under Settings > Actions > General, then run this workflow again."
+            exit 1
+          }
+          gh workflow run ci.yml --ref "$branch"

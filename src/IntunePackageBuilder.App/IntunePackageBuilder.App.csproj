@@ -16,5 +16,9 @@
     <Content Include="..\..\deploy\template\**\*" Link="template\%(RecursiveDir)%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <!-- The entry script of the PSAppDeployToolkit engine and the pinned versions; the toolkit itself is not shipped. -->
+    <Content Include="..\..\deploy\psadt\**\*" Link="psadt\%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

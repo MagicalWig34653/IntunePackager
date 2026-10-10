@@ -146,5 +146,42 @@ namespace IntunePackageBuilder.Build.Tests
             Assert.NotSame(basis.Interaction.ProcessesToClose, copy.Interaction.ProcessesToClose);
             Assert.NotSame(basis.PostInstall.SharedShortcutsToRemove[0], copy.PostInstall.SharedShortcutsToRemove[0]);
         }
+
+        [Fact]
+        public void AnUpdateAdoptsTheToolkitChoicesAsACopy()
+        {
+            var basis = ExeBasis();
+            basis.Deployment.Engine = DeploymentEngine.Psadt;
+            basis.Deployment.Psadt.DialogStyle = PsadtDialogStyle.Classic;
+            basis.Deployment.Psadt.AccentColor = "#112233";
+            basis.Deployment.Psadt.LogoFile = "logo.png";
+            basis.Deployment.Psadt.AllowDefer = true;
+            basis.Deployment.Psadt.DeferTimes = 7;
+
+            var draft = UpdateDraft.Create(ExeAnalysis(), basis);
+
+            Assert.Equal(DeploymentEngine.Psadt, draft.Deployment.Engine);
+            Assert.Equal(PsadtDialogStyle.Classic, draft.Deployment.Psadt.DialogStyle);
+            Assert.Equal("#112233", draft.Deployment.Psadt.AccentColor);
+            Assert.Equal("logo.png", draft.Deployment.Psadt.LogoFile);
+            Assert.Equal(7, draft.Deployment.Psadt.DeferTimes);
+
+            draft.Deployment.Psadt.AccentColor = "#445566";
+            Assert.Equal("#112233", basis.Deployment.Psadt.AccentColor);
+        }
+
+        [Fact]
+        public void ChoosingTheToolkitCountsAsAnAdvancedSetting()
+        {
+            var config = ExeBasis();
+            config.Interaction.ProcessesToClose.Clear();
+            config.Interaction.InstallMessage = null;
+            config.PostInstall.SharedShortcutsToRemove.Clear();
+            config.Runtime = new RuntimeSection();
+            Assert.False(UpdateDraft.HasAdvancedSettings(config));
+
+            config.Deployment.Engine = DeploymentEngine.Psadt;
+            Assert.True(UpdateDraft.HasAdvancedSettings(config));
+        }
     }
 }

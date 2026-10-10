@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "source": "https://github.com/PSAppDeployToolkit/PSAppDeployToolkit",
+  "license": "LGPL-3.0",
+  "licenseSha256": "7d3a95e5e06978064ed3f8e2b7c8f845e7fd8a405294727cc708f94cb83b8059",
+  "versions": [
+    {
+      "version": "4.1.8",
+      "asset": "PSAppDeployToolkit_Template_v4.zip",
+      "sha256": "50cb8d32973fc7648060a48cad63912ecb5caca5a70754f37e83aa06bd380283",
+      "commit": "af17af7ad3e30a9fe7635cf063b7eebfc065c7de",
+      "bundledLibraries": [
+        "Newtonsoft.Json.dll",
+        "PSADT.ClientServer.Client.Launcher.exe",
+        "PSADT.ClientServer.Client.exe",
+        "PSADT.ClientServer.Server.dll",
+        "PSADT.UserInterface.dll",
+        "PSADT.dll",
+        "System.Buffers.dll",
+        "System.IO.FileSystem.AccessControl.dll",
+        "System.Memory.dll",
+        "System.Numerics.Vectors.dll",
+        "System.Runtime.CompilerServices.Unsafe.dll",
+        "System.Security.AccessControl.dll",
+        "System.Security.Principal.Windows.dll",
+        "iNKORE.UI.WPF.Modern.Controls.dll",
+        "iNKORE.UI.WPF.Modern.dll",
+        "iNKORE.UI.WPF.dll"
+      ]
+    }
+  ]
+}

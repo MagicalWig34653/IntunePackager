@@ -37,6 +37,12 @@ namespace IntunePackageBuilder.Generation.Wrapper
 
         public string TargetVersion { get; set; }
 
+        /// <summary>Which entry script the package runs: the own wrapper or the PSAppDeployToolkit.</summary>
+        public DeploymentEngine Engine { get; set; }
+
+        /// <summary>Behavior settings the toolkit entry script reads; present only for <see cref="DeploymentEngine.Psadt"/>. Looks (colours, images, dialog style) live in <c>Config\config.psd1</c>.</summary>
+        public WrapperPsadt Psadt { get; set; }
+
         public WrapperInstall Install { get; set; }
 
         public WrapperUninstall Uninstall { get; set; }
@@ -59,6 +65,19 @@ namespace IntunePackageBuilder.Generation.Wrapper
         public List<WrapperShortcut> SharedShortcutsToRemove { get; set; }
 
         public WrapperLogs Logs { get; set; }
+    }
+
+    public sealed class WrapperPsadt
+    {
+        public bool ShowProgress { get; set; }
+
+        public bool AllowDefer { get; set; }
+
+        public int DeferTimes { get; set; }
+
+        public bool CheckDiskSpace { get; set; }
+
+        public int RequiredDiskSpaceMb { get; set; }
     }
 
     public sealed class WrapperInstall

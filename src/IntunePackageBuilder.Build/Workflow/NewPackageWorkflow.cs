@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IntunePackageBuilder.Build.Packaging;
 using IntunePackageBuilder.Build.Pipeline;
+using IntunePackageBuilder.Build.Psadt;
 using IntunePackageBuilder.Core.Builds;
 using IntunePackageBuilder.Core.Projects;
 using IntunePackageBuilder.Core.Sources;
@@ -36,7 +37,10 @@ namespace IntunePackageBuilder.Build.Workflow
         VersionLocked,
 
         /// <summary>Reading or writing the project data failed.</summary>
-        StorageFailed
+        StorageFailed,
+
+        /// <summary>A branding image of the toolkit is missing, too large or not a PNG or JPEG file. Nothing was built.</summary>
+        ToolkitImageInvalid
     }
 
     /// <summary>The workflow stopped before the build started. Carries codes, never display text.</summary>
@@ -85,6 +89,15 @@ namespace IntunePackageBuilder.Build.Workflow
         public string ContentPrepToolPath { get; set; }
 
         public bool AllowUnknownTool { get; set; }
+
+        /// <summary>What the PSAppDeployToolkit engine needs; required when the configuration selects it.</summary>
+        public PsadtSupply Psadt { get; set; }
+
+        /// <summary>Images the user picked for the toolkit dialogs (source files on disk); they are stored with the version and the configuration gets their file names.</summary>
+        public IDictionary<PsadtImageKind, string> PsadtImages { get; set; }
+
+        /// <summary>The version this one was adopted from (update); its stored images are copied to the new version.</summary>
+        public string BasisVersion { get; set; }
 
         public string WorkRoot { get; set; }
 
@@ -227,6 +240,11 @@ namespace IntunePackageBuilder.Build.Workflow
                 }
 
                 versionDirectory = versions.VersionDirectory(projectId, version);
+                if (config.Deployment.Engine == DeploymentEngine.Psadt)
+                {
+                    PrepareToolkitImages(request, config, versions, projectId, version, versionDirectory);
+                }
+
                 if (!File.Exists(Path.Combine(versionDirectory, SourceManifest.FileName)))
                 {
                     var imported = versions.ImportSource(projectId, version, request.Item, config.Source.InstallerRelativePath);
@@ -251,6 +269,11 @@ namespace IntunePackageBuilder.Build.Workflow
                 rejected.ImportProblem = exception.Problem;
                 throw rejected;
             }
+            catch (PsadtException exception)
+            {
+                RollbackProject(projects, projectId, createdProject);
+                throw new WorkflowException(WorkflowProblem.ToolkitImageInvalid, exception.Detail, exception);
+            }
             catch (LockHeldException exception)
             {
                 RollbackProject(projects, projectId, createdProject);
@@ -272,6 +295,7 @@ namespace IntunePackageBuilder.Build.Workflow
                     RuntimeTemplateDirectory = request.RuntimeTemplateDirectory,
                     ContentPrepToolPath = request.ContentPrepToolPath,
                     AllowUnknownTool = request.AllowUnknownTool,
+                    Psadt = request.Psadt,
                     WorkRoot = request.WorkRoot,
                     IntuneOptions = request.IntuneOptions
                 },
@@ -279,6 +303,50 @@ namespace IntunePackageBuilder.Build.Workflow
                 cancellation);
 
             return Describe(result, projectId, createdProject, request.IntuneOptions);
+        }
+
+        /// <summary>Keeps the images of the template version and imports the ones the user picked; the configuration is saved with their file names.</summary>
+        private static void PrepareToolkitImages(NewPackageRequest request, PackageVersionConfig config, VersionStore versions, string projectId, string version, string versionDirectory)
+        {
+            if (!string.IsNullOrWhiteSpace(request.BasisVersion))
+            {
+                try
+                {
+                    var basis = versions.VersionDirectory(projectId, request.BasisVersion);
+                    if (!string.Equals(Path.GetFullPath(basis), Path.GetFullPath(versionDirectory), StringComparison.OrdinalIgnoreCase))
+                    {
+                        PsadtAssets.CopyAll(basis, versionDirectory);
+                    }
+                }
+                catch (VersionNotFoundException)
+                {
+                    // The template version is gone; the images it had are simply not there to copy.
+                }
+            }
+
+            if (request.PsadtImages == null || request.PsadtImages.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var pair in request.PsadtImages)
+            {
+                var name = PsadtAssets.Import(versionDirectory, pair.Key, pair.Value);
+                switch (pair.Key)
+                {
+                    case PsadtImageKind.Logo:
+                        config.Deployment.Psadt.LogoFile = name;
+                        break;
+                    case PsadtImageKind.LogoDark:
+                        config.Deployment.Psadt.LogoDarkFile = name;
+                        break;
+                    default:
+                        config.Deployment.Psadt.BannerFile = name;
+                        break;
+                }
+            }
+
+            versions.Save(projectId, version, config);
         }
 
         /// <summary>Describes a published build for the result page, from the files of that build.</summary>

@@ -252,4 +252,59 @@
   <data name="Source_Failed" xml:space="preserve"><value>Die Quelle konnte nicht gelesen werden: {0}</value></data>
   <data name="Dialog_UnexpectedError" xml:space="preserve"><value>Das Programm ist auf ein unerwartetes Problem gestoßen und konnte nicht beenden, was Sie angefordert haben. Einzelheiten stehen im Log-Ordner: {0}. Nicht gespeicherte Eingaben können verloren sein.</value></data>
   <data name="Dialog_UnexpectedErrorTitle" xml:space="preserve"><value>Unerwartetes Problem</value></data>
+  <data name="Valid_PsadtInvalidColor" xml:space="preserve"><value>Geben Sie die Akzentfarbe als #RRGGBB an, zum Beispiel #0078D4.</value></data>
+  <data name="Valid_PsadtInvalidFile" xml:space="preserve"><value>Verwenden Sie ein PNG- oder JPG-Bild mit einem einfachen Dateinamen.</value></data>
+  <data name="Valid_PsadtInvalidLanguage" xml:space="preserve"><value>Verwenden Sie auto oder einen Sprachcode des Toolkits, zum Beispiel de oder en.</value></data>
+  <data name="Valid_PsadtInvalidNumber" xml:space="preserve"><value>Geben Sie eine ganze Zahl im erlaubten Bereich an (Aufschieben braucht mindestens 1).</value></data>
+  <data name="Valid_PsadtRetryCodeMissing" xml:space="preserve"><value>Das Toolkit beendet eine aufgeschobene Installation mit einem Wiederholungscode, daher ist mindestens ein Wiederholungscode nötig.</value></data>
+  <data name="Valid_PsadtTextBraces" xml:space="preserve"><value>Geschweifte Klammern sind in diesem Text nicht erlaubt, wenn das PSAppDeployToolkit verwendet wird.</value></data>
+  <data name="Build_ToolkitMissing" xml:space="preserve"><value>Das PSAppDeployToolkit ist gewählt, aber seine ZIP-Datei ist nicht eingestellt oder nicht mehr vorhanden. Wählen Sie die ZIP-Datei einer Veröffentlichung (PSAppDeployToolkit_Template_v4.zip).</value></data>
+  <data name="Build_ToolkitNotRecognized" xml:space="preserve"><value>Diese ZIP-Datei des Toolkits gehört zu keiner Version, die das Programm kennt. Verwenden Sie die ZIP-Datei einer bekannten Veröffentlichung oder bestätigen Sie die unbekannte Version.</value></data>
+  <data name="Build_ToolkitInvalid" xml:space="preserve"><value>Die ZIP-Datei des Toolkits ist beschädigt, unvollständig oder enthält unsichere Pfade.</value></data>
+  <data name="Build_ToolkitAssetsMissing" xml:space="preserve"><value>Ein Bild für die Gestaltung dieser Version fehlt im Projektordner. Wählen Sie das Bild erneut.</value></data>
+  <data name="Workflow_ToolkitImageInvalid" xml:space="preserve"><value>Ein Bild für die Gestaltung konnte nicht verwendet werden. Wählen Sie ein PNG- oder JPEG-Bild mit höchstens 2 MB.</value></data>
+  <data name="Toolkit_Heading" xml:space="preserve"><value>Laufzeit auf dem Gerät</value></data>
+  <data name="Toolkit_Use" xml:space="preserve"><value>PSAppDeployToolkit statt der eingebauten Laufzeit verwenden</value></data>
+  <data name="Toolkit_UseHint" xml:space="preserve"><value>Das Toolkit zeigt die Dialoge auf dem Gerät (zu schließende Programme, Fortschritt, Hinweise) und lässt sich gestalten. Installation, Rückgabecodes und die Prüfung des Ergebnisses bleiben gleich. Das Toolkit gehört nicht zu diesem Programm; Sie stellen es unten bereit.</value></data>
+  <data name="Toolkit_Zip" xml:space="preserve"><value>Toolkit-Datei (ZIP einer Veröffentlichung)</value></data>
+  <data name="Toolkit_ZipChoose" xml:space="preserve"><value>PSAppDeployToolkit_Template_v4.zip wählen…</value></data>
+  <data name="Toolkit_ZipDownload" xml:space="preserve"><value>Veröffentlichungen des Toolkits</value></data>
+  <data name="Toolkit_ZipHint" xml:space="preserve"><value>Laden Sie die Datei PSAppDeployToolkit_Template_v4.zip einer Veröffentlichung herunter. Das Programm prüft die Prüfsumme gegen die Versionen, die es kennt. Das Toolkit nutzt Bibliotheken mit eigenen Lizenzbedingungen (siehe THIRD-PARTY.md); prüfen Sie diese für Ihren Einsatz.</value></data>
+  <data name="Toolkit_ZipNone" xml:space="preserve"><value>Keine Datei gewählt.</value></data>
+  <data name="Toolkit_ZipKnown" xml:space="preserve"><value>Bekannte Version {0}.</value></data>
+  <data name="Toolkit_ZipUnknown" xml:space="preserve"><value>Unbekannte Version (SHA-256 {0}). Sie werden gefragt, bevor sie verwendet wird.</value></data>
+  <data name="Toolkit_UnknownTitle" xml:space="preserve"><value>Unbekannte Toolkit-Version</value></data>
+  <data name="Toolkit_UnknownConfirm" xml:space="preserve"><value>Diese Datei ist keine bekannte Version des Toolkits (SHA-256 {0}). Trotzdem verwenden?</value></data>
+  <data name="Toolkit_DialogStyle" xml:space="preserve"><value>Stil der Dialoge</value></data>
+  <data name="Toolkit_StyleFluent" xml:space="preserve"><value>Fluent (modern)</value></data>
+  <data name="Toolkit_StyleClassic" xml:space="preserve"><value>Klassisch</value></data>
+  <data name="Toolkit_Accent" xml:space="preserve"><value>Akzentfarbe</value></data>
+  <data name="Toolkit_AccentHint" xml:space="preserve"><value>Als #RRGGBB, zum Beispiel #0078D4. Leer verwendet die Farbe von Windows. Nur die Fluent-Dialoge nutzen sie.</value></data>
+  <data name="Toolkit_Company" xml:space="preserve"><value>Firmenname in den Dialogen</value></data>
+  <data name="Toolkit_CompanyHint" xml:space="preserve"><value>Leer verwendet den Hersteller der Software. Geschweifte Klammern sind nicht erlaubt.</value></data>
+  <data name="Toolkit_Language" xml:space="preserve"><value>Sprache der Dialoge</value></data>
+  <data name="Toolkit_LanguageBuild" xml:space="preserve"><value>Sprache dieses Programms</value></data>
+  <data name="Toolkit_LanguageAuto" xml:space="preserve"><value>Sprache des Benutzers auf dem Gerät</value></data>
+  <data name="Toolkit_Images" xml:space="preserve"><value>Bilder</value></data>
+  <data name="Toolkit_ImagesHint" xml:space="preserve"><value>PNG oder JPEG, jeweils höchstens 2 MB. Sie werden mit dieser Version gespeichert. Leer verwendet die Bilder des Toolkits.</value></data>
+  <data name="Toolkit_Logo" xml:space="preserve"><value>Logo (Symbol der Dialoge)</value></data>
+  <data name="Toolkit_LogoDark" xml:space="preserve"><value>Logo für das dunkle Farbschema</value></data>
+  <data name="Toolkit_Banner" xml:space="preserve"><value>Banner (klassische Dialoge)</value></data>
+  <data name="Toolkit_ImageChoose" xml:space="preserve"><value>Bild wählen…</value></data>
+  <data name="Toolkit_ImageClear" xml:space="preserve"><value>Entfernen</value></data>
+  <data name="Toolkit_ImageNone" xml:space="preserve"><value>Keines (Bild des Toolkits)</value></data>
+  <data name="Toolkit_ImageStored" xml:space="preserve"><value>Gespeichert: {0}</value></data>
+  <data name="Toolkit_ImageNew" xml:space="preserve"><value>Neu: {0}</value></data>
+  <data name="Dialog_ChooseImage" xml:space="preserve"><value>Bild wählen</value></data>
+  <data name="Dialog_ImageFilter" xml:space="preserve"><value>Bilder (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg</value></data>
+  <data name="Dialog_ChooseToolkit" xml:space="preserve"><value>Toolkit-ZIP wählen</value></data>
+  <data name="Dialog_ToolkitFilter" xml:space="preserve"><value>Toolkit (*.zip)|*.zip</value></data>
+  <data name="Toolkit_Behavior" xml:space="preserve"><value>Verhalten</value></data>
+  <data name="Toolkit_Balloon" xml:space="preserve"><value>Hinweise am Bildschirmrand anzeigen</value></data>
+  <data name="Toolkit_Progress" xml:space="preserve"><value>Fortschrittsfenster anzeigen, solange der Installer läuft</value></data>
+  <data name="Toolkit_Defer" xml:space="preserve"><value>Benutzer darf die Installation verschieben, wenn Programme offen sind</value></data>
+  <data name="Toolkit_DeferTimes" xml:space="preserve"><value>Wie oft der Benutzer verschieben darf</value></data>
+  <data name="Toolkit_DiskSpace" xml:space="preserve"><value>Freien Speicherplatz vor der Installation prüfen</value></data>
+  <data name="Toolkit_DiskSpaceMb" xml:space="preserve"><value>Benötigter freier Speicher in MB</value></data>
+  <data name="Toolkit_DiskSpaceHint" xml:space="preserve"><value>Leer oder 0 lässt das Toolkit den Wert aus der Größe des Pakets berechnen.</value></data>
 </root>

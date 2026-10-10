@@ -54,6 +54,15 @@ namespace IntunePackageBuilder.Core.Builds
 
         public string ContentPrepToolSha256 { get; set; }
 
+        /// <summary>Pinned version of the PSAppDeployToolkit in the package; missing for the native wrapper or when the ZIP was not a pinned version.</summary>
+        public string ToolkitVersion { get; set; }
+
+        /// <summary>SHA-256 of the toolkit ZIP the module was copied from; missing for the native wrapper.</summary>
+        public string ToolkitSha256 { get; set; }
+
+        /// <summary>Branding images used by the package (<c>psadt-assets/...</c>); missing for the native wrapper.</summary>
+        public List<BuildFileEntry> ToolkitAssets { get; set; }
+
         /// <summary>The <c>.intunewin</c> file.</summary>
         public BuildFileEntry Package { get; set; }
 

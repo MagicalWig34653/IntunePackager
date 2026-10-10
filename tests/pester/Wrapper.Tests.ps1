@@ -515,6 +515,30 @@ Describe 'Invoke-Deployment (A15, A16 against the wrapper)' {
         $root = New-TestPackage -Config (New-TestConfig -Extra @{ processesToClose = @('reader.exe') })
         Invoke-Deployment -DeploymentType 'Install' -PackageRoot $root -LogDirectory $script:logDir | Should -Be 1618
     }
+
+    It 'lets an interaction provider replace the question to the user and ends with the retry result without starting the installer' {
+        $root = New-TestPackage -Config (New-TestConfig -Arguments '0')
+        $script:seen = $null
+        $interaction = @{ RequestClose = { param($Config, $Action, $MaxWaitMinutes) $script:seen = @($Config.softwareName, $Action, $MaxWaitMinutes); 'Retry' } }
+        Invoke-Deployment -DeploymentType 'Uninstall' -PackageRoot $root -LogDirectory $script:logDir -Interaction $interaction | Should -Be 1618
+        $script:seen[0] | Should -Be 'Test App'
+        $script:seen[1] | Should -Be 'Uninstall'
+        $script:seen[2] | Should -Be 3
+        Get-Content -Raw -LiteralPath (Join-Path $script:logDir 'Deployment.log') | Should -Not -Match 'Starting '
+    }
+
+    It 'calls the progress hook once, right before the installer starts, and keeps the normal result' {
+        $root = New-TestPackage -Config (New-TestConfig -Arguments '0')
+        $script:progress = 0
+        $interaction = @{ RequestClose = { 'Ready' }; ShowProgress = { param($Config, $Action) $script:progress++ } }
+        Invoke-Deployment -DeploymentType 'Install' -PackageRoot $root -LogDirectory $script:logDir -Interaction $interaction | Should -Be 0
+        $script:progress | Should -Be 1
+    }
+
+    It 'behaves as before when the provider has no hooks' {
+        $root = New-TestPackage -Config (New-TestConfig -Arguments '0')
+        Invoke-Deployment -DeploymentType 'Install' -PackageRoot $root -LogDirectory $script:logDir -Interaction @{} | Should -Be 0
+    }
 }
 
 Describe 'Install.cmd runs the whole chain in a separate Windows PowerShell process' {

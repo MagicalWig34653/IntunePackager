@@ -23,4 +23,4 @@ Zuordnung der verbindlichen automatisierten Prüfungen aus [SPEC.md](SPEC.md) §
 | A17 | Sonderzeichen in HTML/JSON/CSV/PowerShell | M3 | xUnit, Pester | bestanden über alle Formate: JSON/CSV (CI 37835593601), PowerShell (CI 37884553567), HTML, Wrapper-Konfiguration und Gesamterzeugung mit feindlichen Werten (CI 37885815101) |
 | A18 | Distributionsinhalt und Prüfsummen | M8 | Skript in CI | bestanden (CI 37985656760): die echte ZIP aus dem Release-Bau besteht `tools/Test-Distribution.ps1` (nur Dateien der Erlaubnisliste, Prüfsummen stimmen und decken alles ab, Signaturstatus "unsigned" stimmt, die SHA-256 der ausgelieferten `Newtonsoft.Json.dll` steht in `THIRD-PARTY.md`); Pester-Tests belegen die Ablehnung von Herstellerinstaller, `.intunewin`, Content Prep Tool, Projekt- und Einstellungsdateien, Debug- und Testdateien, geänderten und nicht gelisteten Dateien |
 
-Geräte- und Bedienungstests (§12.2) laufen manuell in M8 und werden im Prüfprotokoll (`docs/PRUEFPROTOKOLL.md`, entsteht in M8) festgehalten.
+Geräte- und Bedienungstests (§12.2) laufen manuell in M8 und werden im Prüfprotokoll (`docs/PRUEFPROTOKOLL.md`) festgehalten.

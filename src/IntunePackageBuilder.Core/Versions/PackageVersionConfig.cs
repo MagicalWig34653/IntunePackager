@@ -32,6 +32,19 @@ namespace IntunePackageBuilder.Core.Versions
         CommonStartMenu
     }
 
+    /// <summary>Which client runtime runs on the device. Native is the own wrapper; Psadt is the PSAppDeployToolkit.</summary>
+    public enum DeploymentEngine
+    {
+        Native,
+        Psadt
+    }
+
+    public enum PsadtDialogStyle
+    {
+        Fluent,
+        Classic
+    }
+
     /// <summary>
     /// Content of <c>configuration.json</c> of one software version (SPEC section 6.3).
     /// Values the tool cannot know (EXE switches, uninstall path, detection file) are left empty
@@ -52,6 +65,7 @@ namespace IntunePackageBuilder.Core.Versions
             Interaction = new InteractionSection();
             PostInstall = new PostInstallSection();
             Runtime = new RuntimeSection();
+            Deployment = new DeploymentSection();
         }
 
         public int SchemaVersion { get; set; }
@@ -73,6 +87,9 @@ namespace IntunePackageBuilder.Core.Versions
         public PostInstallSection PostInstall { get; set; }
 
         public RuntimeSection Runtime { get; set; }
+
+        /// <summary>Client runtime and its settings. Additive: files written before this section existed read as the native wrapper.</summary>
+        public DeploymentSection Deployment { get; set; }
 
         /// <summary>Creates an empty configuration with the standard runtime defaults for the installer type.</summary>
         public static PackageVersionConfig CreateDefault(string projectId, InstallerType type)
@@ -190,5 +207,69 @@ namespace IntunePackageBuilder.Core.Versions
         public List<int> RebootCodes { get; set; }
 
         public List<int> RetryCodes { get; set; }
+    }
+
+    public sealed class DeploymentSection
+    {
+        public DeploymentSection()
+        {
+            Engine = DeploymentEngine.Native;
+            Psadt = new PsadtSection();
+        }
+
+        public DeploymentEngine Engine { get; set; }
+
+        /// <summary>Settings of the PSAppDeployToolkit. Kept when the engine is switched back so the choices are not lost; used only for <see cref="DeploymentEngine.Psadt"/>.</summary>
+        public PsadtSection Psadt { get; set; }
+    }
+
+    /// <summary>
+    /// Options of the PSAppDeployToolkit that the package can be configured with. Images are file names inside the
+    /// version's <c>psadt-assets</c> folder, never paths of the user's disk.
+    /// </summary>
+    public sealed class PsadtSection
+    {
+        public const int MaxDeferTimes = 99;
+        public const int MaxRequiredDiskSpaceMb = 1048576;
+
+        public PsadtSection()
+        {
+            DialogStyle = PsadtDialogStyle.Fluent;
+            BalloonNotifications = true;
+            ShowProgress = true;
+            DeferTimes = 3;
+        }
+
+        public PsadtDialogStyle DialogStyle { get; set; }
+
+        /// <summary>Accent colour of the Fluent dialogs as <c>#RRGGBB</c>, or null for the system colour.</summary>
+        public string AccentColor { get; set; }
+
+        /// <summary>Company name shown in the dialogs, or null for the manufacturer of the software.</summary>
+        public string CompanyName { get; set; }
+
+        /// <summary>Null follows the language of the generated texts, <c>auto</c> lets the toolkit detect the user's language, otherwise a toolkit language code such as <c>de</c>.</summary>
+        public string UiLanguage { get; set; }
+
+        public string LogoFile { get; set; }
+
+        public string LogoDarkFile { get; set; }
+
+        public string BannerFile { get; set; }
+
+        public bool BalloonNotifications { get; set; }
+
+        /// <summary>Shows the progress window while the installer runs.</summary>
+        public bool ShowProgress { get; set; }
+
+        /// <summary>Lets the user postpone the installation when programs are running; a postponed run ends with the retry code.</summary>
+        public bool AllowDefer { get; set; }
+
+        public int DeferTimes { get; set; }
+
+        public bool CheckDiskSpace { get; set; }
+
+        /// <summary>Required free space in MB; 0 lets the toolkit compute it from the package size.</summary>
+        public int RequiredDiskSpaceMb { get; set; }
     }
 }

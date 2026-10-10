@@ -11,12 +11,12 @@
 
 <p align="center">
   <a href="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml"><img src="https://github.com/MagicalWig34653/IntunePackager/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/Status-Standardmodus%20fertig%2C%20kein%20Release-orange" alt="Status: Standardmodus fertig, kein Release">
+  <img src="https://img.shields.io/badge/Status-Vorabversion%200.0.1-orange" alt="Status: Vorabversion 0.0.1">
   <img src="https://img.shields.io/badge/Plattform-Windows%2011%20%7C%20Server%202019%2B-blue" alt="Plattform">
   <a href="LICENSE"><img src="https://img.shields.io/badge/Lizenz-AGPL--3.0-green" alt="Lizenz AGPL-3.0"></a>
 </p>
 
-> **Projektstand:** Projektgerüst, Core (Projekte, Versionen, Sperren, Einstellungen), Quellenanalyse (MSI, EXE, Manifest, sicherer Import) sowie die Generatoren (Erkennungsskript, Intune-Anleitung, JSON/CSV, Wrapper-Konfiguration) stehen und sind per Windows-CI getestet (M0 bis M7 fertig, M8 bis auf die Gerätetests). Der Paketbau mit dem Content Prep Tool steht, das Werkzeug muss der Benutzer aber selbst beschaffen (Lizenz). Die Client-Laufzeit (Wrapper, Rückgabecodes, Hinweis zum Schließen von Programmen) ist per Pester getestet, ein Fortschrittsfenster und Gerätetests fehlen noch. Die Oberfläche für den Standardablauf (Installer ablegen, Angaben prüfen, Paket bauen, Ergebnis) steht und wird per UI-Test in der CI gesteuert; erweiterter Modus, Projektansicht mit Notizen und Update-Ablauf (M7) stehen ebenfalls; die Distribution (portable ZIP mit Prüfsummen, ungeprüft auf Geräten, unsigniert) und die Bedienungsanleitung stehen (M8); es fehlen die Geräte- und Bedienungstests (`docs/PRUEFPROTOKOLL.md`), und es gibt kein Release. Die Unterstützung von Windows Server 2019 ist festgelegt, aber noch nicht auf einem Gerät geprüft. Die Bilder unten sind **Design-Mockups**, keine Screenshots eines lauffähigen Programms.
+> **Projektstand:** Projektgerüst, Core (Projekte, Versionen, Sperren, Einstellungen), Quellenanalyse (MSI, EXE, Manifest, sicherer Import) sowie die Generatoren (Erkennungsskript, Intune-Anleitung, JSON/CSV, Wrapper-Konfiguration) stehen und sind per Windows-CI getestet (M0 bis M7 fertig, M8 bis auf die Gerätetests). Der Paketbau mit dem Content Prep Tool steht, das Werkzeug muss der Benutzer aber selbst beschaffen (Lizenz). Die Client-Laufzeit (Wrapper, Rückgabecodes, Hinweis zum Schließen von Programmen) ist per Pester getestet, ein Fortschrittsfenster und Gerätetests fehlen noch. Die Oberfläche für den Standardablauf (Installer ablegen, Angaben prüfen, Paket bauen, Ergebnis) steht und wird per UI-Test in der CI gesteuert; erweiterter Modus, Projektansicht mit Notizen und Update-Ablauf (M7) stehen ebenfalls; die Distribution (portable ZIP mit Prüfsummen, ungeprüft auf Geräten, unsigniert) und die Bedienungsanleitung stehen (M8); es fehlen die Geräte- und Bedienungstests (`docs/PRUEFPROTOKOLL.md`), und es gibt nur die Vorabversion [0.0.1](https://github.com/MagicalWig34653/IntunePackager/releases/tag/v0.0.1) (unsigniert, ohne Gerätetests). Die Unterstützung von Windows Server 2019 ist festgelegt, aber noch nicht auf einem Gerät geprüft. Die Bilder unten sind **Design-Mockups**, keine Screenshots eines lauffähigen Programms.
 
 Der Intune Package Builder ist eine Windows-Desktopanwendung, die aus einer MSI, einer EXE oder einem Herstellerordner ein vollständiges Microsoft-Intune-Win32-Paket erstellt:
 
@@ -36,7 +36,8 @@ Umgesetzt und per CI getestet: Standardmodus, erweiterter Modus, Projekte mit Ve
 - **Erweiterter Modus** für Herstellerordner, MSI-Eigenschaften, zu schließende Programme, Zeitlimit und Rückgabecodes.
 - **Projekte und Versionen** in einem frei wählbaren Grundordner, mit Notizen und der Übernahme von Einstellungen bei Updates.
 - **Echte Erkennung** des installierten Zustands (ProductCode bzw. Dateiversion), unabhängig vom Intune-Cache.
-- **Sicheres Verhalten auf dem Zielgerät:** LocalSystem, native 64-Bit-PowerShell, Fortschrittsfenster, keine erzwungenen Prozessbeendigungen oder Neustarts.
+- **Sicheres Verhalten auf dem Zielgerät:** LocalSystem, native 64-Bit-PowerShell, Fortschrittsfenster (nur mit der Toolkit-Option unten), keine erzwungenen Prozessbeendigungen oder Neustarts.
+- **Optional das PSAppDeployToolkit** statt der eigenen Laufzeit (erweiterter Modus): Dialoge auf dem Gerät mit eigenem Logo, Banner, Farbe, Dialogstil, Texten, Verschieben und Speicherprüfung. Das Toolkit wird nicht mitgeliefert (Lizenzbedingungen seiner Bibliotheken); Sie stellen die ZIP einer Veröffentlichung bereit, das Programm prüft sie gegen bekannte Versionen. **Auf Geräten nicht erprobt.** Ein Workflow soll die bekannten Versionen aktuell halten (Pull Request, CI läuft neu); er ist noch nie gelaufen. Diese Option ist **nicht** in der Vorabversion 0.0.1 enthalten und in der CI noch nicht grün bestätigt, solange der Pull Request offen ist.
 - **Nachvollziehbare Builds** mit Konfigurationssnapshot, Quellenprüfsummen und Build-Manifest.
 - **Deutsch und Englisch:** Oberfläche, Intune-Anleitung und Benutzerhinweise folgen der Programmsprache.
 
@@ -68,9 +69,9 @@ Die zugehörigen Abnahmeprüfungen A01–A18 stehen in der [Abnahme-Matrix](docs
 
 ```text
 src/      Autorentool (C# / WPF, .NET Framework 4.8) in getrennten Modulen
-deploy/   Client-Laufzeit: Wrapper-Vorlagen (`deploy/template`)
-tools/    Herkunfts- und Prüfsummenangaben zum Win32 Content Prep Tool (das Programm selbst wird nicht mitgeliefert, M4)
-tests/    xUnit und Pester vorhanden; UI-Tests geplant
+deploy/   Client-Laufzeit: Wrapper-Vorlagen (`deploy/template`), Toolkit-Engine und Versionsliste (`deploy/psadt`)
+tools/    Skripte für Distribution und Prüfung (A18) und für die Pflege der Toolkit-Version; Herkunft und Prüfsummen von Drittanbieter-Komponenten stehen in `THIRD-PARTY.md`
+tests/    xUnit, Pester und UI-Tests (FlaUI)
 docs/     Spezifikation, Planung, Abnahme-Matrix, Datenformat, Arbeitsstand
 assets/   App-Icon (SVG, PNG, ICO)
 design/   Quellen der Design-Mockups
