@@ -127,6 +127,17 @@ jobs:
                   Start-Sleep -Seconds (5 * $attempt)
               }
           }
+      - name: Download the PSAppDeployToolkit for the integration tests
+        shell: powershell
+        run: |
+          # Not part of the program (the user supplies it, docs/PLANUNG.md section 8, number 12). Version and SHA-256 come from the pin file.
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          $pin = @((Get-Content -Raw deploy/psadt/psadt.json | ConvertFrom-Json).versions)[0]
+          $zip = Join-Path $env:RUNNER_TEMP $pin.asset
+          Invoke-WebRequest -UseBasicParsing -Uri "https://github.com/PSAppDeployToolkit/PSAppDeployToolkit/releases/download/$($pin.version)/$($pin.asset)" -OutFile $zip
+          $actual = (Get-FileHash -Algorithm SHA256 -Path $zip).Hash.ToLowerInvariant()
+          if ($actual -ne $pin.sha256) { throw "Unexpected SHA-256 of $($pin.asset): $actual" }
+          "IPB_PSADT_ZIP=$zip" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Run Pester
         shell: powershell
         run: |
