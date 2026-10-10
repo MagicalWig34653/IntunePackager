@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using IntunePackageBuilder.Build.Psadt;
 using IntunePackageBuilder.Core.Versions;
 using IntunePackageBuilder.Generation.Intune;
 
@@ -48,6 +49,18 @@ namespace IntunePackageBuilder.Build.Pipeline
 
         /// <summary>A path in the package would be longer than Windows allows.</summary>
         PathTooLong,
+
+        /// <summary>The configuration selects the PSAppDeployToolkit but no toolkit ZIP is configured or the file is gone.</summary>
+        ToolkitMissing,
+
+        /// <summary>The toolkit ZIP is not one of the pinned versions and was not confirmed.</summary>
+        ToolkitNotRecognized,
+
+        /// <summary>The toolkit ZIP is unreadable, incomplete or unsafe.</summary>
+        ToolkitInvalid,
+
+        /// <summary>A branding image of the configuration is missing in the version folder.</summary>
+        ToolkitAssetsMissing,
 
         /// <summary>The packaging tool failed; the inner exception is a <see cref="IntunePackageBuilder.Build.Packaging.ContentPrepException"/>.</summary>
         PackagingFailed,
@@ -118,6 +131,9 @@ namespace IntunePackageBuilder.Build.Pipeline
         public string ContentPrepToolPath { get; set; }
 
         public bool AllowUnknownTool { get; set; }
+
+        /// <summary>What the PSAppDeployToolkit engine needs. Required when the configuration selects that engine, ignored otherwise.</summary>
+        public PsadtSupply Psadt { get; set; }
 
         public TimeSpan ToolTimeout { get; set; }
 

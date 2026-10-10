@@ -287,5 +287,85 @@ namespace IntunePackageBuilder.Build.Tests
                 _action(value);
             }
         }
+
+        private static readonly byte[] PngBytes = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 1, 2, 3 };
+
+        private NewPackageRequest ToolkitRequest(ToolkitFixture toolkit, PackageVersionConfig config = null)
+        {
+            var request = Request(config);
+            request.Configuration.Deployment.Engine = DeploymentEngine.Psadt;
+            request.Psadt = toolkit.Supply();
+            return request;
+        }
+
+        [Fact]
+        public void APackageWithTheToolkitStoresThePickedImagesWithTheVersionAndBuilds()
+        {
+            using (var toolkit = new ToolkitFixture())
+            {
+                var logo = _directory.Combine("My Logo.bin");
+                File.WriteAllBytes(logo, PngBytes);
+                var request = ToolkitRequest(toolkit);
+                request.PsadtImages = new System.Collections.Generic.Dictionary<Psadt.PsadtImageKind, string> { { Psadt.PsadtImageKind.Logo, logo } };
+                var runner = new FakeRunner();
+
+                var outcome = Run(Workflow(runner), request);
+
+                var versions = new VersionStore(new ProjectStore(BaseFolder));
+                var stored = versions.Load(outcome.ProjectId, "12.0.3");
+                Assert.Equal(DeploymentEngine.Psadt, stored.Deployment.Engine);
+                Assert.Equal("logo.png", stored.Deployment.Psadt.LogoFile);
+                Assert.True(File.Exists(Path.Combine(versions.VersionDirectory(outcome.ProjectId, "12.0.3"), "psadt-assets", "logo.png")));
+                Assert.Contains("Assets/logo.png", runner.StagedFiles);
+                Assert.Contains("PSAppDeployToolkit/PSAppDeployToolkit.psd1", runner.StagedFiles);
+            }
+        }
+
+        [Fact]
+        public void AnImageThatIsNoImageStopsTheWorkflowAndLeavesNoProjectBehind()
+        {
+            using (var toolkit = new ToolkitFixture())
+            {
+                var notAnImage = _directory.Combine("logo.png");
+                File.WriteAllText(notAnImage, "text in disguise");
+                var request = ToolkitRequest(toolkit);
+                request.PsadtImages = new System.Collections.Generic.Dictionary<Psadt.PsadtImageKind, string> { { Psadt.PsadtImageKind.Logo, notAnImage } };
+                var runner = new FakeRunner();
+
+                var failure = Assert.Throws<WorkflowException>(() => Run(Workflow(runner), request));
+
+                Assert.Equal(WorkflowProblem.ToolkitImageInvalid, failure.Problem);
+                Assert.Equal(0, runner.Calls);
+                Assert.Empty(Directory.GetFileSystemEntries(BaseFolder));
+            }
+        }
+
+        [Fact]
+        public void ANewVersionAdoptedFromAnotherKeepsItsToolkitImages()
+        {
+            using (var toolkit = new ToolkitFixture())
+            {
+                var logo = _directory.Combine("l.bin");
+                File.WriteAllBytes(logo, PngBytes);
+                var first = ToolkitRequest(toolkit);
+                first.PsadtImages = new System.Collections.Generic.Dictionary<Psadt.PsadtImageKind, string> { { Psadt.PsadtImageKind.Banner, logo } };
+                var firstOutcome = Run(Workflow(), first);
+                var versions = new VersionStore(new ProjectStore(BaseFolder));
+
+                var second = Request(UpdateDraft.Clone(versions.Load(firstOutcome.ProjectId, "12.0.3")), Installer);
+                second.Configuration.Identity.TargetVersion = "12.0.4";
+                second.Configuration.Detection.MinimumVersion = "12.0.4";
+                second.RequestedProjectId = firstOutcome.ProjectId;
+                second.BasisVersion = "12.0.3";
+                second.Psadt = toolkit.Supply();
+                var runner = new FakeRunner();
+                File.WriteAllBytes(Installer, new byte[] { 0x4D, 0x5A, 9, 9, 9 });
+
+                Run(Workflow(runner), second);
+
+                Assert.Contains("Assets/banner.png", runner.StagedFiles);
+                Assert.True(File.Exists(Path.Combine(versions.VersionDirectory(firstOutcome.ProjectId, "12.0.4"), "psadt-assets", "banner.png")));
+            }
+        }
     }
 }

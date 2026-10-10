@@ -57,6 +57,8 @@ namespace IntunePackageBuilder.App
                 new ContentPrepTool(),
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "template"));
             services.Logger = Log;
+            services.PsadtTemplateDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "psadt", "template");
+            services.PsadtPinPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "psadt", "psadt.json");
             var model = new MainViewModel(services);
             var window = new MainWindow(model);
             MainWindow = window;

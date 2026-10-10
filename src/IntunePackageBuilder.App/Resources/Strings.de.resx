@@ -258,4 +258,9 @@
   <data name="Valid_PsadtInvalidNumber" xml:space="preserve"><value>Geben Sie eine ganze Zahl im erlaubten Bereich an (Aufschieben braucht mindestens 1).</value></data>
   <data name="Valid_PsadtRetryCodeMissing" xml:space="preserve"><value>Das Toolkit beendet eine aufgeschobene Installation mit einem Wiederholungscode, daher ist mindestens ein Wiederholungscode nötig.</value></data>
   <data name="Valid_PsadtTextBraces" xml:space="preserve"><value>Geschweifte Klammern sind in diesem Text nicht erlaubt, wenn das PSAppDeployToolkit verwendet wird.</value></data>
+  <data name="Build_ToolkitMissing" xml:space="preserve"><value>Das PSAppDeployToolkit ist gewählt, aber seine ZIP-Datei ist nicht eingestellt oder nicht mehr vorhanden. Wählen Sie die ZIP-Datei einer Veröffentlichung (PSAppDeployToolkit_Template_v4.zip).</value></data>
+  <data name="Build_ToolkitNotRecognized" xml:space="preserve"><value>Diese ZIP-Datei des Toolkits gehört zu keiner Version, die das Programm kennt. Verwenden Sie die ZIP-Datei einer bekannten Veröffentlichung oder bestätigen Sie die unbekannte Version.</value></data>
+  <data name="Build_ToolkitInvalid" xml:space="preserve"><value>Die ZIP-Datei des Toolkits ist beschädigt, unvollständig oder enthält unsichere Pfade.</value></data>
+  <data name="Build_ToolkitAssetsMissing" xml:space="preserve"><value>Ein Bild für die Gestaltung dieser Version fehlt im Projektordner. Wählen Sie das Bild erneut.</value></data>
+  <data name="Workflow_ToolkitImageInvalid" xml:space="preserve"><value>Ein Bild für die Gestaltung konnte nicht verwendet werden. Wählen Sie ein PNG- oder JPEG-Bild mit höchstens 2 MB.</value></data>
 </root>

@@ -38,6 +38,12 @@ namespace IntunePackageBuilder.Core.Settings
         /// </summary>
         public string ContentPrepToolPath { get; set; }
 
+        /// <summary>
+        /// Path to the ZIP of a PSAppDeployToolkit release (<c>PSAppDeployToolkit_Template_v4.zip</c>), or null when it is not configured.
+        /// The toolkit is not shipped with the program (docs/PLANUNG.md section 8, number 12); the user supplies it.
+        /// </summary>
+        public string PsadtPackagePath { get; set; }
+
         /// <summary>Most recently opened projects, newest first.</summary>
         public List<RecentProject> RecentProjects { get; set; }
 

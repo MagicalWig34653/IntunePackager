@@ -258,4 +258,9 @@
   <data name="Valid_PsadtInvalidNumber" xml:space="preserve"><value>Enter a whole number in the allowed range (postponing needs at least 1).</value></data>
   <data name="Valid_PsadtRetryCodeMissing" xml:space="preserve"><value>The toolkit ends a postponed installation with a retry code, so at least one retry code is needed.</value></data>
   <data name="Valid_PsadtTextBraces" xml:space="preserve"><value>Curly braces are not allowed in this text when the PSAppDeployToolkit is used.</value></data>
+  <data name="Build_ToolkitMissing" xml:space="preserve"><value>The PSAppDeployToolkit is selected, but its ZIP is not set or no longer exists. Choose the ZIP of a release (PSAppDeployToolkit_Template_v4.zip).</value></data>
+  <data name="Build_ToolkitNotRecognized" xml:space="preserve"><value>This toolkit ZIP is not one of the versions this program knows. Use the ZIP of a known release or confirm the unknown version.</value></data>
+  <data name="Build_ToolkitInvalid" xml:space="preserve"><value>The toolkit ZIP is damaged, incomplete or contains unsafe paths.</value></data>
+  <data name="Build_ToolkitAssetsMissing" xml:space="preserve"><value>A branding image of this version is missing from its project folder. Choose the image again.</value></data>
+  <data name="Workflow_ToolkitImageInvalid" xml:space="preserve"><value>A branding image could not be used. Choose a PNG or JPEG image of at most 2 MB.</value></data>
 </root>

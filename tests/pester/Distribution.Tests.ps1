@@ -22,6 +22,7 @@ BeforeAll {
         'Newtonsoft.Json.dll', 'de\IntunePackageBuilder.resources.dll', 'de\IntunePackageBuilder.Generation.resources.dll',
         'template\Install.cmd', 'template\Deploy-Wrapper.ps1', 'template\DeployCore.psm1',
         'template\Messages.de.psd1', 'template\Messages.en.psd1',
+        'psadt\psadt.json', 'psadt\template\Install.cmd', 'psadt\template\Invoke-AppDeployToolkit.ps1',
         'IntunePackageBuilder.pdb', 'IntunePackageBuilder.Core.xml', 'xunit.core.dll') {
         New-TextFile -Path (Join-Path $script:buildOutput $name) -Text ('stand-in for ' + $name)
     }
@@ -97,6 +98,8 @@ Describe 'A18 - distribution content' {
         @{ Name = 'a vendor installer'; Relative = 'vendor\setup.msi'; Message = 'Forbidden file' },
         @{ Name = 'a built package'; Relative = 'out\app.intunewin'; Message = 'Forbidden file' },
         @{ Name = 'the Content Prep Tool'; Relative = 'IntuneWinAppUtil.exe'; Message = 'Forbidden file' },
+        @{ Name = 'the PSAppDeployToolkit module'; Relative = 'PSAppDeployToolkit/PSAppDeployToolkit.psd1'; Message = 'Forbidden file' },
+        @{ Name = 'a library of the PSAppDeployToolkit'; Relative = 'iNKORE.UI.WPF.Modern.dll'; Message = 'Forbidden file' },
         @{ Name = 'a project file'; Relative = 'projects\a\project.json'; Message = 'Forbidden file' },
         @{ Name = 'a version configuration'; Relative = 'configuration.json'; Message = 'Forbidden file' },
         @{ Name = 'a settings file'; Relative = 'settings.json'; Message = 'Forbidden file' },

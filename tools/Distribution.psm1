@@ -12,6 +12,7 @@ $script:AllowedFile = @(
     '^de/IntunePackageBuilder\.resources\.dll$',
     '^de/IntunePackageBuilder\.Generation\.resources\.dll$',
     '^template/(Install\.cmd|Deploy-Wrapper\.ps1|DeployCore\.psm1|Messages\.(de|en)\.psd1)$',
+    '^psadt/(psadt\.json|template/(Install\.cmd|Invoke-AppDeployToolkit\.ps1))$',
     '^(LICENSE|THIRD-PARTY\.md|README\.md|README\.en\.md)$',
     '^docs/(BEDIENUNG|DATENFORMAT|AENDERUNGSVERLAUF|BEKANNTE-GRENZEN|PRUEFPROTOKOLL)\.md$',
     '^(SHA256SUMS\.txt|distribution-manifest\.json)$'
@@ -23,6 +24,7 @@ $script:RequiredFile = @(
     'IntunePackageBuilder.Core.dll', 'IntunePackageBuilder.Analysis.dll', 'IntunePackageBuilder.Build.dll', 'IntunePackageBuilder.Generation.dll',
     'Newtonsoft.Json.dll',
     'template/Install.cmd', 'template/Deploy-Wrapper.ps1', 'template/DeployCore.psm1', 'template/Messages.de.psd1', 'template/Messages.en.psd1',
+    'psadt/psadt.json', 'psadt/template/Install.cmd', 'psadt/template/Invoke-AppDeployToolkit.ps1',
     'LICENSE', 'THIRD-PARTY.md'
 )
 
@@ -31,6 +33,7 @@ $script:DeniedFile = @(
     @{ Regex = '\.(msi|msp|msix)$'; Reason = 'vendor installer' },
     @{ Regex = '\.intunewin$'; Reason = 'built package' },
     @{ Regex = '(^|/)IntuneWinAppUtil\.exe$'; Reason = 'Content Prep Tool (license forbids redistribution)' },
+    @{ Regex = '(^|/)(PSAppDeployToolkit(/|\.)|iNKORE\.|PSADT\.)'; Reason = 'PSAppDeployToolkit or one of its libraries (the user supplies the toolkit; docs/PLANUNG.md section 8, number 12)' },
     @{ Regex = '(^|/)(project|configuration|build-manifest|source-manifest|settings)\.json$'; Reason = 'user project or settings file' },
     @{ Regex = '(^|/)(builds|versions|source)/'; Reason = 'user project folder' },
     @{ Regex = '\.(pdb|trx)$'; Reason = 'debug or test artifact' },
@@ -259,7 +262,7 @@ function New-DistributionFolder {
         product         = 'Intune Package Builder'
         version         = $Version
         signatureStatus = $status
-        note            = 'The Win32 Content Prep Tool is not part of this distribution; users supply it themselves (THIRD-PARTY.md).'
+        note            = 'The Win32 Content Prep Tool and the PSAppDeployToolkit are not part of this distribution; users supply them themselves (THIRD-PARTY.md).'
         files           = $entries
     }
     $utf8 = New-Object System.Text.UTF8Encoding($false)

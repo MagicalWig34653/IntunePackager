@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
 using IntunePackageBuilder.Core.Builds;
+using IntunePackageBuilder.Core.Versions;
 using IntunePackageBuilder.Generation.Guide;
 using IntunePackageBuilder.Generation.Intune;
+using IntunePackageBuilder.Generation.Psadt;
 using IntunePackageBuilder.Generation.Scripts;
 using IntunePackageBuilder.Generation.Wrapper;
 
@@ -15,6 +17,26 @@ namespace IntunePackageBuilder.Generation
     /// </summary>
     public static class BuildArtifacts
     {
+        /// <summary>Partial toolkit configuration and strings next to the entry script; the toolkit merges them over its own defaults.</summary>
+        private static void WriteToolkitOverlay(BuildSnapshot snapshot, IntuneSettings settings, string packageRootDirectory, List<string> written)
+        {
+            var configPath = Path.Combine(packageRootDirectory, PsadtOverlay.ConfigFolder, PsadtOverlay.ConfigFile);
+            Directory.CreateDirectory(Path.GetDirectoryName(configPath));
+            PsadtOverlay.WriteTo(configPath, PsadtOverlay.BuildConfig(snapshot, settings));
+            written.Add(configPath);
+
+            // The neutral file (English) must exist for the toolkit to look at the folder; German has its own file.
+            var neutral = Path.Combine(packageRootDirectory, PsadtOverlay.StringsFolder, PsadtOverlay.StringsFile);
+            Directory.CreateDirectory(Path.GetDirectoryName(neutral));
+            PsadtOverlay.WriteTo(neutral, PsadtOverlay.BuildStrings(snapshot, "en"));
+            written.Add(neutral);
+
+            var german = Path.Combine(packageRootDirectory, PsadtOverlay.StringsFolder, "de", PsadtOverlay.StringsFile);
+            Directory.CreateDirectory(Path.GetDirectoryName(german));
+            PsadtOverlay.WriteTo(german, PsadtOverlay.BuildStrings(snapshot, "de"));
+            written.Add(german);
+        }
+
         /// <summary>
         /// Writes the files of the <c>intune</c> folder (<c>Detect-App.ps1</c>, <c>Einrichtung.html</c>,
         /// <c>Einstellungen.json</c>, <c>Einstellungen.csv</c>) into <paramref name="intuneDirectory"/> and
@@ -40,6 +62,11 @@ namespace IntunePackageBuilder.Generation
             var wrapper = Path.Combine(packageRootDirectory, DeploymentInterface.WrapperConfigFile);
             WrapperConfigBuilder.WriteTo(wrapper, WrapperConfigBuilder.From(snapshot, settings));
             written.Add(wrapper);
+
+            if (snapshot.Configuration.Deployment.Engine == DeploymentEngine.Psadt)
+            {
+                WriteToolkitOverlay(snapshot, settings, packageRootDirectory, written);
+            }
 
             return written;
         }
