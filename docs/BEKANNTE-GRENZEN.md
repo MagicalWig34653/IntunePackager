@@ -26,7 +26,7 @@ Stand: Version 0.0.1. Was hier steht, ist **nicht** umgesetzt oder **nicht gepr�
 - **`build.log`** wird erst nach der Veröffentlichung geschrieben; scheitert das Schreiben, zeigt die Ergebnisseite trotzdem den Pfad. Die Datei steht nicht im `build-manifest.json`.
 - **Rückgabecodes:** Intune legt bei einer neuen Win32-App den Code 1707 als Erfolg vor; die Anleitung nennt das nicht (nicht gegen Intune geprüft). Nicht aufgeführte Codes gibt der Wrapper unverändert weiter.
 - **DPI:** Das Programm hat kein Manifest für Per-Monitor-DPI; WPF fällt auf die System-DPI zurück. Die Skalierung ist nicht geprüft (T04).
-- **Die A18-Prüfung** vergleicht die Prüfsummen mit der Datei `SHA256SUMS.txt` aus derselben ZIP (selbstbezüglich); die Prüfsumme der ausgelieferten `Newtonsoft.Json.dll` wird zusätzlich gegen `THIRD-PARTY.md` geprüft. Eine Prüfsumme außerhalb der ZIP gibt es erst mit einem Release.
+- **Die A18-Prüfung** vergleicht die Prüfsummen mit der Datei `SHA256SUMS.txt` aus derselben ZIP (selbstbezüglich); die Prüfsumme der ausgelieferten `Newtonsoft.Json.dll` wird zusätzlich gegen `THIRD-PARTY.md` geprüft. Eine Prüfsumme außerhalb der ZIP steht seit dem Release 0.0.1 in der Datei `.sha256` neben der ZIP (vom selben Workflow erzeugt).
 
 ## Bewusste Entscheidungen
 
