@@ -145,8 +145,7 @@ namespace IntunePackageBuilder.Build.Workflow
                 DeferTimes = psadt.DeferTimes,
                 CheckDiskSpace = psadt.CheckDiskSpace,
                 RequiredDiskSpaceMb = psadt.RequiredDiskSpaceMb,
-                BlockExecution = psadt.BlockExecution,
-                PromptToSave = psadt.PromptToSave
+                BlockExecution = psadt.BlockExecution
             };
             return copy;
         }

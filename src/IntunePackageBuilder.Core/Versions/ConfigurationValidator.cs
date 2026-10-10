@@ -21,7 +21,8 @@ namespace IntunePackageBuilder.Core.Versions
         PsadtInvalidFile,
         PsadtInvalidLanguage,
         PsadtInvalidNumber,
-        PsadtRetryCodeMissing
+        PsadtRetryCodeMissing,
+        PsadtTextBraces
     }
 
     /// <summary>A problem found in a configuration. The UI maps <see cref="Code"/> to a localized text.</summary>
@@ -267,10 +268,24 @@ namespace IntunePackageBuilder.Core.Versions
                 issues.Add(new ValidationIssue("deployment.psadt.requiredDiskSpaceMb", ValidationCode.PsadtInvalidNumber));
             }
 
+            // The toolkit reads {name} in its texts as a lookup in its own configuration, so braces cannot be part of a message.
+            CheckNoBraces(issues, "interaction.installMessage", config.Interaction.InstallMessage);
+            CheckNoBraces(issues, "interaction.uninstallMessage", config.Interaction.UninstallMessage);
+            CheckNoBraces(issues, "interaction.detailMessage", config.Interaction.DetailMessage);
+            CheckNoBraces(issues, "deployment.psadt.companyName", psadt.CompanyName);
+
             // A postponed or timed-out dialog ends with the retry code, so Intune must know that code as "retry".
             if (config.Runtime.RetryCodes.Count == 0)
             {
                 issues.Add(new ValidationIssue("runtime.retryCodes", ValidationCode.PsadtRetryCodeMissing));
+            }
+        }
+
+        private static void CheckNoBraces(List<ValidationIssue> issues, string field, string value)
+        {
+            if (value != null && (value.IndexOf('{') >= 0 || value.IndexOf('}') >= 0))
+            {
+                issues.Add(new ValidationIssue(field, ValidationCode.PsadtTextBraces));
             }
         }
 

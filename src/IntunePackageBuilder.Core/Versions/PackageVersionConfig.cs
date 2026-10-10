@@ -274,7 +274,5 @@ namespace IntunePackageBuilder.Core.Versions
 
         /// <summary>Prevents the user from starting the configured programs while the installation runs.</summary>
         public bool BlockExecution { get; set; }
-
-        public bool PromptToSave { get; set; }
     }
 }

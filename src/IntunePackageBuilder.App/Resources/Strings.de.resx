@@ -257,4 +257,5 @@
   <data name="Valid_PsadtInvalidLanguage" xml:space="preserve"><value>Verwenden Sie auto oder einen Sprachcode des Toolkits, zum Beispiel de oder en.</value></data>
   <data name="Valid_PsadtInvalidNumber" xml:space="preserve"><value>Geben Sie eine ganze Zahl im erlaubten Bereich an (Aufschieben braucht mindestens 1).</value></data>
   <data name="Valid_PsadtRetryCodeMissing" xml:space="preserve"><value>Das Toolkit beendet eine aufgeschobene Installation mit einem Wiederholungscode, daher ist mindestens ein Wiederholungscode nötig.</value></data>
+  <data name="Valid_PsadtTextBraces" xml:space="preserve"><value>Geschweifte Klammern sind in diesem Text nicht erlaubt, wenn das PSAppDeployToolkit verwendet wird.</value></data>
 </root>

@@ -257,4 +257,5 @@
   <data name="Valid_PsadtInvalidLanguage" xml:space="preserve"><value>Use auto or a language code of the toolkit, for example de or en.</value></data>
   <data name="Valid_PsadtInvalidNumber" xml:space="preserve"><value>Enter a whole number in the allowed range (postponing needs at least 1).</value></data>
   <data name="Valid_PsadtRetryCodeMissing" xml:space="preserve"><value>The toolkit ends a postponed installation with a retry code, so at least one retry code is needed.</value></data>
+  <data name="Valid_PsadtTextBraces" xml:space="preserve"><value>Curly braces are not allowed in this text when the PSAppDeployToolkit is used.</value></data>
 </root>

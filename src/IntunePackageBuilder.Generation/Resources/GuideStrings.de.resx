@@ -104,4 +104,6 @@
   <data name="TroubleStep4" xml:space="preserve"><value>Führen Sie das Erkennungsskript in einer 64-Bit-Windows-PowerShell mit Administratorrechten aus. Exitcode 0 mit Ausgabe bedeutet erkannt.</value></data>
   <data name="NoteVendorLogs" xml:space="preserve"><value>Herstellerinstaller können weitere Logs in eigene Pfade schreiben. Lesen Sie die Dokumentation des Herstellers.</value></data>
   <data name="Footer" xml:space="preserve"><value>Erzeugt vom Intune Package Builder für den Build {0}. Die Werte auf dieser Seite gehören nur zu diesem Build.</value></data>
+  <data name="Psadt_CloseInstall" xml:space="preserve"><value>Bitte speichern Sie Ihre Arbeit und schließen Sie die folgenden Programme. Die Installation fährt automatisch fort, sobald sie geschlossen sind.</value></data>
+  <data name="Psadt_CloseUninstall" xml:space="preserve"><value>Bitte speichern Sie Ihre Arbeit und schließen Sie die folgenden Programme. Das Entfernen fährt automatisch fort, sobald sie geschlossen sind.</value></data>
 </root>

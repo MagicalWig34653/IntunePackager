@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using IntunePackageBuilder.Core.Builds;
 using IntunePackageBuilder.Core.Storage;
+using IntunePackageBuilder.Core.Versions;
 using IntunePackageBuilder.Generation.Intune;
 using Newtonsoft.Json;
 
@@ -36,6 +37,8 @@ namespace IntunePackageBuilder.Generation.Wrapper
                 SoftwareName = settings.App.Name,
                 Manufacturer = settings.App.Publisher,
                 TargetVersion = settings.App.Version,
+                Engine = config.Deployment.Engine,
+                Psadt = config.Deployment.Engine == DeploymentEngine.Psadt ? PsadtBehavior(config.Deployment.Psadt) : null,
                 Install = new WrapperInstall
                 {
                     InstallerType = config.Source.InstallerType,
@@ -79,6 +82,19 @@ namespace IntunePackageBuilder.Generation.Wrapper
         public static void WriteTo(string path, WrapperConfig config)
         {
             AtomicFile.WriteAllText(path, ToJson(config) + "\r\n", new UTF8Encoding(true));
+        }
+
+        private static WrapperPsadt PsadtBehavior(PsadtSection psadt)
+        {
+            return new WrapperPsadt
+            {
+                ShowProgress = psadt.ShowProgress,
+                AllowDefer = psadt.AllowDefer,
+                DeferTimes = psadt.DeferTimes,
+                CheckDiskSpace = psadt.CheckDiskSpace,
+                RequiredDiskSpaceMb = psadt.RequiredDiskSpaceMb,
+                BlockExecution = psadt.BlockExecution
+            };
         }
 
         private static string Trimmed(string value)

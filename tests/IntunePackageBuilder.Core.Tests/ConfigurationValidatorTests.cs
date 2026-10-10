@@ -355,5 +355,21 @@ namespace IntunePackageBuilder.Core.Tests
             config.Runtime.RetryCodes.Clear();
             AssertIssue(config, "runtime.retryCodes", ValidationCode.PsadtRetryCodeMissing);
         }
+
+        [Fact]
+        public void TextsOfTheToolkitCannotContainBracesBecauseTheToolkitReadsThemAsLookups()
+        {
+            var config = ValidPsadt();
+            config.Interaction.DetailMessage = "Press {Ctrl}";
+            AssertIssue(config, "interaction.detailMessage", ValidationCode.PsadtTextBraces);
+
+            config.Interaction.DetailMessage = "Press Ctrl";
+            config.Deployment.Psadt.CompanyName = "Contoso {x}";
+            AssertIssue(config, "deployment.psadt.companyName", ValidationCode.PsadtTextBraces);
+
+            var native = ValidMsi();
+            native.Interaction.DetailMessage = "Press {Ctrl}";
+            Assert.Empty(ConfigurationValidator.Validate(native));
+        }
     }
 }
