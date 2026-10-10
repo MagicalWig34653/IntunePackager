@@ -104,10 +104,10 @@ BeforeAll {
     }
 
     # Finds a parameter set that accepts all of the given parameters. Parameters the toolkit adds dynamically are mandatory only when
-    # no session is open (Title); the entry script always runs inside a session, so they do not count as missing here.
+    # no session is open (Title, Subtitle); the entry script always runs inside a session, so they do not count as missing here.
     function Test-ParameterSet {
         param([string]$Command, [string[]]$Names)
-        $dynamicWithoutSession = @('Title')
+        $dynamicWithoutSession = @('Title', 'Subtitle')
         $closest = $null
         foreach ($set in (Get-Command -Name $Command).ParameterSets) {
             $known = @($set.Parameters | ForEach-Object { $_.Name })
