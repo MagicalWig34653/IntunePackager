@@ -6,17 +6,7 @@
 BeforeDiscovery {
     $script:hasToolkit = -not [string]::IsNullOrWhiteSpace($env:IPB_PSADT_ZIP) -and (Test-Path -LiteralPath $env:IPB_PSADT_ZIP)
 
-    # The parameter combinations Request-PsadtClose in the entry script can build for Show-ADTInstallationWelcome.
-    $script:welcomeCombinations = @(
-        @{ Name = 'close programs'; Keys = @('CloseProcesses', 'HideCloseButton', 'PersistPrompt') },
-        @{ Name = 'close programs with postponing'; Keys = @('CloseProcesses', 'HideCloseButton', 'PersistPrompt', 'AllowDeferCloseProcesses', 'DeferTimes') },
-        @{ Name = 'close programs with blocking'; Keys = @('CloseProcesses', 'HideCloseButton', 'PersistPrompt', 'BlockExecution') },
-        @{ Name = 'close programs with a disk space check'; Keys = @('CloseProcesses', 'HideCloseButton', 'PersistPrompt', 'CheckDiskSpace') },
-        @{ Name = 'close programs with a disk space check and a size'; Keys = @('CloseProcesses', 'HideCloseButton', 'PersistPrompt', 'CheckDiskSpace', 'RequiredDiskSpace') },
-        @{ Name = 'everything'; Keys = @('CloseProcesses', 'HideCloseButton', 'PersistPrompt', 'AllowDeferCloseProcesses', 'DeferTimes', 'BlockExecution', 'CheckDiskSpace', 'RequiredDiskSpace') },
-        @{ Name = 'only a disk space check'; Keys = @('CheckDiskSpace') },
-        @{ Name = 'only a disk space check with a size'; Keys = @('CheckDiskSpace', 'RequiredDiskSpace') }
-    )
+    $script:welcomeCombinations = @((Import-PowerShellDataFile -Path (Join-Path $PSScriptRoot 'PsadtWelcomeCombinations.psd1')).Combinations)
 }
 
 BeforeAll {
@@ -28,6 +18,7 @@ BeforeAll {
         Add-Type -Path $dll
     }
 
+    $script:welcomeCombinations = @((Import-PowerShellDataFile -Path (Join-Path $PSScriptRoot 'PsadtWelcomeCombinations.psd1')).Combinations)
     $script:work = Join-Path ([System.IO.Path]::GetTempPath()) ('ipb-psadt-' + [System.Guid]::NewGuid().ToString('N'))
     New-Item -ItemType Directory -Path $script:work | Out-Null
     $script:entryTemplate = Join-Path $script:repoRoot 'deploy\psadt\template'
@@ -140,7 +131,7 @@ Describe 'The entry script and the toolkit' -Skip:(-not $script:hasToolkit) {
 
     It 'resolves the parameter set of the welcome dialog for: <Name>' -ForEach $script:welcomeCombinations {
         Import-Module -Name $script:moduleManifest -Force
-        Test-ParameterSet -Command 'Show-ADTInstallationWelcome' -Names $Keys | Should -BeTrue -Because ($Keys -join ', ')
+        Test-ParameterSet -Command 'Show-ADTInstallationWelcome' -Names $Names | Should -BeTrue -Because ($Names -join ', ')
     }
 
     It 'builds the welcome dialog only from the combinations tested above' {
@@ -149,7 +140,7 @@ Describe 'The entry script and the toolkit' -Skip:(-not $script:hasToolkit) {
         $errors | Should -BeNullOrEmpty
         $indexes = $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.IndexExpressionAst] -and $node.Target.Extent.Text -eq '$welcome' }, $true)
         $used = @($indexes | ForEach-Object { $_.Index.Value } | Sort-Object -Unique)
-        $tested = @($script:welcomeCombinations | ForEach-Object { $_.Keys } | Sort-Object -Unique)
+        $tested = @($script:welcomeCombinations | ForEach-Object { $_.Names } | Sort-Object -Unique)
         $used | Should -Be $tested
     }
 
@@ -182,6 +173,7 @@ Describe 'The generated overlay is merged into the toolkit configuration' -Skip:
             [System.IO.File]::WriteAllBytes((Join-Path $root 'Assets\logo.png'), [byte[]](0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0, 0))
         }
         $probe = Join-Path $script:work 'probe.ps1'
+        $resultFile = Join-Path $script:work 'probe-result.json'
         Set-Content -LiteralPath $probe -Encoding UTF8 -Value @"
 `$ErrorActionPreference = 'Stop'
 Import-Module -Name '$script:moduleManifest' -Force
@@ -194,10 +186,11 @@ Initialize-ADTModule -ScriptDirectory '$($package.Root)'
     Balloon = `$c.UI.BalloonNotifications; Logo = `$c.Assets.Logo; Banner = `$c.Assets.Banner; MsiInstallParams = `$c.MSI.InstallParams
     Dialog = `$s.CloseAppsPrompt.Fluent.DialogMessage.Install; Classic = `$s.CloseAppsPrompt.Classic.CloseAppsMessage.Uninstall
     Custom = `$s.CloseAppsPrompt.CustomMessage; Progress = `$s.ProgressPrompt.Message.Install; ProgressUninstall = `$s.ProgressPrompt.Message.Uninstall
-} | ConvertTo-Json
+} | ConvertTo-Json | Set-Content -LiteralPath '$resultFile' -Encoding UTF8
 "@
-        $json = & (Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe') -NoProfile -NonInteractive -ExecutionPolicy Bypass -File $probe | Out-String
-        $result = $json | ConvertFrom-Json
+        & (Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe') -NoProfile -NonInteractive -ExecutionPolicy Bypass -File $probe | Out-Null
+        $LASTEXITCODE | Should -Be 0
+        $result = [System.IO.File]::ReadAllText($resultFile, [System.Text.Encoding]::UTF8) | ConvertFrom-Json
         $result.Company | Should -Be 'Fabrikam IT'
         $result.LogPath | Should -Be ('C:\Windows\Logs\Intune\PackageDeploy\' + $package.ProjectId)
         $result.Style | Should -Be 'Classic'
