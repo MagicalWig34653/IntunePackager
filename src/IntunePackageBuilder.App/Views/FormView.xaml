@@ -111,6 +111,81 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
+                <StackPanel Margin="0,16,0,0" DataContext="{Binding Toolkit}"
+                            Visibility="{Binding DataContext.IsAdvanced, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource Visible}}"
+                            IsEnabled="{Binding DataContext.IsEditable, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                    <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Toolkit_Heading}" AutomationProperties.AutomationId="ToolkitHeading" />
+                    <CheckBox Content="{infra:Loc Toolkit_Use}" IsChecked="{Binding UseToolkit}" AutomationProperties.AutomationId="UseToolkit" />
+                    <TextBlock Style="{StaticResource Note}" TextWrapping="Wrap" Text="{infra:Loc Toolkit_UseHint}" />
+
+                    <StackPanel Visibility="{Binding UseToolkit, Converter={StaticResource Visible}}">
+                        <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Toolkit_Zip}" />
+                        <TextBlock TextWrapping="Wrap" Text="{Binding ZipPath}" AutomationProperties.AutomationId="ToolkitZipPath" />
+                        <TextBlock TextWrapping="Wrap" Text="{Binding ZipStatus}" AutomationProperties.AutomationId="ToolkitZipStatus" />
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <Button Content="{infra:Loc Toolkit_ZipChoose}" Command="{Binding ChooseZipCommand}" Margin="0,0,10,0"
+                                    AutomationProperties.AutomationId="ChooseToolkit" />
+                            <Button Content="{infra:Loc Toolkit_ZipDownload}" Command="{Binding OpenDownloadCommand}" />
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource Note}" TextWrapping="Wrap" Text="{infra:Loc Toolkit_ZipHint}" />
+
+                        <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Toolkit_DialogStyle}" />
+                        <ComboBox ItemsSource="{Binding DialogStyles}" DisplayMemberPath="Text" SelectedValuePath="Value"
+                                  SelectedValue="{Binding DialogStyle}" AutomationProperties.AutomationId="ToolkitDialogStyle"
+                                  AutomationProperties.Name="{infra:Loc Toolkit_DialogStyle}" />
+
+                        <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Toolkit_Accent}" />
+                        <TextBox Tag="ToolkitAccent" AutomationProperties.AutomationId="ToolkitAccent" AutomationProperties.Name="{infra:Loc Toolkit_Accent}"
+                                 Text="{Binding AccentColor, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Style="{StaticResource Note}" TextWrapping="Wrap" Text="{infra:Loc Toolkit_AccentHint}" />
+
+                        <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Toolkit_Company}" />
+                        <TextBox Tag="ToolkitCompany" AutomationProperties.AutomationId="ToolkitCompany" AutomationProperties.Name="{infra:Loc Toolkit_Company}"
+                                 Text="{Binding CompanyName, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Style="{StaticResource Note}" TextWrapping="Wrap" Text="{infra:Loc Toolkit_CompanyHint}" />
+
+                        <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Toolkit_Language}" />
+                        <ComboBox ItemsSource="{Binding Languages}" DisplayMemberPath="Text" SelectedValuePath="Value"
+                                  SelectedValue="{Binding UiLanguage}" AutomationProperties.AutomationId="ToolkitLanguage"
+                                  AutomationProperties.Name="{infra:Loc Toolkit_Language}" />
+
+                        <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Toolkit_Images}" />
+                        <TextBlock Style="{StaticResource Note}" TextWrapping="Wrap" Text="{infra:Loc Toolkit_ImagesHint}" />
+                        <ItemsControl ItemsSource="{Binding Images}" Focusable="False">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,4,0,0">
+                                        <TextBlock Text="{Binding Label}" FontWeight="SemiBold" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="{infra:Loc Toolkit_ImageChoose}" Command="{Binding ChooseCommand}" Margin="0,0,10,0" />
+                                            <Button Content="{infra:Loc Toolkit_ImageClear}" Command="{Binding ClearCommand}" Margin="0,0,10,0" />
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding DisplayText}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Toolkit_Behavior}" />
+                        <CheckBox Content="{infra:Loc Toolkit_Balloon}" IsChecked="{Binding BalloonNotifications}" />
+                        <CheckBox Content="{infra:Loc Toolkit_Progress}" IsChecked="{Binding ShowProgress}" />
+                        <CheckBox Content="{infra:Loc Toolkit_Block}" IsChecked="{Binding BlockExecution}" />
+                        <CheckBox Content="{infra:Loc Toolkit_Defer}" IsChecked="{Binding AllowDefer}" />
+                        <StackPanel Visibility="{Binding AllowDefer, Converter={StaticResource Visible}}">
+                            <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Toolkit_DeferTimes}" />
+                            <TextBox Tag="ToolkitDeferTimes" AutomationProperties.AutomationId="ToolkitDeferTimes" AutomationProperties.Name="{infra:Loc Toolkit_DeferTimes}"
+                                     Text="{Binding DeferTimes, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <CheckBox Content="{infra:Loc Toolkit_DiskSpace}" IsChecked="{Binding CheckDiskSpace}" />
+                        <StackPanel Visibility="{Binding CheckDiskSpace, Converter={StaticResource Visible}}">
+                            <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Toolkit_DiskSpaceMb}" />
+                            <TextBox Tag="ToolkitDiskSpace" AutomationProperties.AutomationId="ToolkitDiskSpace" AutomationProperties.Name="{infra:Loc Toolkit_DiskSpaceMb}"
+                                     Text="{Binding DiskSpaceMb, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Style="{StaticResource Note}" TextWrapping="Wrap" Text="{infra:Loc Toolkit_DiskSpaceHint}" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </DockPanel>

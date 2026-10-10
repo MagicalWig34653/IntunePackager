@@ -263,4 +263,49 @@
   <data name="Build_ToolkitInvalid" xml:space="preserve"><value>The toolkit ZIP is damaged, incomplete or contains unsafe paths.</value></data>
   <data name="Build_ToolkitAssetsMissing" xml:space="preserve"><value>A branding image of this version is missing from its project folder. Choose the image again.</value></data>
   <data name="Workflow_ToolkitImageInvalid" xml:space="preserve"><value>A branding image could not be used. Choose a PNG or JPEG image of at most 2 MB.</value></data>
+  <data name="Toolkit_Heading" xml:space="preserve"><value>Client runtime</value></data>
+  <data name="Toolkit_Use" xml:space="preserve"><value>Use the PSAppDeployToolkit instead of the built-in runtime</value></data>
+  <data name="Toolkit_UseHint" xml:space="preserve"><value>The toolkit shows the dialogs on the device (programs to close, progress, notes) and can be branded. Installation, return codes and the check of the result stay the same. The toolkit is not part of this program; you supply it below.</value></data>
+  <data name="Toolkit_Zip" xml:space="preserve"><value>Toolkit file (ZIP of a release)</value></data>
+  <data name="Toolkit_ZipChoose" xml:space="preserve"><value>Choose PSAppDeployToolkit_Template_v4.zip…</value></data>
+  <data name="Toolkit_ZipDownload" xml:space="preserve"><value>Releases of the toolkit</value></data>
+  <data name="Toolkit_ZipHint" xml:space="preserve"><value>Download the file PSAppDeployToolkit_Template_v4.zip of a release. The program checks its checksum against the versions it knows. The toolkit uses libraries with their own license terms (see THIRD-PARTY.md); check them for your use.</value></data>
+  <data name="Toolkit_ZipNone" xml:space="preserve"><value>No file chosen.</value></data>
+  <data name="Toolkit_ZipKnown" xml:space="preserve"><value>Known version {0}.</value></data>
+  <data name="Toolkit_ZipUnknown" xml:space="preserve"><value>Unknown version (SHA-256 {0}). You will be asked before it is used.</value></data>
+  <data name="Toolkit_UnknownTitle" xml:space="preserve"><value>Unknown toolkit version</value></data>
+  <data name="Toolkit_UnknownConfirm" xml:space="preserve"><value>This file is not a known version of the toolkit (SHA-256 {0}). Use it anyway?</value></data>
+  <data name="Toolkit_DialogStyle" xml:space="preserve"><value>Dialog style</value></data>
+  <data name="Toolkit_StyleFluent" xml:space="preserve"><value>Fluent (modern)</value></data>
+  <data name="Toolkit_StyleClassic" xml:space="preserve"><value>Classic</value></data>
+  <data name="Toolkit_Accent" xml:space="preserve"><value>Accent colour</value></data>
+  <data name="Toolkit_AccentHint" xml:space="preserve"><value>As #RRGGBB, for example #0078D4. Empty uses the colour of Windows. Only the Fluent dialogs use it.</value></data>
+  <data name="Toolkit_Company" xml:space="preserve"><value>Company name in the dialogs</value></data>
+  <data name="Toolkit_CompanyHint" xml:space="preserve"><value>Empty uses the manufacturer of the software. Curly braces are not allowed.</value></data>
+  <data name="Toolkit_Language" xml:space="preserve"><value>Language of the dialogs</value></data>
+  <data name="Toolkit_LanguageBuild" xml:space="preserve"><value>Language of this program</value></data>
+  <data name="Toolkit_LanguageAuto" xml:space="preserve"><value>Language of the user on the device</value></data>
+  <data name="Toolkit_Images" xml:space="preserve"><value>Images</value></data>
+  <data name="Toolkit_ImagesHint" xml:space="preserve"><value>PNG or JPEG, at most 2 MB each. They are stored with this version. Empty uses the images of the toolkit.</value></data>
+  <data name="Toolkit_Logo" xml:space="preserve"><value>Logo (icon of the dialogs)</value></data>
+  <data name="Toolkit_LogoDark" xml:space="preserve"><value>Logo for the dark colour scheme</value></data>
+  <data name="Toolkit_Banner" xml:space="preserve"><value>Banner (classic dialogs)</value></data>
+  <data name="Toolkit_ImageChoose" xml:space="preserve"><value>Choose image…</value></data>
+  <data name="Toolkit_ImageClear" xml:space="preserve"><value>Remove</value></data>
+  <data name="Toolkit_ImageNone" xml:space="preserve"><value>None (image of the toolkit)</value></data>
+  <data name="Toolkit_ImageStored" xml:space="preserve"><value>Stored: {0}</value></data>
+  <data name="Toolkit_ImageNew" xml:space="preserve"><value>New: {0}</value></data>
+  <data name="Dialog_ChooseImage" xml:space="preserve"><value>Choose an image</value></data>
+  <data name="Dialog_ImageFilter" xml:space="preserve"><value>Images (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg</value></data>
+  <data name="Dialog_ChooseToolkit" xml:space="preserve"><value>Choose the toolkit ZIP</value></data>
+  <data name="Dialog_ToolkitFilter" xml:space="preserve"><value>Toolkit (*.zip)|*.zip</value></data>
+  <data name="Toolkit_Behavior" xml:space="preserve"><value>Behavior</value></data>
+  <data name="Toolkit_Balloon" xml:space="preserve"><value>Show notifications in the corner of the screen</value></data>
+  <data name="Toolkit_Progress" xml:space="preserve"><value>Show a progress window while the installer runs</value></data>
+  <data name="Toolkit_Block" xml:space="preserve"><value>Block the start of the programs to close during the installation</value></data>
+  <data name="Toolkit_Defer" xml:space="preserve"><value>Let the user postpone the installation when programs are open</value></data>
+  <data name="Toolkit_DeferTimes" xml:space="preserve"><value>How many times the user may postpone</value></data>
+  <data name="Toolkit_DiskSpace" xml:space="preserve"><value>Check the free disk space before installing</value></data>
+  <data name="Toolkit_DiskSpaceMb" xml:space="preserve"><value>Required free space in MB</value></data>
+  <data name="Toolkit_DiskSpaceHint" xml:space="preserve"><value>Empty or 0 lets the toolkit calculate it from the size of the package.</value></data>
 </root>

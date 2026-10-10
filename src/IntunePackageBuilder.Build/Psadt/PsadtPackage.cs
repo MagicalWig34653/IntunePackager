@@ -42,7 +42,7 @@ namespace IntunePackageBuilder.Build.Psadt
             {
                 sha = ContentPrepTool.ComputeSha256(zipPath);
             }
-            catch (IOException exception)
+            catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException)
             {
                 throw new PsadtException(PsadtProblem.PackageUnreadable, zipPath, exception);
             }
@@ -85,7 +85,7 @@ namespace IntunePackageBuilder.Build.Psadt
             {
                 throw new PsadtException(PsadtProblem.PackageUnreadable, zipPath, exception);
             }
-            catch (IOException exception)
+            catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException)
             {
                 throw new PsadtException(PsadtProblem.PackageUnreadable, zipPath, exception);
             }

@@ -10,6 +10,7 @@ using IntunePackageBuilder.App.Infrastructure;
 using IntunePackageBuilder.App.Services;
 using IntunePackageBuilder.Build.Packaging;
 using IntunePackageBuilder.Build.Pipeline;
+using IntunePackageBuilder.Build.Psadt;
 using IntunePackageBuilder.Build.Workflow;
 using IntunePackageBuilder.Core.Logging;
 using IntunePackageBuilder.Core.Projects;
@@ -100,6 +101,8 @@ namespace IntunePackageBuilder.App.ViewModels
             {
                 field.Label = Loc.Get("Form_" + field.Key);
             }
+
+            Toolkit = new ToolkitViewModel(services, draft.Deployment);
 
             InstallArguments.Label = InstallArgumentsLabel;
             TargetVersion.Hint = Loc.Get("Form_TargetVersionHint");
@@ -203,6 +206,9 @@ namespace IntunePackageBuilder.App.ViewModels
         public FormField DetailMessage { get; private set; }
 
         public IReadOnlyList<FormField> Fields { get; private set; }
+
+        /// <summary>The choice between the built-in runtime and the PSAppDeployToolkit with its options (advanced mode).</summary>
+        public ToolkitViewModel Toolkit { get; private set; }
 
         /// <summary>Hints about the installer that was read (needs its folder, per-user default, vendor input).</summary>
         public IReadOnlyList<string> Notes { get; private set; }
@@ -419,6 +425,7 @@ namespace IntunePackageBuilder.App.ViewModels
             config.Runtime.SuccessCodes = Codes(SuccessCodes, problems, config.Runtime.SuccessCodes);
             config.Runtime.RebootCodes = Codes(RebootCodes, problems, config.Runtime.RebootCodes);
             config.Runtime.RetryCodes = Codes(RetryCodes, problems, config.Runtime.RetryCodes);
+            Toolkit.ApplyTo(config, problems);
             return config;
         }
 
@@ -477,6 +484,16 @@ namespace IntunePackageBuilder.App.ViewModels
             }
 
             NeedsTool = false;
+            PsadtSupply toolkit = null;
+            if (config.Deployment.Engine == DeploymentEngine.Psadt)
+            {
+                toolkit = PrepareToolkit();
+                if (toolkit == null)
+                {
+                    return;
+                }
+            }
+
             var allowUnknown = false;
             if (ContentPrepTool.IdentifyVersion(toolPath) == null)
             {
@@ -505,6 +522,9 @@ namespace IntunePackageBuilder.App.ViewModels
                 RuntimeTemplateDirectory = _services.RuntimeTemplateDirectory,
                 ContentPrepToolPath = toolPath,
                 AllowUnknownTool = allowUnknown,
+                Psadt = toolkit,
+                PsadtImages = config.Deployment.Engine == DeploymentEngine.Psadt ? Toolkit.PendingImages : null,
+                BasisVersion = _template.Mode == FormMode.Update ? _template.BasisVersion : null,
                 WorkRoot = _services.WorkRoot
             };
 
@@ -550,6 +570,48 @@ namespace IntunePackageBuilder.App.ViewModels
                 _services.Logger.Log(LogLevel.Error, "The build failed unexpectedly", exception);
                 ErrorText = Loc.Get("Build_Unexpected");
             }
+        }
+
+        /// <summary>
+        /// Checks the toolkit ZIP before the build starts and asks once about a version the program does not know.
+        /// Returns what the build needs, or null after showing why the build cannot start.
+        /// </summary>
+        private PsadtSupply PrepareToolkit()
+        {
+            var zip = _services.Settings.PsadtPackagePath;
+            var supply = new PsadtSupply
+            {
+                TemplateDirectory = _services.PsadtTemplateDirectory,
+                PackagePath = zip,
+                PinPath = _services.PsadtPinPath
+            };
+            if (string.IsNullOrWhiteSpace(zip) || !File.Exists(zip))
+            {
+                ErrorText = Loc.Get("Build_ToolkitMissing");
+                return null;
+            }
+
+            try
+            {
+                var info = PsadtPackage.Inspect(zip, supply.PinPath, true);
+                if (info.Version == null)
+                {
+                    if (!_services.Dialogs.Confirm(Loc.Get("Toolkit_UnknownTitle"), Loc.Format("Toolkit_UnknownConfirm", info.Sha256)))
+                    {
+                        return null;
+                    }
+
+                    supply.AllowUnknown = true;
+                }
+            }
+            catch (PsadtException exception)
+            {
+                _services.Logger.Log(LogLevel.Warning, "The toolkit ZIP cannot be used", exception);
+                ErrorText = Loc.Get(exception.Problem == PsadtProblem.PackageMissing ? "Build_ToolkitMissing" : "Build_ToolkitInvalid");
+                return null;
+            }
+
+            return supply;
         }
 
         private async Task ChooseToolAsync()
@@ -787,6 +849,26 @@ namespace IntunePackageBuilder.App.ViewModels
                     return _main.AdvancedMode || !_minimumFollowsTarget ? "DetectionMinimumVersion" : "TargetVersion";
                 case "runtime.timeoutMinutes":
                     return "Timeout";
+                case "interaction.installMessage":
+                    return "InstallMessage";
+                case "interaction.uninstallMessage":
+                    return "UninstallMessage";
+                case "interaction.detailMessage":
+                    return "DetailMessage";
+                case "deployment.psadt.accentColor":
+                    return "ToolkitAccent";
+                case "deployment.psadt.uiLanguage":
+                    return "ToolkitLanguage";
+                case "deployment.psadt.companyName":
+                    return "ToolkitCompany";
+                case "deployment.psadt.deferTimes":
+                    return "ToolkitDeferTimes";
+                case "deployment.psadt.requiredDiskSpaceMb":
+                    return "ToolkitDiskSpace";
+                case "deployment.psadt.logoFile":
+                case "deployment.psadt.logoDarkFile":
+                case "deployment.psadt.bannerFile":
+                    return "ToolkitImages";
                 case "runtime.successCodes":
                 case "runtime":
                     return "SuccessCodes";

@@ -152,6 +152,57 @@ namespace IntunePackageBuilder.App.Tests
 
         public AppServices Services { get; private set; }
 
+        public string ToolkitZipPath { get; private set; }
+
+        public string ToolkitSha256 { get; private set; }
+
+        /// <summary>Writes a minimal toolkit ZIP and its pin file, points the services at them and the settings at the ZIP.</summary>
+        public void UseToolkitZip(bool pinned)
+        {
+            ToolkitZipPath = Path.Combine(_root, "PSAppDeployToolkit_Template_v4.zip");
+            using (var stream = new FileStream(ToolkitZipPath, FileMode.Create, FileAccess.Write))
+            using (var archive = new ZipArchive(stream, ZipArchiveMode.Create))
+            {
+                foreach (var name in new[]
+                {
+                    "PSAppDeployToolkit/PSAppDeployToolkit.psd1", "PSAppDeployToolkit/PSAppDeployToolkit.psm1", "PSAppDeployToolkit/COPYING.Lesser",
+                    "PSAppDeployToolkit/Config/config.psd1", "PSAppDeployToolkit/Strings/strings.psd1", "PSAppDeployToolkit/lib/PSADT.dll"
+                })
+                {
+                    Write(archive, name, Encoding.UTF8.GetBytes("content of " + name));
+                }
+            }
+
+            ToolkitSha256 = ContentPrepTool.ComputeSha256(ToolkitZipPath);
+            var pinPath = Path.Combine(_root, "psadt.json");
+            File.WriteAllText(
+                pinPath,
+                "{\"schemaVersion\":1,\"versions\":[" + (pinned ? "{\"version\":\"9.9.9\",\"asset\":\"PSAppDeployToolkit_Template_v4.zip\",\"sha256\":\"" + ToolkitSha256 + "\",\"commit\":\"" + new string('b', 40) + "\"}" : string.Empty) + "]}",
+                new UTF8Encoding(false));
+            var templateDirectory = Path.Combine(_root, "psadt-template");
+            Directory.CreateDirectory(templateDirectory);
+            File.WriteAllText(Path.Combine(templateDirectory, "Install.cmd"), "@echo off\r\n");
+            File.WriteAllText(Path.Combine(templateDirectory, "Invoke-AppDeployToolkit.ps1"), "# entry\r\n");
+            Services.PsadtTemplateDirectory = templateDirectory;
+            Services.PsadtPinPath = pinPath;
+            Services.Settings.PsadtPackagePath = ToolkitZipPath;
+        }
+
+        public string WriteImage(string name, bool png = true)
+        {
+            var path = Path.Combine(_root, "drop", name);
+            File.WriteAllBytes(path, png ? new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 1, 2 } : new byte[] { 1, 2, 3 });
+            return path;
+        }
+
+        private static void Write(ZipArchive archive, string name, byte[] data)
+        {
+            using (var stream = archive.CreateEntry(name).Open())
+            {
+                stream.Write(data, 0, data.Length);
+            }
+        }
+
         public SourceAnalysis ExeAnalysis()
         {
             return new SourceAnalysis
