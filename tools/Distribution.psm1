@@ -33,7 +33,7 @@ $script:DeniedFile = @(
     @{ Regex = '\.(msi|msp|msix)$'; Reason = 'vendor installer' },
     @{ Regex = '\.intunewin$'; Reason = 'built package' },
     @{ Regex = '(^|/)IntuneWinAppUtil\.exe$'; Reason = 'Content Prep Tool (license forbids redistribution)' },
-    @{ Regex = '(^|/)(PSAppDeployToolkit(/|\.)|iNKORE\.|PSADT(\.[A-Za-z.]+)?\.(dll|exe)$)'; Reason = 'PSAppDeployToolkit or one of its libraries (the user supplies the toolkit; docs/PLANUNG.md section 8, number 12)' },
+    @{ Regex = '(^|/)(PSAppDeployToolkit(/|\.)|iNKORE\.|PSADT[A-Za-z.]*\.(dll|exe)$)'; Reason = 'PSAppDeployToolkit or one of its libraries (the user supplies the toolkit; docs/PLANUNG.md section 8, number 12)' },
     @{ Regex = '(^|/)(project|configuration|build-manifest|source-manifest|settings)\.json$'; Reason = 'user project or settings file' },
     @{ Regex = '(^|/)(builds|versions|source)/'; Reason = 'user project folder' },
     @{ Regex = '\.(pdb|trx)$'; Reason = 'debug or test artifact' },
