@@ -103,16 +103,23 @@ BeforeAll {
         }
     }
 
+    # Finds a parameter set that accepts all of the given parameters. Parameters the toolkit adds dynamically are mandatory only when
+    # no session is open (Title); the entry script always runs inside a session, so they do not count as missing here.
     function Test-ParameterSet {
         param([string]$Command, [string[]]$Names)
-        $sets = (Get-Command -Name $Command).ParameterSets
-        foreach ($set in $sets) {
+        $dynamicWithoutSession = @('Title')
+        $closest = $null
+        foreach ($set in (Get-Command -Name $Command).ParameterSets) {
             $known = @($set.Parameters | ForEach-Object { $_.Name })
             $unknown = @($Names | Where-Object { $known -notcontains $_ })
-            $missing = @($set.Parameters | Where-Object { $_.IsMandatory -and $Names -notcontains $_.Name })
-            if ($unknown.Count -eq 0 -and $missing.Count -eq 0) { return $true }
+            $missing = @($set.Parameters | Where-Object { $_.IsMandatory -and $Names -notcontains $_.Name -and $dynamicWithoutSession -notcontains $_.Name } | ForEach-Object { $_.Name })
+            if ($unknown.Count -eq 0 -and $missing.Count -eq 0) { return [pscustomobject]@{ Ok = $true; Detail = $set.Name } }
+            $score = $unknown.Count + $missing.Count
+            if ($null -eq $closest -or $score -lt $closest.Score) {
+                $closest = [pscustomobject]@{ Score = $score; Detail = ("closest set '{0}': unknown [{1}], mandatory but not given [{2}]" -f $set.Name, ($unknown -join ', '), ($missing -join ', ')) }
+            }
         }
-        return $false
+        return [pscustomobject]@{ Ok = $false; Detail = $closest.Detail }
     }
 }
 
@@ -131,7 +138,8 @@ Describe 'The entry script and the toolkit' -Skip:(-not $script:hasToolkit) {
 
     It 'resolves the parameter set of the welcome dialog for: <Name>' -ForEach $script:welcomeCombinations {
         Import-Module -Name $script:moduleManifest -Force
-        Test-ParameterSet -Command 'Show-ADTInstallationWelcome' -Names $Names | Should -BeTrue -Because ($Names -join ', ')
+        $result = Test-ParameterSet -Command 'Show-ADTInstallationWelcome' -Names $Names
+        $result.Ok | Should -BeTrue -Because (($Names -join ', ') + ' - ' + $result.Detail)
     }
 
     It 'builds the welcome dialog only from the combinations tested above' {
