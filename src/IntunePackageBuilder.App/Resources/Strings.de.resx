@@ -302,7 +302,6 @@
   <data name="Toolkit_Behavior" xml:space="preserve"><value>Verhalten</value></data>
   <data name="Toolkit_Balloon" xml:space="preserve"><value>Hinweise am Bildschirmrand anzeigen</value></data>
   <data name="Toolkit_Progress" xml:space="preserve"><value>Fortschrittsfenster anzeigen, solange der Installer läuft</value></data>
-  <data name="Toolkit_Block" xml:space="preserve"><value>Start der zu schließenden Programme während der Installation sperren</value></data>
   <data name="Toolkit_Defer" xml:space="preserve"><value>Benutzer darf die Installation verschieben, wenn Programme offen sind</value></data>
   <data name="Toolkit_DeferTimes" xml:space="preserve"><value>Wie oft der Benutzer verschieben darf</value></data>
   <data name="Toolkit_DiskSpace" xml:space="preserve"><value>Freien Speicherplatz vor der Installation prüfen</value></data>

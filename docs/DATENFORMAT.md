@@ -84,7 +84,6 @@ Konfiguration einer Softwareversion (Spec §6.3). Werte, die das Tool nicht kenn
 | `balloonNotifications` (`true`), `showProgress` (`true`) | Hinweise am Bildschirmrand, Fortschrittsfenster während der Installation |
 | `allowDefer` (`false`), `deferTimes` (3) | Benutzer darf verschieben, wenn Programme offen sind; ein Verschieben endet mit dem Wiederholungscode |
 | `checkDiskSpace` (`false`), `requiredDiskSpaceMb` (0) | Prüfung des freien Speichers; 0 lässt das Toolkit rechnen |
-| `blockExecution` (`false`) | Start der zu schließenden Programme während der Installation sperren |
 
 Die Bilder liegen im Versionsordner unter `psadt-assets/` (`logo.png`, `logo-dark.png`, `banner.png`, jeweils auch `.jpg`); die Konfiguration enthält nur Dateinamen, nie Pfade des Benutzers. Ein Bild darf höchstens 2 MB groß sein, und die ersten Bytes müssen PNG oder JPEG sein (die Endung der Quelle zählt nicht). Eine neue Version aus einer Vorlage übernimmt die Bilder der Vorlage, ohne etwas zu überschreiben.
 
@@ -191,7 +190,7 @@ Konfiguration der Client-Laufzeit. Liegt im **Wurzelordner des Pakets** neben `I
 | `uninstall` | `productCode` oder `executablePath` mit `arguments` |
 | `detection` | dieselbe Regel wie im Erkennungsskript (`method`, `productCode` oder `path`, `minimumVersion`); der Wrapper prüft damit den Zielzustand nach der Installation |
 | `engine` | `Native` (eigener Wrapper) oder `Psadt` (PSAppDeployToolkit); bestimmt, welches Skript `Install.cmd` startet |
-| `psadt` | nur bei `engine` = `Psadt`: `showProgress`, `allowDefer`, `deferTimes`, `checkDiskSpace`, `requiredDiskSpaceMb`, `blockExecution`. Aussehen (Farben, Bilder, Stil) steht **nicht** hier, sondern in `Config\config.psd1` |
+| `psadt` | nur bei `engine` = `Psadt`: `showProgress`, `allowDefer`, `deferTimes`, `checkDiskSpace`, `requiredDiskSpaceMb`. Aussehen (Farben, Bilder, Stil) steht **nicht** hier, sondern in `Config\config.psd1` |
 | `timeoutMinutes`, `returnCodes` | identisch mit den Intune-Werten (`code`, `type`); 1641 steht immer als `HardReboot` |
 | `processesToClose`, `installMessage`, `uninstallMessage`, `detailMessage` | Benutzerinteraktion; leere Texte entfallen |
 | `sharedShortcutsToRemove` | Liste aus `root` (`PublicDesktop`/`CommonStartMenu`) und `relativePath` |

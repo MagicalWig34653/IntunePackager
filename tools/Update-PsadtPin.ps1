@@ -44,7 +44,8 @@ try {
     $zipPath = [System.IO.Path]::Combine($temp, $AssetName)
     Invoke-WebRequest -Headers @{ 'User-Agent' = 'intune-package-builder-update-psadt' } -Uri $asset.browser_download_url -OutFile $zipPath -UseBasicParsing
     $sha256 = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash.ToLowerInvariant()
-    if ($asset.digest -and ($asset.digest -ne "sha256:$sha256")) {
+    if (-not $asset.digest) { throw "GitHub reports no digest for $AssetName; the download cannot be cross-checked." }
+    if ($asset.digest -ne "sha256:$sha256") {
         throw "The downloaded ZIP has SHA-256 $sha256 but GitHub reports $($asset.digest)."
     }
 
@@ -67,6 +68,7 @@ finally {
 }
 
 $commit = (Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/$Repository/commits/$($release.tag_name)").sha
+if ($commit -notmatch '^[0-9a-f]{40}$') { throw "Unexpected commit id '$commit' for $($release.tag_name)." }
 $libraries = @(Get-PsadtBundledLibrary -EntryName $entryNames)
 $previous = @($pin.versions | Select-Object -First 1)[0]
 $newLibraries = @($libraries | Where-Object { @($previous.bundledLibraries) -notcontains $_ })

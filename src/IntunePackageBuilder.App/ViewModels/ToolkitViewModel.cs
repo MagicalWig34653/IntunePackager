@@ -148,7 +148,6 @@ namespace IntunePackageBuilder.App.ViewModels
         private string _deferTimes;
         private bool _checkDiskSpace;
         private string _diskSpaceMb;
-        private bool _blockExecution;
 
         public ToolkitViewModel(AppServices services, DeploymentSection draft)
         {
@@ -165,7 +164,6 @@ namespace IntunePackageBuilder.App.ViewModels
             _deferTimes = psadt.DeferTimes.ToString(CultureInfo.InvariantCulture);
             _checkDiskSpace = psadt.CheckDiskSpace;
             _diskSpaceMb = psadt.RequiredDiskSpaceMb.ToString(CultureInfo.InvariantCulture);
-            _blockExecution = psadt.BlockExecution;
 
             DialogStyles = new[]
             {
@@ -280,12 +278,6 @@ namespace IntunePackageBuilder.App.ViewModels
             set { Set(ref _diskSpaceMb, value ?? string.Empty); }
         }
 
-        public bool BlockExecution
-        {
-            get { return _blockExecution; }
-            set { Set(ref _blockExecution, value); }
-        }
-
         public ICommand ChooseZipCommand { get; private set; }
 
         public ICommand OpenDownloadCommand { get; private set; }
@@ -316,7 +308,6 @@ namespace IntunePackageBuilder.App.ViewModels
             psadt.ShowProgress = _showProgress;
             psadt.AllowDefer = _allowDefer;
             psadt.CheckDiskSpace = _checkDiskSpace;
-            psadt.BlockExecution = _blockExecution;
 
             int times;
             if (int.TryParse(_deferTimes.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out times))

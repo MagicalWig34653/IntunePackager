@@ -271,8 +271,5 @@ namespace IntunePackageBuilder.Core.Versions
 
         /// <summary>Required free space in MB; 0 lets the toolkit compute it from the package size.</summary>
         public int RequiredDiskSpaceMb { get; set; }
-
-        /// <summary>Prevents the user from starting the configured programs while the installation runs.</summary>
-        public bool BlockExecution { get; set; }
     }
 }

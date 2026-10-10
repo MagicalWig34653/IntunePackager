@@ -1,6 +1,6 @@
 # Bekannte Grenzen
 
-Stand: Version 0.0.1. Was hier steht, ist **nicht** umgesetzt oder **nicht geprüft**. Es ist kein Mangel, der "später kommt", sondern der ehrliche Stand.
+Stand: Version 0.0.1 und der Entwicklungsstand danach (die Einträge zum PSAppDeployToolkit betreffen nur Stände nach 0.0.1; der Release v0.0.1 enthält die Toolkit-Engine nicht). Was hier steht, ist **nicht** umgesetzt oder **nicht geprüft**. Es ist kein Mangel, der "später kommt", sondern der ehrliche Stand.
 
 ## Nicht umgesetzt
 

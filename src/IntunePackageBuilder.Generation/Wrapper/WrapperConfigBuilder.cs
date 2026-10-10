@@ -92,8 +92,7 @@ namespace IntunePackageBuilder.Generation.Wrapper
                 AllowDefer = psadt.AllowDefer,
                 DeferTimes = psadt.DeferTimes,
                 CheckDiskSpace = psadt.CheckDiskSpace,
-                RequiredDiskSpaceMb = psadt.RequiredDiskSpaceMb,
-                BlockExecution = psadt.BlockExecution
+                RequiredDiskSpaceMb = psadt.RequiredDiskSpaceMb
             };
         }
 

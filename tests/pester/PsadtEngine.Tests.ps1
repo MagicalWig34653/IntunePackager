@@ -136,20 +136,27 @@ Describe 'The entry script and the toolkit' -Skip:(-not $script:hasToolkit) {
         }
     }
 
-    It 'resolves the parameter set of the welcome dialog for: <Name>' -ForEach $script:welcomeCombinations {
+    It 'resolves the parameter set of <Command> for: <Name>' -ForEach $script:welcomeCombinations {
         Import-Module -Name $script:moduleManifest -Force
-        $result = Test-ParameterSet -Command 'Show-ADTInstallationWelcome' -Names $Names
+        $result = Test-ParameterSet -Command $Command -Names $Names
         $result.Ok | Should -BeTrue -Because (($Names -join ', ') + ' - ' + $result.Detail)
     }
 
-    It 'builds the welcome dialog only from the combinations tested above' {
+    It 'builds the commands only from the combinations tested above' {
         $tokens = $null; $errors = $null
         $ast = [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $script:entryTemplate 'Invoke-AppDeployToolkit.ps1'), [ref]$tokens, [ref]$errors)
         $errors | Should -BeNullOrEmpty
-        $indexes = $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.IndexExpressionAst] -and $node.Target.Extent.Text -eq '$welcome' }, $true)
-        $used = @($indexes | ForEach-Object { $_.Index.Value } | Sort-Object -Unique)
+        # Keys set one by one ($welcome['Key'] = ...) and keys of the table $prompt = @{ Key = ... }.
+        $used = New-Object System.Collections.Generic.List[string]
+        foreach ($node in $ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.IndexExpressionAst] -and ($n.Target.Extent.Text -eq '$welcome' -or $n.Target.Extent.Text -eq '$prompt') }, $true)) { $used.Add($node.Index.Value) }
+        foreach ($assignment in $ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and ($n.Left.Extent.Text -eq '$welcome' -or $n.Left.Extent.Text -eq '$prompt') }, $true)) {
+            foreach ($table in $assignment.Right.FindAll({ param($n) $n -is [System.Management.Automation.Language.HashtableAst] }, $true)) {
+                foreach ($pair in $table.KeyValuePairs) { $used.Add($pair.Item1.Value) }
+            }
+        }
         $tested = @($script:welcomeCombinations | ForEach-Object { $_.Names } | Sort-Object -Unique)
-        $used | Should -Be $tested
+        # Timeout is a dynamic parameter of the prompt and not part of the static parameter sets.
+        (@($used | Where-Object { $_ -ne 'Timeout' } | Sort-Object -Unique)) | Should -Be $tested
     }
 
     It 'passes only parameters that Open-ADTSession has' {

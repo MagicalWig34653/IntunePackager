@@ -302,7 +302,6 @@
   <data name="Toolkit_Behavior" xml:space="preserve"><value>Behavior</value></data>
   <data name="Toolkit_Balloon" xml:space="preserve"><value>Show notifications in the corner of the screen</value></data>
   <data name="Toolkit_Progress" xml:space="preserve"><value>Show a progress window while the installer runs</value></data>
-  <data name="Toolkit_Block" xml:space="preserve"><value>Block the start of the programs to close during the installation</value></data>
   <data name="Toolkit_Defer" xml:space="preserve"><value>Let the user postpone the installation when programs are open</value></data>
   <data name="Toolkit_DeferTimes" xml:space="preserve"><value>How many times the user may postpone</value></data>
   <data name="Toolkit_DiskSpace" xml:space="preserve"><value>Check the free disk space before installing</value></data>

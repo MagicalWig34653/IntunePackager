@@ -170,7 +170,6 @@
                         <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Toolkit_Behavior}" />
                         <CheckBox Content="{infra:Loc Toolkit_Balloon}" IsChecked="{Binding BalloonNotifications}" />
                         <CheckBox Content="{infra:Loc Toolkit_Progress}" IsChecked="{Binding ShowProgress}" />
-                        <CheckBox Content="{infra:Loc Toolkit_Block}" IsChecked="{Binding BlockExecution}" />
                         <CheckBox Content="{infra:Loc Toolkit_Defer}" IsChecked="{Binding AllowDefer}" />
                         <StackPanel Visibility="{Binding AllowDefer, Converter={StaticResource Visible}}">
                             <TextBlock Style="{StaticResource Label}" Text="{infra:Loc Toolkit_DeferTimes}" />

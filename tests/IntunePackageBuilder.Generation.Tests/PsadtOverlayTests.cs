@@ -194,7 +194,6 @@ namespace IntunePackageBuilder.Generation.Tests
             config.Deployment.Psadt.DeferTimes = 4;
             config.Deployment.Psadt.CheckDiskSpace = true;
             config.Deployment.Psadt.RequiredDiskSpaceMb = 2048;
-            config.Deployment.Psadt.BlockExecution = true;
             config.Deployment.Psadt.AccentColor = "#112233";
             var snapshot = Samples.Snapshot(config);
 
@@ -204,7 +203,6 @@ namespace IntunePackageBuilder.Generation.Tests
             Assert.True((bool)json["psadt"]["allowDefer"]);
             Assert.Equal(4, (int)json["psadt"]["deferTimes"]);
             Assert.Equal(2048, (int)json["psadt"]["requiredDiskSpaceMb"]);
-            Assert.True((bool)json["psadt"]["blockExecution"]);
             Assert.True((bool)json["psadt"]["showProgress"]);
             Assert.Null(json["psadt"]["accentColor"]);
         }

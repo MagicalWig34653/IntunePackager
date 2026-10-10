@@ -78,8 +78,6 @@ namespace IntunePackageBuilder.Generation.Wrapper
         public bool CheckDiskSpace { get; set; }
 
         public int RequiredDiskSpaceMb { get; set; }
-
-        public bool BlockExecution { get; set; }
     }
 
     public sealed class WrapperInstall

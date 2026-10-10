@@ -36,8 +36,8 @@ Umgesetzt und per CI getestet: Standardmodus, erweiterter Modus, Projekte mit Ve
 - **Erweiterter Modus** für Herstellerordner, MSI-Eigenschaften, zu schließende Programme, Zeitlimit und Rückgabecodes.
 - **Projekte und Versionen** in einem frei wählbaren Grundordner, mit Notizen und der Übernahme von Einstellungen bei Updates.
 - **Echte Erkennung** des installierten Zustands (ProductCode bzw. Dateiversion), unabhängig vom Intune-Cache.
-- **Sicheres Verhalten auf dem Zielgerät:** LocalSystem, native 64-Bit-PowerShell, Fortschrittsfenster, keine erzwungenen Prozessbeendigungen oder Neustarts.
-- **Optional das PSAppDeployToolkit** statt der eigenen Laufzeit (erweiterter Modus): Dialoge auf dem Gerät mit eigenem Logo, Banner, Farbe, Dialogstil, Texten, Verschieben und Speicherprüfung. Das Toolkit wird nicht mitgeliefert (Lizenzbedingungen seiner Bibliotheken); Sie stellen die ZIP einer Veröffentlichung bereit, das Programm prüft sie gegen bekannte Versionen. **Auf Geräten nicht erprobt.** Ein Workflow hält die bekannten Versionen aktuell (Pull Request, CI läuft neu).
+- **Sicheres Verhalten auf dem Zielgerät:** LocalSystem, native 64-Bit-PowerShell, Fortschrittsfenster (nur mit der Toolkit-Option unten), keine erzwungenen Prozessbeendigungen oder Neustarts.
+- **Optional das PSAppDeployToolkit** statt der eigenen Laufzeit (erweiterter Modus): Dialoge auf dem Gerät mit eigenem Logo, Banner, Farbe, Dialogstil, Texten, Verschieben und Speicherprüfung. Das Toolkit wird nicht mitgeliefert (Lizenzbedingungen seiner Bibliotheken); Sie stellen die ZIP einer Veröffentlichung bereit, das Programm prüft sie gegen bekannte Versionen. **Auf Geräten nicht erprobt.** Ein Workflow soll die bekannten Versionen aktuell halten (Pull Request, CI läuft neu); er ist noch nie gelaufen. Diese Option ist **nicht** in der Vorabversion 0.0.1 enthalten und in der CI noch nicht grün bestätigt, solange der Pull Request offen ist.
 - **Nachvollziehbare Builds** mit Konfigurationssnapshot, Quellenprüfsummen und Build-Manifest.
 - **Deutsch und Englisch:** Oberfläche, Intune-Anleitung und Benutzerhinweise folgen der Programmsprache.
 
@@ -69,9 +69,9 @@ Die zugehörigen Abnahmeprüfungen A01–A18 stehen in der [Abnahme-Matrix](docs
 
 ```text
 src/      Autorentool (C# / WPF, .NET Framework 4.8) in getrennten Modulen
-deploy/   Client-Laufzeit: Wrapper-Vorlagen (`deploy/template`)
-tools/    Herkunfts- und Prüfsummenangaben zum Win32 Content Prep Tool (das Programm selbst wird nicht mitgeliefert, M4)
-tests/    xUnit und Pester vorhanden; UI-Tests geplant
+deploy/   Client-Laufzeit: Wrapper-Vorlagen (`deploy/template`), Toolkit-Engine und Versionsliste (`deploy/psadt`)
+tools/    Skripte für Distribution und Prüfung (A18) und für die Pflege der Toolkit-Version; Herkunft und Prüfsummen von Drittanbieter-Komponenten stehen in `THIRD-PARTY.md`
+tests/    xUnit, Pester und UI-Tests (FlaUI)
 docs/     Spezifikation, Planung, Abnahme-Matrix, Datenformat, Arbeitsstand
 assets/   App-Icon (SVG, PNG, ICO)
 design/   Quellen der Design-Mockups

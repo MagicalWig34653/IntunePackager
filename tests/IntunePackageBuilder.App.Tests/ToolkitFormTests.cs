@@ -70,7 +70,6 @@ namespace IntunePackageBuilder.App.Tests
             form.Toolkit.DeferTimes = "5";
             form.Toolkit.CheckDiskSpace = true;
             form.Toolkit.DiskSpaceMb = "2048";
-            form.Toolkit.BlockExecution = true;
 
             var psadt = Configuration(form).Deployment.Psadt;
 
@@ -85,7 +84,6 @@ namespace IntunePackageBuilder.App.Tests
             Assert.Equal(5, psadt.DeferTimes);
             Assert.True(psadt.CheckDiskSpace);
             Assert.Equal(2048, psadt.RequiredDiskSpaceMb);
-            Assert.True(psadt.BlockExecution);
         }
 
         [Fact]
