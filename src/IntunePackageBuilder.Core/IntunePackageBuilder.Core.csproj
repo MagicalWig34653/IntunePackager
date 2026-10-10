@@ -4,7 +4,7 @@
     <AssemblyName>IntunePackageBuilder.Core</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="IntunePackageBuilder.Core.Tests" />
