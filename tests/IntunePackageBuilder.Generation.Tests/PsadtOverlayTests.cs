@@ -46,7 +46,7 @@ namespace IntunePackageBuilder.Generation.Tests
         public void ThePostponedAndTimedOutDialogsEndWithTheRetryCodeOfTheIntuneTable()
         {
             var config = Toolkit();
-            config.Runtime.RetryCodes = new System.Collections.Generic.List<int> { 1619, 1618 };
+            config.Runtime.RetryCodes = new System.Collections.Generic.List<int> { 1619 };
 
             var text = Config(config);
 
