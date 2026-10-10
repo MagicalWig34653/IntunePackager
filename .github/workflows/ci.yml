@@ -40,7 +40,7 @@ jobs:
           "IPB_CONTENT_PREP_TOOL=$exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Test
         run: dotnet test IntunePackageBuilder.sln --configuration Release --no-build --logger "trx;LogFileName=results.trx"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: testresults-${{ matrix.os }}
@@ -72,7 +72,7 @@ jobs:
           "IPB_CONTENT_PREP_TOOL=$exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Run the UI tests
         run: dotnet test tests/IntunePackageBuilder.UiTests/IntunePackageBuilder.UiTests.csproj --configuration Release --no-build --logger "trx;LogFileName=results.trx"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: testresults-ui
@@ -93,7 +93,7 @@ jobs:
         run: |
           .\tools\New-Distribution.ps1 -BuildOutput src\IntunePackageBuilder.App\bin\Release\net48 -OutputDirectory dist
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: distribution
           path: dist/*.zip
@@ -149,7 +149,7 @@ jobs:
           $config.TestResult.Enabled = $true
           $config.TestResult.OutputPath = 'pester-results.xml'
           Invoke-Pester -Configuration $config
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: pester-results
